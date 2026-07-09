@@ -37,6 +37,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 lg:flex lg:h-screen lg:overflow-hidden">
 
+
 <!-- LOGIN -->
 <div id="login-container" class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/95 backdrop-blur-2xl p-4">
     <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 rounded-[2.5rem] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)]">
@@ -46,7 +47,7 @@
              style="background: linear-gradient(160deg, var(--olive) 0%, var(--olive-dark) 100%);">
             <div class="absolute -top-20 -left-20 w-64 h-64 rounded-full blur-3xl opacity-30 login-blob-1" style="background: var(--olive-light);"></div>
             <div class="absolute -bottom-24 -right-10 w-72 h-72 rounded-full blur-3xl opacity-20 login-blob-2" style="background: var(--olive-light);"></div>
-
+           
             <div class="relative z-10">
                 <div class="login-logo-box w-16 h-16 rounded-2xl flex items-center justify-center mb-8 overflow-hidden">
                     <img id="logo-mini-login" src="" alt="Logo" class="logo-mini hidden w-12 h-12 object-contain">
@@ -82,7 +83,7 @@
                 </div>
             </div>
 
-            <h2 class="text-3xl font-black text-slate-800 tracking-tight text-center lg:text-left">Bienvenido de nuevo</h2>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight text-center lg:text-left">Te damos la bienvenida</h2>
             <p class="text-slate-500 text-sm font-medium mt-2 mb-8 text-center lg:text-left">Ingresa tus credenciales para continuar</p>
 
             <form id="login-form" class="space-y-5">
@@ -128,6 +129,12 @@
                 </button>
 
                 <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-wider pt-2">Usuario demo: admin&nbsp;/&nbsp;Contraseña: admin2026</p>
+                
+
+            
+                <a href="https://miguel-coronell.github.io/cv-logistica/" target="_blank" class="block text-center text-[9px] font-bold text-slate-300 hover:text-olive transition-colors">
+                    Desarrollado por <span class="text-slate-400">miguel coronell | © 2026 Todos los derechos reservados</span>
+                </a>
             </form>
         </div>
     </div>
@@ -136,6 +143,7 @@
 <!-- SIDEBAR DESKTOP -->
 <aside class="hidden lg:flex flex-col w-80 bg-white border-r border-slate-200 shadow-xl z-50 h-full">
     <div class="p-6 border-b border-slate-100">
+<!-- 
         <div class="flex items-center gap-4 mb-6">
             <div class="bg-olive p-1 rounded-2xl shadow-lg rotate-3 w-14 h-14 flex items-center justify-center overflow-hidden bg-white border-2 border-olive/20">
                 <img id="logo-mini-desktop" src="" alt="Logo" class="logo-mini hidden w-12 h-12">
@@ -146,6 +154,21 @@
                 <p class="text-[11px] font-extrabold text-slate-400 leading-none marca-slogan">Servicios Profesionales</p>
             </div>
         </div>
+-->
+<div class="flex items-center gap-4 mb-6">
+    <div class="shrink-0 bg-olive p-1 rounded-2xl shadow-lg rotate-3 w-14 h-14 flex items-center justify-center overflow-hidden bg-white border-2 border-olive/20">
+        <img id="logo-mini-desktop" src="" alt="Logo" class="logo-mini hidden w-12 h-12">
+        <i data-lucide="briefcase-business" class="w-8 h-8 text-olive logo-placeholder-icon"></i>
+    </div>
+    <div class="min-w-0">
+        
+        <h1 class="text-[14px] font-black text-slate-800 uppercase tracking-wide leading-snug mb-1 marca-nombre break-words">Mi Negocio</h1>
+        <p class="text-[12px] font-extrabold text-slate-500 leading-none marca-slogan">Servicios Profesionales</p>
+    </div>
+</div>
+
+
+
         <div class="bg-slate-50 p-4 rounded-2xl">
             <span class="block text-xs font-bold text-slate-400 uppercase">Total Proyecto</span>
             <div id="sideTotal" class="text-2xl font-black text-slate-900">$ 0</div>
@@ -162,51 +185,69 @@
         <button onclick="nav('pdf', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="file-check"></i> 6. Resumen y Cierre</button>
     </nav>
 <!-- PIE DEL SIDEBAR: SOPORTE Y CERRAR SESIÓN (solo escritorio) -->
-    <div class="p-4 border-t border-slate-100 space-y-2">
+    
+
+ <div class="p-4 border-t border-slate-100 space-y-2">
         <button onclick="abrirModalSoporte()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition-all font-bold">
             <i data-lucide="life-buoy" class="w-5 h-5"></i>
             <span class="text-sm">Ayuda / Soporte</span>
         </button>
         <button onclick="iniciarTour()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold">
-    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-    <span class="text-sm">Ver Tutorial</span>
-</button>
+            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+            <span class="text-sm">Ver Tutorial</span>
+        </button>
         <button onclick="cerrarSesion()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-bold">
             <i data-lucide="log-out" class="w-5 h-5"></i>
             <span class="text-sm">Cerrar Sesión</span>
         </button>
-    </div>
+
+
+        <a href="https://miguel-coronell.github.io/cv-logistica/" target="_blank" class="block text-center text-[10px] font-bold text-slate-400 hover:text-olive transition-colors">
+             Desarrollado por <span class="text-slate-600">miguel coronell</span>
+        </a>
+</div>
 </aside>
 
-
-
-
 <!-- HEADER MÓVIL -->
-<header class="lg:hidden sticky top-0 z-50 bg-white/90 backdrop-blur-md p-4 border-b border-gray-100 shadow-sm flex justify-between items-center">
-    <div class="flex items-center gap-3">
-        <button onclick="nav('empresa', document.querySelector('#desktop-nav button'))" class="bg-white p-1 rounded-xl shadow-md rotate-3 w-10 h-10 flex items-center justify-center overflow-hidden border-2 border-olive/20">
+<header class="lg:hidden sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+
+    <!-- Fila 1: Logo + Nombre + Slogan -->
+    <div class="flex items-center gap-3 px-4 pt-3 pb-2">
+        <button onclick="nav('empresa', document.querySelector('#desktop-nav button'))" class="shrink-0 bg-white p-1 rounded-xl shadow-md rotate-3 w-10 h-10 flex items-center justify-center overflow-hidden border-2 border-olive/20">
             <img id="logo-mini-mobile" src="" alt="Logo" class="logo-mini hidden w-8 h-8">
             <i data-lucide="briefcase-business" class="w-6 h-6 text-olive logo-placeholder-icon"></i>
         </button>
-        <div>
-            <h1 class="text-base font-black text-slate-800 uppercase tracking-widest leading-none marca-nombre">Mi Negocio</h1>
+<!--   
+        <div class="min-w-0 flex-1">
+            <h1 class="text-sm font-black text-slate-800 uppercase tracking-widest leading-tight marca-nombre truncate">Mi Negocio</h1>
+            <p class="text-[10px] font-bold text-slate-400 leading-tight marca-slogan truncate">Servicios Profesionales</p>
         </div>
-    </div>
-    <div class="bg-slate-50 px-3 py-1.5 rounded-xl text-right">
-        <div id="topTotal" class="text-lg font-black text-slate-900">$ 0</div>
-    </div>
-   <div class="flex items-center gap-2">
-        <button onclick="abrirModalSoporte()" class="flex items-center justify-center p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all shadow-sm">
-            <i data-lucide="life-buoy" class="w-4 h-4"></i>
-        </button>
+-->
+        <div class="min-w-0 flex-1">
+    <h1 class="text-sm font-black text-slate-800 uppercase tracking-wide leading-tight marca-nombre break-words line-clamp-2">Mi Negocio</h1>
+    <p class="text-[10px] font-bold text-slate-400 leading-tight marca-slogan truncate">Servicios Profesionales</p>
+</div>
 
-        <button onclick="iniciarTour()" class="flex items-center justify-center p-2.5 bg-olive/10 text-olive rounded-xl hover:bg-olive/20 transition-all shadow-sm">
-    <i data-lucide="graduation-cap" class="w-4 h-4"></i>
-</button>
-        <button onclick="cerrarSesion()" class="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all font-bold text-[10px] uppercase tracking-wider shadow-sm">
-            <span class="hidden md:inline">Cerrar Sesión</span>
-            <i data-lucide="log-out" class="w-4 h-4"></i>
-        </button>
+
+    </div>
+
+    <!-- Fila 2: Total + Botones -->
+    <div class="flex items-center justify-between gap-2 px-3 pb-2">
+        <div class="bg-slate-50 px-3 py-1 rounded-xl">
+            <div id="topTotal" class="text-xs font-black text-slate-900 whitespace-nowrap">$ 0</div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+            <button onclick="abrirModalSoporte()" class="flex items-center justify-center p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all shadow-sm">
+                <i data-lucide="life-buoy" class="w-4 h-4"></i>
+            </button>
+            <button onclick="iniciarTour()" class="flex items-center justify-center p-2 bg-olive/10 text-olive rounded-xl hover:bg-olive/20 transition-all shadow-sm">
+                <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+            </button>
+            <button onclick="cerrarSesion()" class="flex items-center gap-1 px-2 py-1.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all font-bold text-[9px] uppercase tracking-wider shadow-sm">
+                <span class="hidden md:inline">Cerrar Sesión</span>
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+        </div>
     </div>
 </header>
 
@@ -269,9 +310,11 @@
                     </div>
                 </div>
 
-                <button id="btn-guardar-empresa" onclick="guardarConfigEmpresa()" class="btn-primary w-full py-5 flex items-center justify-center gap-3 text-lg hover-dynamic">
-                    <i data-lucide="save"></i> Guardar Datos de la Empresa
-                </button>
+              <button id="btn-guardar-empresa" onclick="guardarConfigEmpresa()" class="btn-primary w-full py-3.5 lg:py-5 flex items-center justify-center gap-2 lg:gap-3 text-xs lg:text-lg hover-dynamic">
+    <i data-lucide="save" class="w-4 h-4 lg:w-5 lg:h-5"></i> Guardar Datos de la Empresa
+</button>
+                
+                <p id="footer-copyright-empresa" class="text-center text-[10px] font-bold text-slate-300 pt-2 lg:hidden">© 2026 Mi Negocio</p>
             </div>
         </section>
 

@@ -198,6 +198,13 @@ function guardarConfigEmpresa() {
 function actualizarMarcaEnUI() {
     document.querySelectorAll('.marca-nombre').forEach(el => el.innerText = EMPRESA.nombre);
     document.querySelectorAll('.marca-slogan').forEach(el => el.innerText = EMPRESA.slogan);
+     const anio = new Date().getFullYear();
+    const nombreCorto = EMPRESA.nombre || 'Mi Negocio';
+    const textoCopyright = `© ${anio} ${nombreCorto}`;
+    const footerDesktop = document.getElementById('footer-copyright-desktop');
+    const footerEmpresa = document.getElementById('footer-copyright-empresa');
+    if (footerDesktop) footerDesktop.innerText = textoCopyright;
+    if (footerEmpresa) footerEmpresa.innerText = textoCopyright;
 }
 
 function handleLogoUpload(input) {
@@ -919,7 +926,7 @@ doc.setFontSize(8);
     doc.text("NOTAS Y CONDICIONES:", 20, currentY + 7);
     doc.setFont(undefined, 'normal');
     doc.text(`• ${document.getElementById('label-tiempo').innerText}: ${document.getElementById('c_garantia').value} Días.`, 20, currentY + 12);
-    doc.text("• Los valores expresados están en moneda local (COP).", 20, currentY + 16);
+    doc.text("• Los valores expresados están en moneda local.", 20, currentY + 16);
     doc.text("• Sujeto a disponibilidad de inventario y agenda técnica.", 20, currentY + 20);
     if (document.getElementById('chk_anticipo').checked) {
         doc.text(`• Inicio: Anticipo de ${document.getElementById('monto_anticipo_final').innerText}`, 20, currentY + 24);
@@ -1210,7 +1217,7 @@ const TOUR_PASOS = [
       titulo: 'Materiales', texto: 'Agrega los materiales o insumos utilizados, con cantidad y precio.' },
     { seccion: 'fotos', selector: '#titulo-fotos-tour', icono: 'camera',
       titulo: 'Evidencia Fotográfica', texto: 'Sube fotos de respaldo. Se incluyen automáticamente como anexo en el PDF.' },
-    { seccion: 'firma', selector: '#titulo-firma-tour', icono: 'pen-tool',
+    { seccion: 'firma', selector: '#switch-firma', icono: 'pen-tool',
       titulo: 'Firma Digital', texto: 'Tú y tu cliente pueden firmar directamente desde la pantalla antes de generar el documento.' },
     { seccion: 'pdf', selector: '#titulo-dashboard-tour', icono: 'layout-dashboard',
       titulo: 'Resumen del Documento', texto: 'Aquí ves el total, el desglose y toda la información antes de generar el PDF.' },
