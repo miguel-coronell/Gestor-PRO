@@ -95,14 +95,61 @@ body {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 10px; color: #94a3b8;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border-radius: 20px; width: 56px; height: 56px; position: relative;
+    border-radius: 16px; width: 48px; height: 48px; position: relative;
     flex-shrink: 0;
 }
+
+
 .tab-btn.active {
     color: var(--olive); background: var(--olive-soft);
     transform: translateY(-10px);
-    box-shadow: 0 10px 15px -3px rgba(85, 107, 47, 0.1);
+    box-shadow: 0 20px 15px -3px rgba(85, 107, 47, 0.1);
 }
+
+/* ---- Menú Móvil: Scroll Horizontal Fluido ---- */
+#mobile-nav {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Hace que el deslizamiento sea nativo y suave en iOS */
+    scrollbar-width: none; /* Oculta la barra en Firefox */
+}
+
+/* Oculta la barra de scroll en Chrome, Safari y navegadores móviles Chromium */
+#mobile-nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* Opcional: Asegura que el último botón no quede pegado al borde derecho al scrollear hasta el final */
+#mobile-nav::after {
+    content: '';
+    min-width: 8px;
+    height: 1px;
+}
+
+
+/* ---- Corrección de Centrado (Menú Móvil) ---- */
+
+/* 1. Centra el icono y el texto DENTRO de cada botón */
+#mobile-nav .tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 58px; /* Un ancho uniforme evita que se apachurren */
+    text-align: center;
+}
+
+/* 2. Centra TODO el grupo de botones en la pantalla */
+/* (Si sobran espacio se centran; si faltan espacio, se scrollean) */
+#mobile-nav::before,
+#mobile-nav::after {
+    content: '';
+    margin: auto;
+}
+
+
+
+
+
 
 .tab-btn-desktop { position: relative; overflow: hidden; }
 .tab-btn-desktop.active { background: var(--olive-soft); color: var(--olive); border-right: 4px solid var(--olive); }

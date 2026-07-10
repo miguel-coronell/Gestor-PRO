@@ -173,9 +173,7 @@
         <button onclick="nav('cliente', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop active"><i data-lucide="user-circle"></i> 1. Datos Generales</button>
         <button onclick="nav('mo', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="cog"></i> 2. Servicios</button>
         <button onclick="nav('mat', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="package"></i> 3. Materiales</button>
-        <button onclick="nav('fotos', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="images"></i> 4. Evidencia Visual</button>
-        <button onclick="nav('firma', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="pen-tool"></i> 5. Firma Digital</button>
-        <button onclick="nav('pdf', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="file-check"></i> 6. Resumen y Cierre</button>
+        <button onclick="nav('pdf', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="file-check"></i> 4. Resumen y Cierre</button>
     </nav>
 <!-- PIE DEL SIDEBAR: SOPORTE Y CERRAR SESIÓN (solo escritorio) -->
     
@@ -437,53 +435,6 @@
             </button>
         </section>
 
-        <!-- 4. FOTOS -->
-        <section id="sec-fotos" class="app-section">
-            <div class="glass-card p-6 lg:p-8">
-                
-                <h2 id="titulo-fotos-tour" class="font-black text-slate-800 uppercase tracking-widest text-lg mb-2">Evidencia Visual</h2>
-                <p class="text-sm text-slate-500 mb-6">Adjunta fotografías del estado inicial o avances.</p>
-                <div id="cont-fotos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
-                <label class="glass-card w-full py-16 flex flex-col items-center justify-center border-2 border-dashed border-olive/40 cursor-pointer hover:bg-olive/5 transition-all rounded-[2rem] hover-dynamic">
-                    <input type="file" class="hidden" multiple accept="image/*" onchange="handlePhotos(this)">
-                    <div class="bg-olive/10 p-4 rounded-full mb-4">
-                        <i data-lucide="camera" class="w-10 h-10 text-olive"></i>
-                    </div>
-                    <span class="text-sm font-black uppercase text-slate-700 tracking-widest">Click para Subir Fotos</span>
-                </label>
-            </div>
-        </section>
-
-        <!-- 5. FIRMA -->
-        <section id="sec-firma" class="app-section">
-            <div class="glass-card p-6 lg:p-8 text-center space-y-6">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                    <div class="text-left">
-                       
-                        <h2 id="titulo-firma-tour" class="font-black text-slate-800 uppercase tracking-widest text-lg">Aprobación del Documento</h2>
-                        <p class="text-sm text-slate-500 mt-1">Capture la firma de ambas partes.</p>
-                    </div>
-                    <div class="flex items-center bg-slate-50 p-2 rounded-2xl border border-slate-100 mx-auto md:mx-0 w-fit">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="switch-firma" class="sr-only peer" onchange="cambiarFirmante()">
-                            <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--olive)]"></div>
-                            <span id="label-firmante" class="ml-3 text-[10px] font-black text-slate-600 uppercase tracking-widest">Firma: EMPRESA</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="relative w-full max-w-lg mx-auto bg-white rounded-2xl border-2 border-dashed border-slate-300 overflow-hidden shadow-inner touch-none">
-                    <canvas id="canvas-firma" class="w-full h-64 cursor-crosshair"></canvas>
-                    <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-4 pointer-events-none">
-                        <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">Área de Firma</span>
-                    </div>
-                </div>
-                <div class="flex justify-center gap-4 max-w-lg mx-auto">
-                    <button onclick="limpiarCanvas()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl flex items-center justify-center gap-2 transition-all">
-                        <i data-lucide="eraser" class="w-4 h-4"></i> Limpiar Firma Actual
-                    </button>
-                </div>
-            </div>
-        </section>
 
         <!-- 6. RESUMEN Y CIERRE -->
         <section id="sec-pdf" class="app-section">
@@ -502,6 +453,12 @@
                         <span id="badge-items-resumen" class="rubro-badge"><i data-lucide="list-checks" class="w-3.5 h-3.5"></i> 0 items</span>
                     </div>
                 </div>
+
+
+
+
+
+
 
                 <!-- Fila de tarjetas KPI -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -563,11 +520,88 @@
                     </div>
                 </div>
 
+
+
+<div class="glass-card p-6 lg:p-8 space-y-6 mb-6">
+    <h3 class="font-black text-lg text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-4">Opciones Adicionales</h3>
+
+    <div id="tour-switch-fotos" class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 transition-all hover-dynamic">
+        <div class="flex items-center gap-4">
+            <div class="bg-olive/10 p-3 rounded-xl shadow-sm"><i data-lucide="camera" class="w-5 h-5 text-olive"></i></div>
+            <div>
+                <p class="text-sm font-black text-slate-800 uppercase">Evidencia Fotográfica</p>
+                <p class="text-xs text-slate-500 font-medium">Adjunta fotografías del estado inicial o avances.</p>
+            </div>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+            <input type="checkbox" id="chk_evidencia" class="sr-only peer" onchange="toggleEvidencia()">
+            <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--olive)]"></div>
+        </label>
+    </div>
+    
+    <div id="panel_evidencia" class="hidden pt-4 space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div id="cont-fotos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4"></div>
+        <label class="w-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-olive/40 cursor-pointer hover:bg-olive/5 transition-all rounded-[2rem] hover-dynamic bg-white">
+            <input type="file" class="hidden" multiple accept="image/*" onchange="handlePhotos(this)">
+            <div class="bg-olive/10 p-4 rounded-full mb-3"><i data-lucide="camera" class="w-8 h-8 text-olive"></i></div>
+            <span class="text-sm font-black uppercase text-slate-700 tracking-widest">Click para Subir Fotos</span>
+        </label>
+    </div>
+
+    <div id="tour-switch-firma" class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 transition-all hover-dynamic">
+        <div class="flex items-center gap-4">
+            <div class="bg-olive/10 p-3 rounded-xl shadow-sm"><i data-lucide="pen-tool" class="w-5 h-5 text-olive"></i></div>
+            <div>
+                <p class="text-sm font-black text-slate-800 uppercase">Requerir Firma Digital</p>
+                <p class="text-xs text-slate-500 font-medium">Habilita el lienzo para la firma de ambas partes.</p>
+            </div>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+            <input type="checkbox" id="chk_firma_modulo" class="sr-only peer" onchange="toggleFirmaModulo()">
+            <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--olive)]"></div>
+        </label>
+    </div>
+
+    <div id="panel_firma" class="hidden pt-4 space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center bg-white p-2 rounded-2xl border border-slate-200 mx-auto md:mx-0 w-fit shadow-sm">
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="switch-firma" class="sr-only peer" onchange="cambiarFirmante()">
+                    <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--olive)]"></div>
+                    <span id="label-firmante" class="ml-3 text-[10px] font-black text-slate-600 uppercase tracking-widest">Firma: EMPRESA</span>
+                </label>
+            </div>
+            <button onclick="limpiarCanvas()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl flex items-center justify-center gap-2 transition-all text-xs uppercase">
+                <i data-lucide="eraser" class="w-4 h-4"></i> Limpiar
+            </button>
+        </div>
+        <div class="relative w-full max-w-lg mx-auto bg-white rounded-2xl border-2 border-dashed border-slate-300 overflow-hidden shadow-inner touch-none">
+            <canvas id="canvas-firma" class="w-full h-64 cursor-crosshair"></canvas>
+            <div class="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none">
+                <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">Área de Firma</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <!-- Acciones -->
                 <div class="glass-card p-6 lg:p-10 space-y-6">
                     <div id="Generar-PDF">
-                        <button onclick="abrirModalEnviarDocumento()" class="btn-primary w-full py-5 text-base flex items-center justify-center gap-3 hover-dynamic">
-                            <i data-lucide="send" class="w-6 h-6"></i> Enviar / Descargar Documento
+                        <button onclick="abrirModalEnviarDocumento()" class="btn-primary w-full py-2 text-base flex items-center justify-center gap-3 hover-dynamic">
+                            <i data-lucide="send" class="w-6 h-6"></i> Enviar / Descargar
                         </button>
                     </div>
 
@@ -582,14 +616,11 @@
 
     </div>
 </main>
-
-<nav id="mobile-nav" class="hidden lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 px-2 py-3 pb-6 flex justify-between items-center gap-1 overflow-x-auto z-[100] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+    <nav id="mobile-nav" class="hidden lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 px-4 py-3 pb-6 flex justify-start items-center gap-2 overflow-x-auto z-[100] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
     <button onclick="nav('empresa', this)" class="tab-btn" id="tab-btn-empresa"><i data-lucide="building-2"></i></button>
     <button onclick="nav('cliente', this)" class="tab-btn active"><i data-lucide="user-circle"></i></button>
     <button onclick="nav('mo', this)" class="tab-btn"><i data-lucide="cog"></i></button>
     <button onclick="nav('mat', this)" class="tab-btn"><i data-lucide="package"></i></button>
-    <button onclick="nav('fotos', this)" class="tab-btn"><i data-lucide="images"></i></button>
-    <button onclick="nav('firma', this)" class="tab-btn"><i data-lucide="pen-tool"></i></button>
     <button onclick="nav('pdf', this)" class="tab-btn"><i data-lucide="file-check"></i></button>
 </nav>
 

@@ -1649,29 +1649,28 @@ function cerrarAvisoEmpresaMovil() {
 // ---------------------------------------------------------------------
 const TOUR_PASOS = [
     { seccion: 'cliente', selector: '#mobile-header-actions, #desktop-header-actions', icono: 'graduation-cap',
-      titulo: 'Accesos Rápidos', texto: 'Aquí siempre tienes a la mano: Ayuda/Soporte si algo falla, Ver Tutorial para repetir esta guía cuando quieras, y Cerrar Sesión para salir de la app de forma segura.' },
+      titulo: 'Accesos Rápidos', texto: 'Aquí siempre tienes a la mano: Ayuda/Soporte, el Tutorial y la opción de Cerrar Sesión de forma segura.' },
     { seccion: 'empresa', selector: '#emp_nombre', icono: 'building-2',
-      titulo: 'Tu Empresa', texto: 'Configura tu logo, nombre y datos de contacto. Se usan automáticamente en cada PDF que generes.' },
+      titulo: 'Tu Empresa', texto: 'Configura tu logo, nombre y datos de contacto. Se usan automáticamente en cada PDF.' },
     { seccion: 'cliente', selector: '#c_categoria', icono: 'layout-grid',
-      titulo: 'Rubro de tu Negocio', texto: 'Elige tu rubro. Los campos de Servicios y Materiales se adaptan según lo que selecciones aquí.' },
+      titulo: 'Rubro de tu Negocio', texto: 'Elige tu rubro. Los campos de Servicios y Materiales se adaptan según tu elección.' },
     { seccion: 'cliente', selector: '#c_nombre', icono: 'user',
-      titulo: 'Datos del Cliente', texto: 'Registra el nombre, teléfono y correo de tu cliente para el documento y el envío.' },
-    { seccion: 'cliente', selector: '#c_tipo', icono: 'file-text',
-      titulo: 'Tipo de Documento', texto: 'Elige si vas a generar Cotización, Factura, Presupuesto u otro tipo de documento.' },
+      titulo: 'Datos del Cliente', texto: 'Registra la información de tu cliente para generar el documento.' },
     { seccion: 'mo', selector: '#sec-mo', icono: 'cog',
       titulo: 'Servicios', texto: 'Agrega aquí los servicios o mano de obra que vas a cobrar.' },
     { seccion: 'mat', selector: '#sec-mat', icono: 'package',
-      titulo: 'Materiales', texto: 'Agrega los materiales o insumos utilizados, con cantidad y precio.' },
-    { seccion: 'fotos', selector: '#titulo-fotos-tour', icono: 'camera',
-      titulo: 'Evidencia Fotográfica', texto: 'Sube fotos de respaldo. Se incluyen automáticamente como anexo en el PDF.' },
-    { seccion: 'firma', selector: '#switch-firma', icono: 'pen-tool',
-      titulo: 'Firma Digital', texto: 'Tú y tu cliente pueden firmar directamente desde la pantalla antes de generar el documento.' },
+      titulo: 'Materiales', texto: 'Agrega los materiales o insumos utilizados, detallando cantidad y precio.' },
+    
+    // NUEVOS PASOS ACTUALIZADOS
+    { seccion: 'pdf', selector: '#tour-switch-fotos', icono: 'camera',
+      titulo: 'Evidencia (Opcional)', texto: 'Si necesitas respaldar tu trabajo con fotos, activa este interruptor para cargarlas.' },
+    { seccion: 'pdf', selector: '#tour-switch-firma', icono: 'pen-tool',
+      titulo: 'Firmas (Opcional)', texto: 'Si el documento requiere tu firma o la del cliente, activa esta opción para habilitar el lienzo digital.' },
     { seccion: 'pdf', selector: '#titulo-dashboard-tour', icono: 'layout-dashboard',
-      titulo: 'Resumen del Documento', texto: 'Aquí ves el total, el desglose y toda la información antes de generar el PDF.' },
-    { seccion: 'pdf', selector: '#Generar-PDF', icono: 'wallet',
-      titulo: 'Generar y Enviar', texto: 'Con un toque generas el PDF, o lo envías directo por WhatsApp o correo a tu cliente.' },
+      titulo: 'Resumen del Documento', texto: 'Aquí ves el total, el desglose y toda la información consolidada.' },
+    { seccion: 'pdf', selector: '#Generar-PDF', icono: 'send',
+      titulo: 'Generar y Enviar', texto: 'Con un toque generas el PDF, o lo envías directo por WhatsApp o correo. ¡Listo!' }
 ];
-
 let tourPasoActual = 0;
 let tourListenersActivos = false;
 
@@ -1763,6 +1762,13 @@ function saltarBienvenidaTour() {
 function cerrarSpotlightTutorial() {
     document.body.classList.remove('tour-activo');
     document.getElementById('tour-wrapper').innerHTML = '';
+
+    // --- NUEVO: Redirigir a "Mi Empresa" si decidieron saltar el tour ---
+    if (!datosEmpresaGuardados()) {
+        const btnNav = document.querySelector(`#desktop-nav button[onclick*="'empresa'"]`) || 
+                       document.querySelector(`.tab-btn[onclick*="'empresa'"]`);
+        nav('empresa', btnNav);
+    }
 }
 
 function mostrarPasoTour() {
@@ -1872,6 +1878,24 @@ function finalizarTour() {
     document.querySelector('main')?.removeEventListener('scroll', reposicionarTourActual, true);
     tourListenersActivos = false;
     localStorage.setItem('tour_completado', '1');
+
+    // --- NUEVO: Redirigir a "Mi Empresa" al terminar el tour ---
+    // Verificamos si aún no han guardado los datos para llevarlos directamente allí
+    if (!datosEmpresaGuardados()) {
+        const btnNav = document.querySelector(`#desktop-nav button[onclick*="'empresa'"]`) || 
+                       document.querySelector(`.tab-btn[onclick*="'empresa'"]`);
+        nav('empresa', btnNav);
+        
+        // Opcional: Mostrar un pequeño aviso animado para indicarles qué hacer
+        setTimeout(() => {
+            const inputNombre = document.getElementById('emp_nombre');
+            if (inputNombre) {
+                inputNombre.focus({ preventScroll: true });
+                inputNombre.classList.add('campo-invalido-shake');
+                setTimeout(() => inputNombre.classList.remove('campo-invalido-shake'), 400);
+            }
+        }, 400);
+    }
 }
 function verificarYIniciarTour() {
     if (!localStorage.getItem('tour_completado')) setTimeout(iniciarTour, 400);
@@ -2003,4 +2027,31 @@ function togglePassword() {
     input.type = isPassword ? 'text' : 'password';
     icon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
     lucide.createIcons();
+}
+
+// Oculta/Muestra las fotos y limpia el array si se desactiva
+function toggleEvidencia() {
+    const isChecked = document.getElementById('chk_evidencia').checked;
+    document.getElementById('panel_evidencia').classList.toggle('hidden', !isChecked);
+    
+    if (!isChecked) {
+        FOTOS_DB = [];
+        renderPhotos();
+    }
+}
+
+// Oculta/Muestra el panel de firmas y limpia el lienzo si se desactiva
+function toggleFirmaModulo() {
+    const isChecked = document.getElementById('chk_firma_modulo').checked;
+    document.getElementById('panel_firma').classList.toggle('hidden', !isChecked);
+    
+    if (isChecked) {
+        // Le damos un respiro al DOM para que pinte el contenedor antes de medir el canvas
+        setTimeout(resizeCanvas, 300);
+    } else {
+        limpiarCanvas();
+        // Forzamos la limpieza de las variables globales de firma
+        firmaEmpresa = null;
+        firmaCliente = null;
+    }
 }
