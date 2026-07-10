@@ -12,17 +12,6 @@
 }
 
 
-/*
-:root {
-    --olive: #556B2F;
-    --olive-light: #7b9449;
-    --olive-dark: #3e4f22;
-    --olive-soft: #f4f7ed;
-    --slate: #1e293b;
-    --slate-light: #64748b;
-    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
-}
-*/
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--bg-gradient);
@@ -107,6 +96,7 @@ body {
     padding: 10px; color: #94a3b8;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border-radius: 20px; width: 56px; height: 56px; position: relative;
+    flex-shrink: 0;
 }
 .tab-btn.active {
     color: var(--olive); background: var(--olive-soft);
@@ -271,3 +261,43 @@ body {
 
 /* Durante el tour, las secciones cambian sin animación (para poder medir posición al instante) */
 body.tour-activo .active-section { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+/* ---- Campos obligatorios sin completar (validación antes de generar PDF) ---- */
+.campo-invalido, select.campo-invalido, .input-dynamic.campo-invalido {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
+    background-color: #fef2f2 !important;
+}
+@keyframes campoInvalidoShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+}
+.campo-invalido-shake { animation: campoInvalidoShake 0.35s ease; }
+
+.item-campo-pendiente {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    transition: all 0.2s ease;
+}
+.item-campo-pendiente:hover { background: #fee2e2; transform: translateX(3px); }
+
+/* ---- Ventana de bienvenida al Tour (mismo formato que tour-popover) ---- */
+.tour-welcome-overlay {
+    position: fixed; inset: 0; z-index: 306;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    animation: tourPopIn 0.25s ease;
+}

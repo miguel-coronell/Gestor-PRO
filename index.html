@@ -92,6 +92,7 @@
                     <div class="relative group/input">
                         <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors login-icon-focus"></i>
                         <input type="text" id="user-input" placeholder="Usuario" required
+                               autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"
                                class="w-full pl-12 pr-5 py-4 bg-slate-100/50 border-2 border-slate-200 rounded-2xl outline-none transition-all placeholder:text-slate-400 text-slate-700 login-input">
                     </div>
                 </div>
@@ -128,7 +129,10 @@
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
                 </button>
 
-                <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-wider pt-2">Usuario demo: admin&nbsp;/&nbsp;Contraseña: admin2026</p>
+                <div class="bg-olive-soft border-2 border-dashed border-olive/30 rounded-2xl p-3 mt-2 text-center">
+                    <p class="text-[10px] font-black text-olive uppercase tracking-wider">¿Aún no tienes cuenta? Prueba nuestra versión demo</p>
+                    <p class="text-xs font-bold text-slate-600 mt-1">Usuario: <span class="text-olive-dark">admin</span> &nbsp;/&nbsp; Contraseña: <span class="text-olive-dark">admin2026</span></p>
+                </div>
                 
 
             
@@ -143,18 +147,7 @@
 <!-- SIDEBAR DESKTOP -->
 <aside class="hidden lg:flex flex-col w-80 bg-white border-r border-slate-200 shadow-xl z-50 h-full">
     <div class="p-6 border-b border-slate-100">
-<!-- 
-        <div class="flex items-center gap-4 mb-6">
-            <div class="bg-olive p-1 rounded-2xl shadow-lg rotate-3 w-14 h-14 flex items-center justify-center overflow-hidden bg-white border-2 border-olive/20">
-                <img id="logo-mini-desktop" src="" alt="Logo" class="logo-mini hidden w-12 h-12">
-                <i data-lucide="briefcase-business" class="w-8 h-8 text-olive logo-placeholder-icon"></i>
-            </div>
-            <div>
-                <h1 class="text-lg font-black text-slate-800 uppercase tracking-widest leading-none mb-1 marca-nombre">Mi Negocio</h1>
-                <p class="text-[11px] font-extrabold text-slate-400 leading-none marca-slogan">Servicios Profesionales</p>
-            </div>
-        </div>
--->
+
 <div class="flex items-center gap-4 mb-6">
     <div class="shrink-0 bg-olive p-1 rounded-2xl shadow-lg rotate-3 w-14 h-14 flex items-center justify-center overflow-hidden bg-white border-2 border-olive/20">
         <img id="logo-mini-desktop" src="" alt="Logo" class="logo-mini hidden w-12 h-12">
@@ -178,7 +171,7 @@
     <nav class="flex-1 overflow-y-auto p-4 space-y-2" id="desktop-nav">
         <button onclick="nav('empresa', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="building-2"></i> 0. Mi Empresa</button>
         <button onclick="nav('cliente', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop active"><i data-lucide="user-circle"></i> 1. Datos Generales</button>
-        <button onclick="nav('mo', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="hammer"></i> 2. Servicios</button>
+        <button onclick="nav('mo', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="cog"></i> 2. Servicios</button>
         <button onclick="nav('mat', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="package"></i> 3. Materiales</button>
         <button onclick="nav('fotos', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="images"></i> 4. Evidencia Visual</button>
         <button onclick="nav('firma', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="pen-tool"></i> 5. Firma Digital</button>
@@ -187,16 +180,16 @@
 <!-- PIE DEL SIDEBAR: SOPORTE Y CERRAR SESIÓN (solo escritorio) -->
     
 
- <div class="p-4 border-t border-slate-100 space-y-2">
-        <button onclick="abrirModalSoporte()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition-all font-bold">
+ <div class="p-4 border-t border-slate-100 space-y-2" id="desktop-header-actions">
+        <button onclick="abrirModalSoporte()" id="btn-ayuda-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition-all font-bold">
             <i data-lucide="life-buoy" class="w-5 h-5"></i>
             <span class="text-sm">Ayuda / Soporte</span>
         </button>
-        <button onclick="iniciarTour()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold">
+        <button onclick="iniciarTour()" id="btn-tutorial-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold">
             <i data-lucide="graduation-cap" class="w-5 h-5"></i>
             <span class="text-sm">Ver Tutorial</span>
         </button>
-        <button onclick="cerrarSesion()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-bold">
+        <button onclick="cerrarSesion()" id="btn-cerrar-sesion-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-bold">
             <i data-lucide="log-out" class="w-5 h-5"></i>
             <span class="text-sm">Cerrar Sesión</span>
         </button>
@@ -217,12 +210,7 @@
             <img id="logo-mini-mobile" src="" alt="Logo" class="logo-mini hidden w-8 h-8">
             <i data-lucide="briefcase-business" class="w-6 h-6 text-olive logo-placeholder-icon"></i>
         </button>
-<!--   
-        <div class="min-w-0 flex-1">
-            <h1 class="text-sm font-black text-slate-800 uppercase tracking-widest leading-tight marca-nombre truncate">Mi Negocio</h1>
-            <p class="text-[10px] font-bold text-slate-400 leading-tight marca-slogan truncate">Servicios Profesionales</p>
-        </div>
--->
+
         <div class="min-w-0 flex-1">
     <h1 class="text-sm font-black text-slate-800 uppercase tracking-wide leading-tight marca-nombre break-words line-clamp-2">Mi Negocio</h1>
     <p class="text-[10px] font-bold text-slate-400 leading-tight marca-slogan truncate">Servicios Profesionales</p>
@@ -236,14 +224,14 @@
         <div class="bg-slate-50 px-3 py-1 rounded-xl">
             <div id="topTotal" class="text-xs font-black text-slate-900 whitespace-nowrap">$ 0</div>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-            <button onclick="abrirModalSoporte()" class="flex items-center justify-center p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all shadow-sm">
+        <div class="flex items-center gap-2 shrink-0" id="mobile-header-actions">
+            <button onclick="abrirModalSoporte()" id="btn-ayuda-movil" class="flex items-center justify-center p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all shadow-sm">
                 <i data-lucide="life-buoy" class="w-4 h-4"></i>
             </button>
-            <button onclick="iniciarTour()" class="flex items-center justify-center p-2 bg-olive/10 text-olive rounded-xl hover:bg-olive/20 transition-all shadow-sm">
+            <button onclick="iniciarTour()" id="btn-tutorial-movil" class="flex items-center justify-center p-2 bg-olive/10 text-olive rounded-xl hover:bg-olive/20 transition-all shadow-sm">
                 <i data-lucide="graduation-cap" class="w-4 h-4"></i>
             </button>
-            <button onclick="cerrarSesion()" class="flex items-center gap-1 px-2 py-1.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all font-bold text-[9px] uppercase tracking-wider shadow-sm">
+            <button onclick="cerrarSesion()" id="btn-cerrar-sesion-movil" class="flex items-center gap-1 px-2 py-1.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all font-bold text-[9px] uppercase tracking-wider shadow-sm">
                 <span class="hidden md:inline">Cerrar Sesión</span>
                 <i data-lucide="log-out" class="w-4 h-4"></i>
             </button>
@@ -330,7 +318,7 @@
                     <label class="text-xs font-black text-olive ml-2 uppercase flex items-center gap-2">
                         <i data-lucide="layout-grid" class="w-4 h-4"></i> Rubro / Categoría del Negocio
                     </label>
-                    <select id="c_categoria" class="input-dynamic" onchange="cambiarCategoria(this.value)"></select>
+                    <select id="c_categoria" class="input-dynamic" onchange="cambiarCategoria(this.value)" data-req="true" data-label="Rubro / Categoría del Negocio" data-nav="cliente"></select>
                     <p class="text-[11px] text-slate-400 ml-2">Al elegir el rubro, las opciones de Servicios y Materiales se adaptan automáticamente.</p>
 
                     <div id="cont-categoria-personalizada" class="hidden space-y-2 pt-2">
@@ -345,7 +333,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2 md:col-span-2">
                         <label class="text-xs font-black text-slate-500 ml-2 uppercase">Nombre del Cliente / Empresa</label>
-                        <input type="text" id="c_nombre" class="input-dynamic" placeholder="Ej: Constructora ABC S.A.S.">
+                        <input type="text" id="c_nombre" class="input-dynamic" placeholder="Ej: Constructora ABC S.A.S." data-req="true" data-label="Nombre del Cliente / Empresa" data-nav="cliente">
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-black text-slate-500 ml-2 uppercase">NIT / Documento</label>
@@ -353,7 +341,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-black text-slate-500 ml-2 uppercase">Teléfono</label>
-                        <input type="tel" id="c_tel" class="input-dynamic w-full" placeholder="300...">
+                        <input type="tel" id="c_tel" class="input-dynamic w-full" placeholder="300..." data-req="true" data-label="Teléfono del Cliente" data-nav="cliente">
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-black text-slate-500 ml-2 uppercase">Correo Electrónico</label>
@@ -361,18 +349,22 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-black text-slate-500 ml-2 uppercase">Dirección / Obra</label>
-                        <input type="text" id="c_obra" class="input-dynamic" placeholder="Ciudad, Barrio o Dirección exacta">
+                        <input type="text" id="c_obra" class="input-dynamic" placeholder="Ciudad, Barrio o Dirección exacta" data-req="true" data-label="Dirección / Obra" data-nav="cliente">
                     </div>
 
                     <div class="md:col-span-2 bg-slate-50 border border-slate-200 p-5 rounded-[2rem] grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div class="space-y-2">
                             <label class="text-xs font-black text-olive ml-2 uppercase">Tipo Documento</label>
-                            <select id="c_tipo" class="input-dynamic font-bold" onchange="toggleFacturaField()">
+                            <select id="c_tipo" class="input-dynamic font-bold" onchange="toggleFacturaField()" data-req="true" data-label="Tipo de Documento" data-nav="cliente">
+                                <option value="" disabled selected>-- Seleccionar --</option>
                                 <option value="COTIZACIÓN">COTIZACIÓN</option>
                                 <option value="FACTURA">FACTURA</option>
                                 <option value="PRESUPUESTO">PRESUPUESTO</option>
                                 <option value="CUENTA COBRO">CUENTA COBRO</option>
                                 <option value="ORDEN DE TRABAJO">ORDEN DE TRABAJO</option>
+                                <option value="RECIBO DE CAJA">RECIBO DE CAJA</option>
+                                <option value="NOTA DE ENTREGA">NOTA DE ENTREGA</option>
+                                <option value="CONTRATO DE SERVICIO">CONTRATO DE SERVICIO</option>
                             </select>
                         </div>
                         <div class="space-y-2">
@@ -381,7 +373,7 @@
                         </div>
                         <div id="contenedor-num-factura" class="space-y-2 hidden">
                             <label class="text-xs font-black text-red-600 ml-2 uppercase">Número / Folio</label>
-                            <input type="text" id="c_num_factura" placeholder="Ej: FAC-001" class="input-dynamic font-bold border-red-200 focus:border-red-500">
+                            <input type="text" id="c_num_factura" placeholder="Ej: FAC-001" class="input-dynamic font-bold border-red-200 focus:border-red-500" data-req="true" data-label="Número / Folio del Documento" data-nav="cliente">
                         </div>
                     </div>
                 </div>
@@ -515,7 +507,7 @@
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="kpi-card">
                         <div class="flex items-center gap-2 mb-3">
-                            <div class="bg-olive/10 p-2 rounded-xl"><i data-lucide="hammer" class="w-4 h-4 text-olive"></i></div>
+                            <div class="bg-olive/10 p-2 rounded-xl"><i data-lucide="cog" class="w-4 h-4 text-olive"></i></div>
                             <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Servicios</span>
                         </div>
                         <div id="kpi-total-servicios" class="text-xl lg:text-2xl font-black text-slate-800">$ 0</div>
@@ -573,16 +565,9 @@
 
                 <!-- Acciones -->
                 <div class="glass-card p-6 lg:p-10 space-y-6">
-                    <div id="Generar-PDF"class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <button onclick="generarPDF()" class="btn-primary w-full py-5 text-base flex items-center justify-center gap-3 hover-dynamic md:col-span-3">
-                            <i data-lucide="file-check-2" class="w-6 h-6"></i> Generar PDF
-                        </button>
-                        <button onclick="enviarWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20b858] text-white rounded-2xl py-4 font-bold text-sm uppercase flex items-center justify-center gap-3 shadow-lg shadow-green-200/50 transition-all hover-dynamic md:col-span-1 lg:col-span-2">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-8 h-8 sm:w-10 sm:h-10" alt="WhatsApp">
-                            <span>WhatsApp</span>
-                        </button>
-                        <button onclick="enviarEmail()" class="w-full bg-slate-800 hover:bg-slate-700 text-white rounded-2xl py-4 font-bold text-sm uppercase flex items-center justify-center gap-3 shadow-lg shadow-slate-200/50 transition-all hover-dynamic">
-                            <i data-lucide="mail" class="w-5 h-5"></i> Enviar por Correo
+                    <div id="Generar-PDF">
+                        <button onclick="abrirModalEnviarDocumento()" class="btn-primary w-full py-5 text-base flex items-center justify-center gap-3 hover-dynamic">
+                            <i data-lucide="send" class="w-6 h-6"></i> Enviar / Descargar Documento
                         </button>
                     </div>
 
@@ -598,9 +583,10 @@
     </div>
 </main>
 
-<nav id="mobile-nav" class="hidden lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 px-2 py-3 pb-6 flex justify-between items-center z-[100] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+<nav id="mobile-nav" class="hidden lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 px-2 py-3 pb-6 flex justify-between items-center gap-1 overflow-x-auto z-[100] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+    <button onclick="nav('empresa', this)" class="tab-btn" id="tab-btn-empresa"><i data-lucide="building-2"></i></button>
     <button onclick="nav('cliente', this)" class="tab-btn active"><i data-lucide="user-circle"></i></button>
-    <button onclick="nav('mo', this)" class="tab-btn"><i data-lucide="hammer"></i></button>
+    <button onclick="nav('mo', this)" class="tab-btn"><i data-lucide="cog"></i></button>
     <button onclick="nav('mat', this)" class="tab-btn"><i data-lucide="package"></i></button>
     <button onclick="nav('fotos', this)" class="tab-btn"><i data-lucide="images"></i></button>
     <button onclick="nav('firma', this)" class="tab-btn"><i data-lucide="pen-tool"></i></button>
@@ -646,6 +632,61 @@
         </div>
     </div>
 </div>
+<!-- MODAL DE CAMPOS PENDIENTES POR COMPLETAR -->
+<div id="modal-campos-pendientes" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+    <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-8 relative max-h-[85vh] overflow-y-auto">
+        <button onclick="cerrarModalCamposPendientes()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-red-50">
+            <i data-lucide="clipboard-list" class="w-7 h-7 text-red-500"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-1">Faltan datos por completar</h3>
+        <p class="text-sm text-slate-500 mb-6">Antes de generar el documento, completa los siguientes campos. Toca uno para ir directo a él.</p>
+        <div id="lista-campos-pendientes" class="space-y-2 mb-2"></div>
+    </div>
+</div>
+
+<!-- MODAL: ELEGIR CÓMO ENVIAR / DESCARGAR EL DOCUMENTO -->
+<div id="modal-enviar-documento" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+    <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-8 relative max-h-[85vh] overflow-y-auto">
+        <button onclick="cerrarModalEnviarDocumento()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-olive-soft">
+            <i data-lucide="send" class="w-7 h-7 text-olive"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-1">¿Cómo quieres entregar el documento?</h3>
+        <p class="text-sm text-slate-500 mb-6">Elige una opción. Puedes volver a este mismo lugar cuando quieras usar otra vía de envío.</p>
+
+        <div class="space-y-3">
+            <button onclick="accionEnviarDocumento('pdf')" class="w-full flex items-center gap-4 text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-olive hover:bg-olive-soft transition-all">
+                <div class="bg-olive/10 p-3 rounded-xl shrink-0"><i data-lucide="file-check-2" class="w-5 h-5 text-olive"></i></div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-black text-sm text-slate-800">Generar PDF</p>
+                    <p class="text-[11px] text-slate-500 font-medium leading-snug">Descarga el documento en tu dispositivo, listo para guardar o imprimir.</p>
+                </div>
+            </button>
+
+            <button onclick="accionEnviarDocumento('whatsapp')" class="w-full flex items-center gap-4 text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-[#25D366] hover:bg-green-50 transition-all">
+                <div class="bg-green-100 p-3 rounded-xl shrink-0"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-5 h-5" alt="WhatsApp"></div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-black text-sm text-slate-800">Enviar por WhatsApp</p>
+                    <p class="text-[11px] text-slate-500 font-medium leading-snug">Abre WhatsApp con un mensaje listo para tu cliente.</p>
+                </div>
+            </button>
+
+            <button onclick="accionEnviarDocumento('email')" class="w-full flex items-center gap-4 text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-slate-800 hover:bg-slate-50 transition-all">
+                <div class="bg-slate-100 p-3 rounded-xl shrink-0"><i data-lucide="mail" class="w-5 h-5 text-slate-700"></i></div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-black text-sm text-slate-800">Enviar por Correo</p>
+                    <p class="text-[11px] text-slate-500 font-medium leading-snug">Abre tu app de correo con el mensaje pre-armado para tu cliente.</p>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Contenedor de la notificación flotante móvil "Configura tu empresa" (se rellena desde script.js) -->
 <div id="toast-aviso-empresa-wrapper"></div>
 

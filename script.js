@@ -113,6 +113,151 @@ const CATEGORIAS = {
             "Cinta de Embalaje", "Seguro de Carga", "Mantenimiento Vehicular"
         ]
     },
+    gastronomia: {
+        label: "Gastronomía y Alimentos",
+        icon: "utensils",
+        servicios: [
+            "Servicio de Chef a Domicilio", "Preparación de Banquetes", "Catering Corporativo",
+            "Repostería y Pastelería", "Asesoría en Menú", "Montaje de Buffet",
+            "Servicio de Meseros", "Producción de Eventos Gastronómicos", "Delivery / Entrega a Domicilio",
+            "Decoración de Mesas Dulces"
+        ],
+        materiales: [
+            "Insumos de Cocina", "Empaques para Alimentos", "Vajilla Desechable",
+            "Bebidas y Licores", "Cubiertos Desechables", "Manteles y Servilletas",
+            "Gas para Cocción", "Envases Térmicos"
+        ]
+    },
+    contabilidad: {
+        label: "Contabilidad y Finanzas",
+        icon: "calculator",
+        servicios: [
+            "Declaración de Renta", "Contabilidad Mensual", "Nómina y Prestaciones Sociales",
+            "Asesoría Tributaria", "Revisoría Fiscal", "Constitución de Empresas",
+            "Auditoría Financiera", "Elaboración de Estados Financieros", "Conciliación Bancaria",
+            "Facturación Electrónica"
+        ],
+        materiales: [
+            "Licencia de Software Contable", "Papelería Fiscal", "Certificados Digitales",
+            "Firma Electrónica", "Resmas de Papel", "Carpetas de Archivo"
+        ]
+    },
+    educacion: {
+        label: "Educación y Capacitación",
+        icon: "graduation-cap",
+        servicios: [
+            "Clases Particulares", "Talleres y Capacitaciones", "Tutorías Académicas",
+            "Cursos en Línea", "Preparación para Exámenes", "Clases de Idiomas",
+            "Asesoría de Tesis", "Capacitación Empresarial", "Refuerzo Escolar"
+        ],
+        materiales: [
+            "Material Didáctico", "Guías y Cuadernillos", "Certificados de Curso",
+            "Licencias de Plataforma Educativa", "Kits Escolares"
+        ]
+    },
+    legal: {
+        label: "Servicios Jurídicos y Legales",
+        icon: "scale",
+        servicios: [
+            "Asesoría Legal", "Elaboración de Contratos", "Representación Judicial",
+            "Trámites Notariales", "Derecho Laboral", "Derecho de Familia",
+            "Constitución de Sociedades", "Cobro Jurídico", "Consultoría en Propiedad Intelectual"
+        ],
+        materiales: [
+            "Papelería Notarial", "Copias Certificadas", "Timbres y Estampillas",
+            "Radicación de Documentos"
+        ]
+    },
+    marketing: {
+        label: "Marketing y Publicidad",
+        icon: "megaphone",
+        servicios: [
+            "Gestión de Redes Sociales", "Diseño Gráfico", "Producción de Contenido",
+            "Publicidad Digital (Ads)", "Fotografía Publicitaria", "Estrategia de Marca",
+            "SEO / Posicionamiento Web", "Diseño de Empaques", "Video Marketing"
+        ],
+        materiales: [
+            "Impresión de Material POP", "Pauta Publicitaria", "Banners y Pendones",
+            "Licencias de Software de Diseño", "Insumos de Impresión"
+        ]
+    },
+    agropecuario: {
+        label: "Agropecuario y Agricultura",
+        icon: "sprout",
+        servicios: [
+            "Preparación de Terreno", "Siembra y Cosecha", "Fumigación de Cultivos",
+            "Asesoría Agronómica", "Riego Tecnificado", "Manejo de Ganado",
+            "Poda y Mantenimiento de Cultivos", "Transporte de Cosecha"
+        ],
+        materiales: [
+            "Semillas", "Fertilizantes", "Agroquímicos", "Herramientas Agrícolas",
+            "Alimento para Ganado", "Sistemas de Riego"
+        ]
+    },
+    veterinaria: {
+        label: "Veterinaria y Mascotas",
+        icon: "paw-print",
+        servicios: [
+            "Consulta Veterinaria", "Vacunación de Mascotas", "Peluquería Canina y Felina",
+            "Cirugía Veterinaria", "Guardería de Mascotas", "Adiestramiento Canino",
+            "Servicio a Domicilio", "Desparasitación"
+        ],
+        materiales: [
+            "Vacunas", "Medicamentos Veterinarios", "Alimento para Mascotas",
+            "Insumos de Aseo Animal", "Accesorios y Correas"
+        ]
+    },
+    inmobiliaria: {
+        label: "Inmobiliaria y Bienes Raíces",
+        icon: "key",
+        servicios: [
+            "Avalúo de Inmuebles", "Administración de Propiedad Horizontal", "Asesoría en Arrendamientos",
+            "Intermediación de Ventas", "Estudio de Títulos", "Fotografía de Inmuebles",
+            "Gestión de Documentación Inmobiliaria"
+        ],
+        materiales: [
+            "Papelería Contractual", "Señalización de Venta/Arriendo", "Certificados de Tradición",
+            "Pólizas de Arrendamiento"
+        ]
+    },
+    automotriz: {
+        label: "Automotriz y Mecánica",
+        icon: "car",
+        servicios: [
+            "Mantenimiento Preventivo", "Reparación de Motor", "Cambio de Aceite y Filtros",
+            "Alineación y Balanceo", "Diagnóstico Electrónico", "Latonería y Pintura",
+            "Instalación de Accesorios", "Revisión Técnico-Mecánica"
+        ],
+        materiales: [
+            "Repuestos Automotrices", "Aceites y Lubricantes", "Llantas", "Baterías",
+            "Filtros", "Pastillas de Freno"
+        ]
+    },
+    turismo: {
+        label: "Turismo y Hospedaje",
+        icon: "map",
+        servicios: [
+            "Planes Turísticos", "Guianza Turística", "Alquiler de Alojamiento",
+            "Transporte Turístico", "Organización de Excursiones", "Reservas y Booking",
+            "Alquiler de Equipos de Aventura"
+        ],
+        materiales: [
+            "Kits de Viaje", "Seguros de Viaje", "Material Promocional Turístico",
+            "Insumos de Hospedaje"
+        ]
+    },
+    seguridad: {
+        label: "Seguridad y Vigilancia",
+        icon: "shield",
+        servicios: [
+            "Vigilancia Privada", "Monitoreo de Cámaras", "Instalación de Alarmas",
+            "Escoltas y Protección", "Auditoría de Seguridad", "Control de Acceso"
+        ],
+        materiales: [
+            "Cámaras de Seguridad", "Alarmas", "Cercas Eléctricas", "Chalecos y Uniformes",
+            "Sistemas de Control de Acceso"
+        ]
+    },
     otro: {
         label: "Otro / Personalizado",
         icon: "briefcase",
@@ -121,12 +266,41 @@ const CATEGORIAS = {
     }
 };
 
-let categoriaActual = "construccion";
+let categoriaActual = "";
 
 // ---------------------------------------------------------------------
 // 2. CONFIGURACIÓN DE EMPRESA (nombre, contacto, LOGO propio)
 // ---------------------------------------------------------------------
 let LOGO_BASE64 = "";
+let LOGO_DEFAULT_BASE64 = ""; // se genera una sola vez, en memoria (no se guarda en localStorage)
+
+// Genera un logo genérico (insignia circular con la inicial del negocio, en
+// el color de marca actual) para usarlo en el PDF cuando el cliente no subió
+// su propio logo. Así el documento nunca sale sin ningún tipo de logo.
+function obtenerLogoPorDefecto() {
+    if (LOGO_DEFAULT_BASE64) return LOGO_DEFAULT_BASE64;
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 240; canvas.height = 240;
+        const ctx = canvas.getContext('2d');
+        const [r, g, b] = COLOR_MARCA && COLOR_MARCA.length === 3 ? COLOR_MARCA : [29, 78, 137];
+        ctx.fillStyle = `rgb(${r},${g},${b})`;
+        ctx.beginPath();
+        ctx.arc(120, 120, 120, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 130px "Plus Jakarta Sans", Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const inicial = (EMPRESA.nombre || 'M').trim().charAt(0).toUpperCase() || 'M';
+        ctx.fillText(inicial, 120, 132);
+        LOGO_DEFAULT_BASE64 = canvas.toDataURL('image/png');
+    } catch (e) {
+        console.warn('No se pudo generar el logo por defecto', e);
+    }
+    return LOGO_DEFAULT_BASE64;
+}
+
 const EMPRESA_DEFAULT = {
     nombre: "Mi Negocio",
     slogan: "Servicios Profesionales de Calidad",
@@ -310,7 +484,8 @@ function aplicarColorMarca(rgb) {
 function pintarSelectorCategorias() {
     const sel = document.getElementById('c_categoria');
     if (!sel) return;
-    sel.innerHTML = Object.entries(CATEGORIAS).map(([key, cat]) =>
+    const placeholder = `<option value="" disabled ${categoriaActual ? '' : 'selected'}>-- Seleccionar Rubro --</option>`;
+    sel.innerHTML = placeholder + Object.entries(CATEGORIAS).map(([key, cat]) =>
         `<option value="${key}">${cat.label}</option>`
     ).join('');
     sel.value = categoriaActual;
@@ -320,7 +495,7 @@ function cambiarCategoria(nuevoValor) {
     const hayItems = document.querySelectorAll('#cont-mo > div').length > 0 ||
                       document.querySelectorAll('#cont-mat > div').length > 0;
 
-    if (hayItems && nuevoValor !== categoriaActual) {
+    if (categoriaActual && hayItems && nuevoValor !== categoriaActual) {
         const seguir = confirm("Cambiar de rubro reiniciará la lista de servicios y materiales agregados. ¿Deseas continuar?");
         if (!seguir) {
             document.getElementById('c_categoria').value = categoriaActual;
@@ -332,6 +507,9 @@ function cambiarCategoria(nuevoValor) {
 
     categoriaActual = nuevoValor;
     const cat = CATEGORIAS[categoriaActual];
+    if (!cat) return;
+
+    document.getElementById('c_categoria').classList.remove('campo-invalido');
 
     // --- Mostrar/ocultar campo de nombre personalizado si el rubro es "otro" ---
     const contPersonalizado = document.getElementById('cont-categoria-personalizada');
@@ -347,6 +525,13 @@ function cambiarCategoria(nuevoValor) {
 
     document.getElementById('titulo-rubro-mo').innerText = cat.label;
     document.getElementById('titulo-rubro-mat').innerText = cat.label;
+
+    // --- El icono del rubro se refleja también en las secciones e insignias (interfaz adaptada al rubro) ---
+    document.querySelectorAll('.icono-rubro-dinamico').forEach(icon => {
+        icon.setAttribute('data-lucide', cat.icon || 'layout-grid');
+    });
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
     calcular();
 }
 
@@ -550,6 +735,20 @@ function toggleAnticipo() {
 // 7. GESTIÓN DE ITEMS (Servicios / Materiales) SEGÚN LA CATEGORÍA
 // ---------------------------------------------------------------------
 function addItem(tipo) {
+   if (!categoriaActual) {
+        mostrarAvisoBonito({
+            icono: 'layout-grid',
+            titulo: 'Selecciona primero tu Rubro',
+            texto: "Antes de agregar servicios o materiales, elige el Rubro / Categoría de tu negocio en la sección 'Datos Generales'.",
+            textoBoton: 'Ir a Datos Generales',
+            onCerrar: () => {
+                nav('cliente', document.querySelector('[onclick*="cliente"]'));
+                const selRubro = document.getElementById('c_categoria');
+                if (selRubro) { selRubro.classList.add('campo-invalido', 'campo-invalido-shake'); setTimeout(() => selRubro.classList.remove('campo-invalido-shake'), 400); }
+            }
+        });
+        return;
+    }
     const cont = tipo === 'MO' ? document.getElementById('cont-mo') : document.getElementById('cont-mat');
     const cat = CATEGORIAS[categoriaActual];
     const lista = tipo === 'MO' ? cat.servicios : cat.materiales;
@@ -676,7 +875,7 @@ function calcular() {
     const badgeTipo = document.getElementById('badge-tipo-resumen');
     const badgeItems = document.getElementById('badge-items-resumen');
     const docTipoTexto = document.getElementById('doc-tipo-resumen-texto');
-    if (badgeRubro) badgeRubro.innerHTML = `<i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> ${CATEGORIAS[categoriaActual].label}`;
+    if (badgeRubro) badgeRubro.innerHTML = `<i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> ${categoriaActual ? CATEGORIAS[categoriaActual].label : 'Sin rubro'}`;
     const totalItems = document.querySelectorAll('#cont-mo > div').length + document.querySelectorAll('#cont-mat > div').length;
     if (badgeItems) badgeItems.innerHTML = `<i data-lucide="list-checks" class="w-3.5 h-3.5"></i> ${totalItems} item${totalItems === 1 ? '' : 's'}`;
     const tipoDocSel = document.getElementById('c_tipo');
@@ -763,7 +962,223 @@ function drawBullet(doc, x, y, colorRGB) {
     doc.circle(x, y - 1, 0.9, 'F');
 }
 
+// ---------------------------------------------------------------------
+// VALIDACIÓN DE CAMPOS OBLIGATORIOS ANTES DE GENERAR / ENVIAR EL DOCUMENTO
+// ---------------------------------------------------------------------
+function validarCamposObligatorios() {
+    const pendientes = [];
+
+    document.querySelectorAll('[data-req="true"]').forEach(campo => {
+        // el número de folio solo es obligatorio si su contenedor está visible
+        const contFactura = document.getElementById('contenedor-num-factura');
+        if (campo.id === 'c_num_factura' && contFactura && contFactura.classList.contains('hidden')) {
+            campo.classList.remove('campo-invalido');
+            return;
+        }
+        const vacio = !campo.value || !campo.value.trim();
+        if (vacio) {
+            campo.classList.add('campo-invalido');
+            pendientes.push({
+                label: campo.getAttribute('data-label') || campo.id,
+                id: campo.id,
+                nav: campo.getAttribute('data-nav') || 'cliente'
+            });
+        } else {
+            campo.classList.remove('campo-invalido');
+        }
+    });
+
+    // Al menos un servicio o material agregado
+    const hayItems = document.querySelectorAll('#cont-mo > div').length > 0 ||
+                      document.querySelectorAll('#cont-mat > div').length > 0;
+    if (!hayItems) {
+        pendientes.push({ label: 'Al menos un Servicio o Material agregado', id: null, nav: 'mo' });
+    }
+
+    return pendientes;
+}
+
+function mostrarModalCamposPendientes(pendientes) {
+    const modal = document.getElementById('modal-campos-pendientes');
+    const lista = document.getElementById('lista-campos-pendientes');
+    if (!modal || !lista) return;
+
+    lista.innerHTML = pendientes.map(p => `
+        <button type="button" class="item-campo-pendiente" onclick="irACampoPendiente('${p.nav}', ${p.id ? `'${p.id}'` : 'null'})">
+            <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i>
+            <span>${p.label}</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 ml-auto shrink-0"></i>
+        </button>
+    `).join('');
+
+    modal.classList.remove('hidden');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function cerrarModalCamposPendientes() {
+    document.getElementById('modal-campos-pendientes').classList.add('hidden');
+}
+
+function mostrarAvisoBonito(opciones) {
+    const {
+        icono = 'info', titulo = 'Aviso', texto = '',
+        colorIcono = 'text-olive', colorFondo = 'bg-olive/10',
+        textoBoton = 'Entendido', onCerrar = null
+    } = opciones;
+
+    const wrapper = document.getElementById('tour-wrapper');
+    wrapper.innerHTML = `
+      <div class="tour-welcome-overlay" id="aviso-bonito-overlay">
+          <div class="tour-popover" style="position: static; width: min(340px, 92vw); animation: tourPopIn 0.25s ease;">
+              <div class="flex items-center gap-3 mb-3">
+                  <div class="${colorFondo} p-3 rounded-2xl shrink-0">
+                      <i data-lucide="${icono}" class="w-6 h-6 ${colorIcono}"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                      <h3 class="text-base font-black text-slate-800 leading-tight">${titulo}</h3>
+                  </div>
+              </div>
+              <p class="text-xs text-slate-500 font-medium leading-relaxed">${texto}</p>
+              <div class="flex gap-2 mt-5">
+                  <button id="btn-cerrar-aviso-bonito" class="flex-1 btn-primary rounded-xl py-2.5 text-[10px]">${textoBoton}</button>
+              </div>
+          </div>
+      </div>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    document.getElementById('btn-cerrar-aviso-bonito').addEventListener('click', () => {
+        wrapper.innerHTML = '';
+        if (onCerrar) onCerrar();
+    });
+}
+
+
+// Variante de mostrarAvisoBonito con DOS botones (para preguntas tipo
+// "¿continuar o completar?"), usando el mismo estilo visual del tour.
+function mostrarAvisoDosOpciones(opciones) {
+    const {
+        icono = 'info', titulo = 'Aviso', texto = '',
+        colorIcono = 'text-olive', colorFondo = 'bg-olive/10',
+        textoPrimario = 'Continuar', textoSecundario = 'Cancelar',
+        onPrimario = null, onSecundario = null
+    } = opciones;
+
+    const wrapper = document.getElementById('tour-wrapper');
+    wrapper.innerHTML = `
+      <div class="tour-welcome-overlay" id="aviso-dos-opciones-overlay">
+          <div class="tour-popover" style="position: static; width: min(340px, 92vw); animation: tourPopIn 0.25s ease;">
+              <div class="flex items-center gap-3 mb-3">
+                  <div class="${colorFondo} p-3 rounded-2xl shrink-0">
+                      <i data-lucide="${icono}" class="w-6 h-6 ${colorIcono}"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                      <h3 class="text-base font-black text-slate-800 leading-tight">${titulo}</h3>
+                  </div>
+              </div>
+              <p class="text-xs text-slate-500 font-medium leading-relaxed">${texto}</p>
+              <div class="flex gap-2 mt-5">
+                  <button id="btn-secundario-aviso" class="flex-1 bg-slate-100 text-slate-500 rounded-xl py-2.5 font-black text-[10px] uppercase">${textoSecundario}</button>
+                  <button id="btn-primario-aviso" class="flex-1 btn-primary rounded-xl py-2.5 text-[10px] uppercase">${textoPrimario}</button>
+              </div>
+          </div>
+      </div>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    document.getElementById('btn-primario-aviso').addEventListener('click', () => {
+        wrapper.innerHTML = '';
+        if (onPrimario) onPrimario();
+    });
+    document.getElementById('btn-secundario-aviso').addEventListener('click', () => {
+        wrapper.innerHTML = '';
+        if (onSecundario) onSecundario();
+    });
+}
+
+// ¿La empresa ya guardó al menos una vez sus datos (botón "Guardar Datos de
+// la Empresa")? Se usa como condición antes de generar/enviar el documento.
+function datosEmpresaGuardados() {
+    return !!localStorage.getItem('empresa_datos');
+}
+
+// Punto único de entrada para las 3 acciones de envío (PDF, WhatsApp, Correo).
+// Si el usuario nunca guardó los datos de su empresa (ni logo), se le
+// pregunta si quiere completarlos ahora o continuar de todos modos, usando
+// la misma ventanita del tour.
+function verificarDatosEmpresaYContinuar(accionCallback) {
+    if (datosEmpresaGuardados()) {
+        accionCallback();
+        return;
+    }
+    mostrarAvisoDosOpciones({
+        icono: 'building-2',
+        titulo: '¿Te faltan datos de tu empresa?',
+        texto: 'Todavía no has guardado el nombre, logo ni datos de contacto de tu empresa en la sección "Mi Empresa". Puedes completarlos ahora o continuar sin ellos (se usará un logo genérico).',
+        textoPrimario: 'Completar datos',
+        textoSecundario: 'Continuar sin datos',
+        onPrimario: () => {
+            const btnNav = document.querySelector(`#desktop-nav button[onclick*="'empresa'"]`) ||
+                           document.querySelector(`.tab-btn[onclick*="'empresa'"]`);
+            nav('empresa', btnNav);
+        },
+        onSecundario: accionCallback
+    });
+}
+
+function irACampoPendiente(seccion, campoId) {
+    cerrarModalCamposPendientes();
+    const btnNav = document.querySelector(`#desktop-nav button[onclick*="'${seccion}'"]`) ||
+                   document.querySelector(`.tab-btn[onclick*="'${seccion}'"]`);
+    nav(seccion, btnNav);
+    if (campoId) {
+        setTimeout(() => {
+            const el = document.getElementById(campoId);
+            if (el) {
+                el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                el.focus({ preventScroll: true });
+                el.classList.add('campo-invalido-shake');
+                setTimeout(() => el.classList.remove('campo-invalido-shake'), 400);
+            }
+        }, 350);
+    }
+}
+
+// ---------------------------------------------------------------------
+// VENTANA UNIFICADA: PDF / WhatsApp / Correo
+// ---------------------------------------------------------------------
+function abrirModalEnviarDocumento() {
+    const pendientes = validarCamposObligatorios();
+    if (pendientes.length > 0) {
+        mostrarModalCamposPendientes(pendientes);
+        return;
+    }
+    const modal = document.getElementById('modal-enviar-documento');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function cerrarModalEnviarDocumento() {
+    const modal = document.getElementById('modal-enviar-documento');
+    if (modal) modal.classList.add('hidden');
+}
+
+// Se ejecuta cuando el usuario elige una de las 3 opciones dentro de la
+// ventana emergente. Antes de ejecutar la acción, se pregunta por los
+// datos de la empresa si aún no fueron guardados.
+function accionEnviarDocumento(tipo) {
+    cerrarModalEnviarDocumento();
+    verificarDatosEmpresaYContinuar(() => {
+        if (tipo === 'pdf') generarPDF();
+        else if (tipo === 'whatsapp') enviarWhatsApp();
+        else if (tipo === 'email') enviarEmail();
+    });
+}
+
 async function generarPDF() {
+    const pendientes = validarCamposObligatorios();
+    if (pendientes.length > 0) {
+        mostrarModalCamposPendientes(pendientes);
+        return;
+    }
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
     const colorOlive = COLOR_MARCA;
@@ -780,10 +1195,14 @@ async function generarPDF() {
     doc.setFillColor(...colorGrayLight);
     doc.rect(0, 0, 210, 42, 'F');
 
-    if (LOGO_BASE64) {
-        try { doc.addImage(LOGO_BASE64, 'PNG', 15, 8, 28, 28); } catch (e) { console.warn("Logo no válido para PDF", e); }
+    // Si el cliente no cargó su propio logo, se usa uno genérico por defecto
+    // (insignia con la inicial del negocio, en el color de marca) para que el
+    // PDF nunca salga sin logo.
+    const logoParaPDF = LOGO_BASE64 || obtenerLogoPorDefecto();
+    if (logoParaPDF) {
+        try { doc.addImage(logoParaPDF, 'PNG', 15, 8, 28, 28); } catch (e) { console.warn("Logo no válido para PDF", e); }
     } else {
-        // Placeholder con iniciales de la empresa si no hay logo
+        // Respaldo final si ni siquiera se pudo generar el logo por defecto
         doc.setFillColor(...colorOlive);
         doc.roundedRect(15, 8, 28, 28, 4, 4, 'F');
         doc.setTextColor(255);
@@ -996,10 +1415,11 @@ doc.setFontSize(8);
     const pageCount = doc.internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
-        if (LOGO_BASE64) {
+        const logoMarcaAgua = LOGO_BASE64 || obtenerLogoPorDefecto();
+        if (logoMarcaAgua) {
             try {
                 doc.setGState(new doc.GState({ opacity: 0.08 }));
-                doc.addImage(LOGO_BASE64, 'PNG', 55, 100, 100, 100);
+                doc.addImage(logoMarcaAgua, 'PNG', 55, 100, 100, 100);
                 doc.setGState(new doc.GState({ opacity: 1.0 }));
             } catch (e) { /* logo no válido como marca de agua, se omite */ }
         }
@@ -1018,8 +1438,19 @@ doc.setFontSize(8);
 // 11. ENVÍO POR WHATSAPP Y CORREO
 // ---------------------------------------------------------------------
 function enviarWhatsApp() {
+    const pendientes = validarCamposObligatorios();
+    if (pendientes.length > 0) { mostrarModalCamposPendientes(pendientes); return; }
+
     const d = obtenerDatosResumen();
-    if (!d.telefono) return alert("Por favor, ingrese el número de teléfono del cliente.");
+    if (!d.telefono) {
+        mostrarAvisoBonito({
+            icono: 'phone', titulo: 'Falta el teléfono',
+            texto: 'Ingresa el teléfono del cliente en Datos Generales para poder enviarlo por WhatsApp.',
+            textoBoton: 'Ir a Datos Generales',
+            onCerrar: () => nav('cliente', document.querySelector('[onclick*="cliente"]'))
+        });
+        return;
+    }
 
     const fecha = new Date().toLocaleDateString();
     const tipoDoc = document.getElementById('c_tipo').value;
@@ -1046,8 +1477,19 @@ function enviarWhatsApp() {
 }
 
 function enviarEmail() {
+    const pendientes = validarCamposObligatorios();
+    if (pendientes.length > 0) { mostrarModalCamposPendientes(pendientes); return; }
+
     const d = obtenerDatosResumen();
-    if (!d.email) return alert("Por favor, ingrese el correo electrónico del cliente.");
+    if (!d.email) {
+        mostrarAvisoBonito({
+            icono: 'mail', titulo: 'Falta el correo',
+            texto: 'Ingresa el correo electrónico del cliente en Datos Generales para poder enviarlo por email.',
+            textoBoton: 'Ir a Datos Generales',
+            onCerrar: () => nav('cliente', document.querySelector('[onclick*="cliente"]'))
+        });
+        return;
+    }
 
     const tipoDoc = document.getElementById('c_tipo').value;
     const fecha = new Date().toLocaleDateString();
@@ -1102,7 +1544,10 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
     const loginCard = document.querySelector('#login-container > div');
     const btnSubmit = e.target.querySelector('button[type="submit"]');
 
-    const acceso = USUARIOS_AUTORIZADOS.find(u => u.user === userIn && u.pass === passIn);
+    // Se compara el usuario sin importar mayúsculas/minúsculas (los celulares
+    // suelen poner en mayúscula la primera letra automáticamente). La
+    // contraseña sí respeta mayúsculas/minúsculas por seguridad.
+    const acceso = USUARIOS_AUTORIZADOS.find(u => u.user.toLowerCase() === userIn.toLowerCase() && u.pass === passIn);
 
     if (acceso) {
         errorBox.classList.add('hidden');
@@ -1203,6 +1648,8 @@ function cerrarAvisoEmpresaMovil() {
 // TOUR GUIADO: ventana pequeña tipo spotlight que sigue cada elemento
 // ---------------------------------------------------------------------
 const TOUR_PASOS = [
+    { seccion: 'cliente', selector: '#mobile-header-actions, #desktop-header-actions', icono: 'graduation-cap',
+      titulo: 'Accesos Rápidos', texto: 'Aquí siempre tienes a la mano: Ayuda/Soporte si algo falla, Ver Tutorial para repetir esta guía cuando quieras, y Cerrar Sesión para salir de la app de forma segura.' },
     { seccion: 'empresa', selector: '#emp_nombre', icono: 'building-2',
       titulo: 'Tu Empresa', texto: 'Configura tu logo, nombre y datos de contacto. Se usan automáticamente en cada PDF que generes.' },
     { seccion: 'cliente', selector: '#c_categoria', icono: 'layout-grid',
@@ -1211,7 +1658,7 @@ const TOUR_PASOS = [
       titulo: 'Datos del Cliente', texto: 'Registra el nombre, teléfono y correo de tu cliente para el documento y el envío.' },
     { seccion: 'cliente', selector: '#c_tipo', icono: 'file-text',
       titulo: 'Tipo de Documento', texto: 'Elige si vas a generar Cotización, Factura, Presupuesto u otro tipo de documento.' },
-    { seccion: 'mo', selector: '#sec-mo', icono: 'hammer',
+    { seccion: 'mo', selector: '#sec-mo', icono: 'cog',
       titulo: 'Servicios', texto: 'Agrega aquí los servicios o mano de obra que vas a cobrar.' },
     { seccion: 'mat', selector: '#sec-mat', icono: 'package',
       titulo: 'Materiales', texto: 'Agrega los materiales o insumos utilizados, con cantidad y precio.' },
@@ -1229,6 +1676,44 @@ let tourPasoActual = 0;
 let tourListenersActivos = false;
 
 function iniciarTour() {
+    mostrarBienvenidaTour();
+}
+
+// ---------------------------------------------------------------------
+// VENTANA DE BIENVENIDA AL TOUR (mismo formato que las ventanitas del tour)
+// ---------------------------------------------------------------------
+function mostrarBienvenidaTour() {
+    const wrapper = document.getElementById('tour-wrapper');
+    wrapper.innerHTML = `
+      <div class="tour-welcome-overlay" id="tour-welcome-overlay">
+          <div class="tour-popover" style="position: static; width: min(340px, 92vw); animation: tourPopIn 0.25s ease;">
+              <div class="flex items-center gap-3 mb-3">
+                  <div class="bg-olive/10 p-3 rounded-2xl shrink-0">
+                      <i data-lucide="sparkles" class="w-6 h-6 text-olive"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                      <p class="text-[9px] font-black text-olive uppercase tracking-widest">Bienvenido</p>
+                      <h3 class="text-base font-black text-slate-800 leading-tight">¿Vemos un recorrido rápido?</h3>
+                  </div>
+              </div>
+              <p class="text-xs text-slate-500 font-medium leading-relaxed mb-1">
+                  Te mostramos en unos pocos pasos dónde configurar tu empresa, tu rubro, los servicios, materiales, firma y cómo generar tu PDF.
+              </p>
+              <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                  Toma menos de un minuto y podrás volver a verlo cuando quieras.
+              </p>
+              <div class="flex gap-2 mt-5">
+                  <button onclick="saltarBienvenidaTour()" class="flex-1 bg-slate-100 text-slate-500 rounded-xl py-2.5 font-black text-[10px] uppercase">Saltar</button>
+                  <button onclick="comenzarTourDesdeIntro()" class="flex-1 btn-primary rounded-xl py-2.5 text-[10px] flex items-center justify-center gap-2">
+                      <i data-lucide="play" class="w-3.5 h-3.5"></i> Ver Tutorial
+                  </button>
+              </div>
+          </div>
+      </div>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function comenzarTourDesdeIntro() {
     tourPasoActual = 0;
     document.body.classList.add('tour-activo');
     mostrarPasoTour();
@@ -1237,6 +1722,47 @@ function iniciarTour() {
         document.querySelector('main')?.addEventListener('scroll', reposicionarTourActual, true);
         tourListenersActivos = true;
     }
+}
+
+// Si el usuario salta la bienvenida, se le enfoca (spotlight) el botón donde
+// puede volver a ver el tutorial más adelante, para que sepa dónde encontrarlo.
+function saltarBienvenidaTour() {
+    document.getElementById('tour-wrapper').innerHTML = '';
+    localStorage.setItem('tour_completado', '1');
+
+    const btnTutorial = buscarTargetVisibleTour('#btn-tutorial-movil, #btn-tutorial-desktop');
+    if (!btnTutorial) return;
+
+    document.body.classList.add('tour-activo');
+    const wrapper = document.getElementById('tour-wrapper');
+    wrapper.innerHTML = `
+      <div class="tour-blocker" id="tour-blocker" onclick="cerrarSpotlightTutorial()"></div>
+      <div class="tour-spotlight" id="tour-spotlight"></div>
+      <div class="tour-popover" id="tour-popover">
+          <div class="flex items-center gap-3 mb-2">
+              <div class="bg-olive/10 p-2.5 rounded-xl shrink-0"><i data-lucide="graduation-cap" class="w-4 h-4 text-olive"></i></div>
+              <div class="flex-1 min-w-0">
+                  <h3 class="text-sm font-black text-slate-800 leading-tight">Tu tutorial está aquí</h3>
+              </div>
+              <button onclick="cerrarSpotlightTutorial()" class="text-slate-400 hover:text-slate-600 shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>
+          <p class="text-xs text-slate-500 font-medium leading-relaxed">Cuando quieras, toca este botón para volver a ver la guía completa.</p>
+          <div class="flex gap-2 mt-4">
+              <button onclick="cerrarSpotlightTutorial()" class="flex-1 btn-primary rounded-xl py-2.5 text-[10px]">Entendido</button>
+          </div>
+          <div class="tour-popover-arrow" id="tour-arrow"></div>
+      </div>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    requestAnimationFrame(() => {
+        btnTutorial.scrollIntoView({ block: 'center', behavior: 'auto' });
+        requestAnimationFrame(() => posicionarTour(btnTutorial));
+    });
+}
+
+function cerrarSpotlightTutorial() {
+    document.body.classList.remove('tour-activo');
+    document.getElementById('tour-wrapper').innerHTML = '';
 }
 
 function mostrarPasoTour() {
@@ -1274,11 +1800,22 @@ function mostrarPasoTour() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
     requestAnimationFrame(() => {
-        const target = document.querySelector(paso.selector);
+        const target = buscarTargetVisibleTour(paso.selector);
         if (!target) { siguientePasoTour(); return; }
         target.scrollIntoView({ block: 'center', behavior: 'auto' });
         requestAnimationFrame(() => posicionarTour(target));
     });
+}
+
+// Busca, entre uno o varios selectores separados por coma, el primer elemento
+// realmente visible en pantalla (por ejemplo, el header móvil vs. la barra lateral de escritorio).
+function buscarTargetVisibleTour(selectorString) {
+    const selectores = selectorString.split(',').map(s => s.trim());
+    for (const sel of selectores) {
+        const el = document.querySelector(sel);
+        if (el && el.offsetParent !== null) return el;
+    }
+    return document.querySelector(selectores[0]);
 }
 
 function posicionarTour(target) {
@@ -1317,7 +1854,7 @@ function reposicionarTourActual() {
     const popover = document.getElementById('tour-popover');
     if (!popover) return;
     const paso = TOUR_PASOS[tourPasoActual];
-    const target = document.querySelector(paso.selector);
+    const target = buscarTargetVisibleTour(paso.selector);
     if (target) posicionarTour(target);
 }
 
@@ -1385,7 +1922,11 @@ function nuevoDocumento() {
     });
 
     const selectTipo = document.getElementById('c_tipo');
-    if (selectTipo) { selectTipo.value = 'COTIZACIÓN'; toggleFacturaField(); }
+    if (selectTipo) { selectTipo.value = ''; toggleFacturaField(); }
+
+    const selectCategoria = document.getElementById('c_categoria');
+    if (selectCategoria) selectCategoria.value = '';
+    categoriaActual = '';
 
     const inputGarantia = document.getElementById('c_garantia');
     if (inputGarantia) inputGarantia.value = '15';
@@ -1405,6 +1946,17 @@ function nuevoDocumento() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     lucide.createIcons();
 }
+
+document.addEventListener('input', (e) => {
+    if (e.target && e.target.hasAttribute && e.target.hasAttribute('data-req') && e.target.value && e.target.value.trim()) {
+        e.target.classList.remove('campo-invalido');
+    }
+});
+document.addEventListener('change', (e) => {
+    if (e.target && e.target.hasAttribute && e.target.hasAttribute('data-req') && e.target.value && e.target.value.trim()) {
+        e.target.classList.remove('campo-invalido');
+    }
+});
 
 window.addEventListener('load', () => {
     // --- NUEVO: revisa primero localStorage (persistente), luego sessionStorage (temporal) ---
@@ -1437,7 +1989,7 @@ cargarConfigEmpresa();
 const nombreRubroGuardado = localStorage.getItem('rubro_otro_nombre');
 if (nombreRubroGuardado) CATEGORIAS.otro.label = nombreRubroGuardado;
 pintarSelectorCategorias();
-cambiarCategoria(categoriaActual);
+if (categoriaActual) cambiarCategoria(categoriaActual);
 lucide.createIcons();
 toggleFacturaField();
 calcular();
