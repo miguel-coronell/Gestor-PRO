@@ -1,712 +1,519 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestor de Cotizaciones y Facturas PRO</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestor de Cotizaciones y Facturas PRO — Cotiza. Firma. Cobra.</title>
+<meta name="description" content="Deja el Excel y el papel. Crea cotizaciones y facturas profesionales con firma digital y envíalas por WhatsApp en segundos, desde tu celular o computadora.">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/png" href="img/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-<link rel="apple-touch-icon" href="img/favicon.ico">
 
-   <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          olive: {
-            DEFAULT: 'var(--olive)',
-            light: 'var(--olive-light)',
-            dark: 'var(--olive-dark)',
-            soft: 'var(--olive-soft)'
-          }
-        }
-      }
-    }
-  }
-</script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/css/intlTelInput.css">
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/intlTelInput.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-slate-50 text-slate-800 lg:flex lg:h-screen lg:overflow-hidden">
+<body class="antialiased">
 
+<!-- ============ NAV ============ -->
+<header class="fixed top-0 inset-x-0 z-50">
+  <div class="mx-3 mt-3 md:mx-6 md:mt-4">
+    <nav class="relative max-w-6xl mx-auto flex items-center justify-between bg-white/80 backdrop-blur-xl border border-white rounded-2xl px-5 py-3 shadow-[0_10px_30px_-10px_rgba(15,44,76,0.15)]">
+      <a href="#top" class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-deep to-dark flex items-center justify-center shadow-md">
+          <i data-lucide="file-signature" class="w-5 h-5 text-white"></i>
+        </span>
+        <span class="font-display font-extrabold text-[15px] tracking-tight text-ink">Gestor<span class="text-deep">PRO</span></span>
+      </a>
 
-<!-- LOGIN -->
-<div id="login-container" class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/95 backdrop-blur-2xl p-4">
-    <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 rounded-[2.5rem] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)]">
+      <div class="hidden md:flex items-center gap-8 text-[13.5px] font-semibold text-slate-500">
+        <a href="#funciones" class="hover:text-deep transition-colors">Funciones</a>
+        <a href="#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a>
+        <a href="#precios" class="hover:text-deep transition-colors">Precios</a>
+        <a href="#faq" class="hover:text-deep transition-colors">Preguntas</a>
+      </div>
+      <a href="#precios" class="hidden md:inline-flex text-[13px] font-bold px-4 py-2.5 rounded-xl bg-deep text-white hover:bg-dark transition-colors shadow-sm">
+        Probar Gratis
+      </a>
 
-        <!-- PANEL IZQUIERDO: MARCA (solo desktop) -->
-        <div class="hidden lg:flex flex-col justify-between relative p-10 text-white overflow-hidden"
-             style="background: linear-gradient(160deg, var(--olive) 0%, var(--olive-dark) 100%);">
-            <div class="absolute -top-20 -left-20 w-64 h-64 rounded-full blur-3xl opacity-30 login-blob-1" style="background: var(--olive-light);"></div>
-            <div class="absolute -bottom-24 -right-10 w-72 h-72 rounded-full blur-3xl opacity-20 login-blob-2" style="background: var(--olive-light);"></div>
-           
-            <div class="relative z-10">
-                <div class="login-logo-box w-16 h-16 rounded-2xl flex items-center justify-center mb-8 overflow-hidden">
-                    <img id="logo-mini-login" src="" alt="Logo" class="logo-mini hidden w-12 h-12 object-contain">
-                    <i data-lucide="briefcase-business" class="w-8 h-8 text-olive logo-placeholder-icon"></i>
-                </div>
-                <h1 class="text-3xl font-black leading-tight mb-3 marca-nombre">Mi Negocio</h1>
-                <p class="text-sm font-medium opacity-80 marca-slogan">Servicios Profesionales de Calidad</p>
-            </div>
-
-            <div class="relative z-10 space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="bg-white/10 p-2 rounded-xl border border-white/10"><i data-lucide="layout-grid" class="w-4 h-4"></i></div>
-                    <span class="text-xs font-bold opacity-90">Cotizaciones adaptadas a tu rubro</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="bg-white/10 p-2 rounded-xl border border-white/10"><i data-lucide="pen-tool" class="w-4 h-4"></i></div>
-                    <span class="text-xs font-bold opacity-90">Firma digital de cliente y empresa</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="bg-white/10 p-2 rounded-xl border border-white/10"><i data-lucide="file-check-2" class="w-4 h-4"></i></div>
-                    <span class="text-xs font-bold opacity-90">PDF profesional con tu logo</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- PANEL DERECHO: FORMULARIO -->
-        <div class="bg-white/95 p-8 sm:p-10 relative">
-            <div class="text-center mb-8 lg:hidden">
-                <div class="login-logo-box w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4 rotate-3 overflow-hidden border-2"
-                     style="border-color: var(--olive-soft);">
-                    <img id="logo-mini-login-mobile" src="" alt="Logo" class="logo-mini hidden w-14 h-14 object-contain">
-                    <i data-lucide="shield-check" class="w-10 h-10 text-olive logo-placeholder-icon"></i>
-                </div>
-            </div>
-
-            <h2 class="text-3xl font-black text-slate-800 tracking-tight text-center lg:text-left">Te damos la bienvenida</h2>
-            <p class="text-slate-500 text-sm font-medium mt-2 mb-8 text-center lg:text-left">Ingresa tus credenciales para continuar</p>
-
-            <form id="login-form" class="space-y-5">
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Usuario</label>
-                    <div class="relative group/input">
-                        <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors login-icon-focus"></i>
-                        <input type="text" id="user-input" placeholder="Usuario" required
-                               autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"
-                               class="w-full pl-12 pr-5 py-4 bg-slate-100/50 border-2 border-slate-200 rounded-2xl outline-none transition-all placeholder:text-slate-400 text-slate-700 login-input">
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Contraseña</label>
-                    <div class="relative group/input">
-                        <i data-lucide="key-round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors login-icon-focus"></i>
-                        <input type="password" id="pass-input" placeholder="••••••••" required
-                               class="w-full pl-12 pr-12 py-4 bg-slate-100/50 border-2 border-slate-200 rounded-2xl outline-none transition-all placeholder:text-slate-400 text-slate-700 login-input">
-                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                            <i data-lucide="eye" id="icon-toggle-pass" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between px-1">
-                    <label class="flex items-center gap-2 text-xs font-bold text-slate-500 cursor-pointer">
-                        <input type="checkbox" id="recordar-sesion" class="w-4 h-4 rounded accent-[var(--olive)]">
-                        Recordar sesión
-                    </label>
-                </div>
-
-                <div id="login-error" class="hidden animate-in fade-in zoom-in duration-300">
-                    <div class="flex items-center gap-3 bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl">
-                        <i data-lucide="alert-circle" class="w-5 h-5 shrink-0"></i>
-                        <p class="text-[11px] font-bold leading-tight uppercase">Acceso denegado. Verifica tus credenciales.</p>
-                    </div>
-                </div>
-
-                <button type="submit" class="login-submit-btn relative w-full py-4 text-white font-black rounded-2xl active:scale-[0.98] transition-all flex items-center justify-center gap-3 group/btn overflow-hidden">
-                    <span class="relative z-10 uppercase tracking-widest text-xs">Iniciar Sesión</span>
-                    <i data-lucide="arrow-right" class="relative z-10 w-4 h-4 group-hover/btn:translate-x-1 transition-transform"></i>
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
-                </button>
-
-                <div class="bg-olive-soft border-2 border-dashed border-olive/30 rounded-2xl p-3 mt-2 text-center">
-                    <p class="text-[10px] font-black text-olive uppercase tracking-wider">¿Aún no tienes cuenta? Prueba nuestra versión demo</p>
-                    <p class="text-xs font-bold text-slate-600 mt-1">Usuario: <span class="text-olive-dark">admin</span> &nbsp;/&nbsp; Contraseña: <span class="text-olive-dark">admin2026</span></p>
-                </div>
-                
-
-            
-                <a href="https://miguel-coronell.github.io/cv-logistica/" target="_blank" class="block text-center text-[9px] font-bold text-slate-300 hover:text-olive transition-colors">
-                    Desarrollado por <span class="text-slate-400">miguel coronell | © 2026 Todos los derechos reservados</span>
-                </a>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- SIDEBAR DESKTOP -->
-<aside class="hidden lg:flex flex-col w-80 bg-white border-r border-slate-200 shadow-xl z-50 h-full">
-    <div class="p-6 border-b border-slate-100">
-
-<div class="flex items-center gap-4 mb-6">
-    <div class="shrink-0 bg-olive p-1 rounded-2xl shadow-lg rotate-3 w-14 h-14 flex items-center justify-center overflow-hidden bg-white border-2 border-olive/20">
-        <img id="logo-mini-desktop" src="" alt="Logo" class="logo-mini hidden w-12 h-12">
-        <i data-lucide="briefcase-business" class="w-8 h-8 text-olive logo-placeholder-icon"></i>
-    </div>
-    <div class="min-w-0">
-        
-        <h1 class="text-[14px] font-black text-slate-800 uppercase tracking-wide leading-snug mb-1 marca-nombre break-words">Mi Negocio</h1>
-        <p class="text-[12px] font-extrabold text-slate-500 leading-none marca-slogan">Servicios Profesionales</p>
-    </div>
-</div>
-
-
-
-        <div class="bg-slate-50 p-4 rounded-2xl">
-            <span class="block text-xs font-bold text-slate-400 uppercase">Total Proyecto</span>
-            <div id="sideTotal" class="text-2xl font-black text-slate-900">$ 0</div>
-        </div>
-    </div>
-
-    <nav class="flex-1 overflow-y-auto p-4 space-y-2" id="desktop-nav">
-        <button onclick="nav('empresa', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="building-2"></i> 0. Mi Empresa</button>
-        <button onclick="nav('cliente', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop active"><i data-lucide="user-circle"></i> 1. Datos Generales</button>
-        <button onclick="nav('mo', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="cog"></i> 2. Servicios</button>
-        <button onclick="nav('mat', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="package"></i> 3. Materiales</button>
-        <button onclick="nav('pdf', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="file-check"></i> 4. Resumen y Cierre</button>
+      <!-- Botón hamburguesa (solo móvil) -->
+      <button id="menu-btn" type="button" class="md:hidden relative w-10 h-10 rounded-xl bg-soft flex items-center justify-center" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+        <i data-lucide="menu" id="menu-icon-open" class="w-5 h-5 text-deep"></i>
+        <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 text-deep hidden"></i>
+      </button>
     </nav>
-<!-- PIE DEL SIDEBAR: SOPORTE Y CERRAR SESIÓN (solo escritorio) -->
-    
 
- <div class="p-4 border-t border-slate-100 space-y-2" id="desktop-header-actions">
-        <button onclick="abrirModalSoporte()" id="btn-ayuda-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition-all font-bold">
-            <i data-lucide="life-buoy" class="w-5 h-5"></i>
-            <span class="text-sm">Ayuda / Soporte</span>
-        </button>
-        <button onclick="iniciarTour()" id="btn-tutorial-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold">
-            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-            <span class="text-sm">Ver Tutorial</span>
-        </button>
-        <button onclick="cerrarSesion()" id="btn-cerrar-sesion-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-bold">
-            <i data-lucide="log-out" class="w-5 h-5"></i>
-            <span class="text-sm">Cerrar Sesión</span>
-        </button>
-
-
-        <a href="https://miguel-coronell.github.io/cv-logistica/" target="_blank" class="block text-center text-[10px] font-bold text-slate-400 hover:text-olive transition-colors">
-             Desarrollado por <span class="text-slate-600">miguel coronell</span>
+    <!-- Panel de menú móvil -->
+    <div id="mobile-menu" class="mobile-menu max-w-6xl mx-auto md:hidden">
+      <div class="mt-2 bg-white rounded-2xl border border-slate-100 shadow-[0_20px_40px_-10px_rgba(15,44,76,0.25)] p-3">
+        <a href="#funciones" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="layout-grid" class="w-[18px] h-[18px] text-deep"></i> Funciones
         </a>
-</div>
-</aside>
-
-<!-- HEADER MÓVIL -->
-<header class="lg:hidden sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
-
-    <!-- Fila 1: Logo + Nombre + Slogan -->
-    <div class="flex items-center gap-3 px-4 pt-3 pb-2">
-        <button onclick="nav('empresa', document.querySelector('#desktop-nav button'))" class="shrink-0 bg-white p-1 rounded-xl shadow-md rotate-3 w-10 h-10 flex items-center justify-center overflow-hidden border-2 border-olive/20">
-            <img id="logo-mini-mobile" src="" alt="Logo" class="logo-mini hidden w-8 h-8">
-            <i data-lucide="briefcase-business" class="w-6 h-6 text-olive logo-placeholder-icon"></i>
-        </button>
-
-        <div class="min-w-0 flex-1">
-    <h1 class="text-sm font-black text-slate-800 uppercase tracking-wide leading-tight marca-nombre break-words line-clamp-2">Mi Negocio</h1>
-    <p class="text-[10px] font-bold text-slate-400 leading-tight marca-slogan truncate">Servicios Profesionales</p>
-</div>
-
-
+        <a href="#como-funciona" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="route" class="w-[18px] h-[18px] text-deep"></i> Cómo funciona
+        </a>
+        <a href="#precios" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="tag" class="w-[18px] h-[18px] text-deep"></i> Precios
+        </a>
+        <a href="#faq" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="circle-help" class="w-[18px] h-[18px] text-deep"></i> Preguntas
+        </a>
+        <a href="#precios" class="mobile-link mt-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-deep text-white font-extrabold text-[13px] uppercase tracking-wide">
+          <i data-lucide="arrow-right" class="w-4 h-4"></i> Probar Demo Gratis
+        </a>
+      </div>
     </div>
-
-    <!-- Fila 2: Total + Botones -->
-    <div class="flex items-center justify-between gap-2 px-3 pb-2">
-        <div class="bg-slate-50 px-3 py-1 rounded-xl">
-            <div id="topTotal" class="text-xs font-black text-slate-900 whitespace-nowrap">$ 0</div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0" id="mobile-header-actions">
-            <button onclick="abrirModalSoporte()" id="btn-ayuda-movil" class="flex items-center justify-center p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all shadow-sm">
-                <i data-lucide="life-buoy" class="w-4 h-4"></i>
-            </button>
-            <button onclick="iniciarTour()" id="btn-tutorial-movil" class="flex items-center justify-center p-2 bg-olive/10 text-olive rounded-xl hover:bg-olive/20 transition-all shadow-sm">
-                <i data-lucide="graduation-cap" class="w-4 h-4"></i>
-            </button>
-            <button onclick="cerrarSesion()" id="btn-cerrar-sesion-movil" class="flex items-center gap-1 px-2 py-1.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all font-bold text-[9px] uppercase tracking-wider shadow-sm">
-                <span class="hidden md:inline">Cerrar Sesión</span>
-                <i data-lucide="log-out" class="w-4 h-4"></i>
-            </button>
-        </div>
-    </div>
+  </div>
 </header>
 
-<main class="flex-1 lg:h-screen lg:overflow-y-auto pb-32 lg:pb-10 bg-slate-100/50">
-    <div class="max-w-4xl mx-auto p-4 lg:p-8 space-y-6">
+<!-- Fondo oscuro al abrir el menú móvil -->
+<div id="mobile-backdrop" class="mobile-backdrop md:hidden"></div>
 
-        <!-- 0. MI EMPRESA -->
-        <section id="sec-empresa" class="app-section">
-            <div class="glass-card p-6 lg:p-8 space-y-8">
-                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div class="w-2 h-8 bg-olive rounded-full"></div>
-                    <h2 class="font-black text-slate-800 uppercase text-lg tracking-wider">Perfil de tu Negocio</h2>
-                </div>
-                <p class="text-sm text-slate-500 -mt-4">Estos datos y tu logo aparecerán automáticamente en cada PDF que generes.</p>
+<!-- ============ HERO ============ -->
+<section id="top" class="relative overflow-hidden pt-36 pb-20 md:pt-44 md:pb-28">
+  <div class="absolute -top-24 -left-24 w-[420px] h-[420px] bg-accent/20 rounded-full glow-blob"></div>
+  <div class="absolute top-40 -right-32 w-[480px] h-[480px] bg-green/10 rounded-full glow-blob"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-8 items-start">
-                    <div class="flex flex-col items-center gap-3">
-                        <label class="logo-dropzone w-40 h-40 flex flex-col items-center justify-center text-center p-3 relative">
-                            <input type="file" accept="image/*" class="hidden" onchange="handleLogoUpload(this)">
-                            <img id="logo-preview" src="" class="hidden w-full h-full object-contain rounded-2xl">
-                            <div id="logo-placeholder">
-                                <i data-lucide="image-plus" class="w-10 h-10 text-olive mx-auto mb-2"></i>
-                                <span class="text-[11px] font-black uppercase text-olive-dark tracking-wide">Subir Logo</span>
-                            </div>
-                        </label>
-                        <button onclick="quitarLogo()" class="text-[10px] font-bold uppercase text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1">
-                            <i data-lucide="trash-2" class="w-3 h-3"></i> Quitar logo
-                        </button>
-                    </div>
+  <div class="relative max-w-6xl mx-auto px-5 md:px-6 grid lg:grid-cols-[1.05fr_0.95fr] gap-14 items-center">
+    <div>
+      <div class="inline-flex items-center gap-2 bg-soft border border-deep/10 rounded-full pl-1.5 pr-4 py-1.5 mb-6">
+        <span class="bg-deep text-white text-[10px] font-extrabold uppercase tracking-wider rounded-full px-2.5 py-1">Nuevo</span>
+        <span class="text-[12.5px] font-bold text-dark">Firma digital + envío por WhatsApp integrados</span>
+      </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2 md:col-span-2">
-                            <label class="text-xs font-black text-slate-500 ml-2 uppercase">Nombre de tu Negocio</label>
-                            <input type="text" id="emp_nombre" class="input-dynamic" placeholder="Ej: Mi Empresa S.A.S.">
-                        </div>
-                        <div class="space-y-2 md:col-span-2">
-                            <label class="text-xs font-black text-slate-500 ml-2 uppercase">Slogan / Actividad</label>
-                            <input type="text" id="emp_slogan" class="input-dynamic" placeholder="Ej: Soluciones profesionales de calidad">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-black text-slate-500 ml-2 uppercase">NIT / Documento</label>
-                            <input type="text" id="emp_nit" class="input-dynamic" placeholder="900.123.456-7">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-black text-slate-500 ml-2 uppercase">Teléfono / WhatsApp</label>
-                            <input type="text" id="emp_telefono" class="input-dynamic" placeholder="+57 300 000 0000">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-black text-slate-500 ml-2 uppercase">Correo Electrónico</label>
-                            <input type="email" id="emp_email" class="input-dynamic" placeholder="contacto@minegocio.com">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-black text-slate-500 ml-2 uppercase">Dirección</label>
-                            <input type="text" id="emp_direccion" class="input-dynamic" placeholder="Ciudad, dirección">
-                        </div>
-                        <div class="space-y-2 md:col-span-2">
-                            <label class="text-xs font-black text-slate-500 ml-2 uppercase">Nombre de quien Firma</label>
-                            <input type="text" id="emp_firmante" class="input-dynamic" placeholder="Ej: Juan Pérez - Gerente">
-                        </div>
-                    </div>
-                </div>
+      <h1 class="font-display font-extrabold text-ink leading-[1.05] text-[2.5rem] md:text-6xl tracking-tight">
+        Cotiza en el terreno.
+        <span class="block text-deep">Cobra desde el celular.</span>
+      </h1>
 
-              <button id="btn-guardar-empresa" onclick="guardarConfigEmpresa()" class="btn-primary w-full py-3.5 lg:py-5 flex items-center justify-center gap-2 lg:gap-3 text-xs lg:text-lg hover-dynamic">
-    <i data-lucide="save" class="w-4 h-4 lg:w-5 lg:h-5"></i> Guardar Datos de la Empresa
-</button>
-                
-                <p id="footer-copyright-empresa" class="text-center text-[10px] font-bold text-slate-300 pt-2 lg:hidden">© 2026 Mi Negocio</p>
-            </div>
-        </section>
+      <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-lg">
+        Olvídate del Excel, el papel y las cotizaciones improvisadas. Arma presupuestos y facturas con tu marca, hazlos firmar en pantalla y envíalos por WhatsApp antes de salir de la casa del cliente.
+      </p>
 
-        <!-- 1. CLIENTE + CATEGORÍA -->
-        <section id="sec-cliente" class="app-section active-section">
-            <div class="glass-card p-6 lg:p-8 space-y-8">
-                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div class="w-2 h-8 bg-olive rounded-full"></div>
-                    <h2 class="font-black text-slate-800 uppercase text-lg tracking-wider">Identificación del Proyecto</h2>
-                </div>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3.5">
+        <a href="#precios" class="btn-primary group inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-br from-deep to-dark text-white font-extrabold text-[13.5px] uppercase tracking-wide shadow-[0_16px_30px_-8px_rgba(29,78,137,0.45)] hover:shadow-[0_20px_35px_-8px_rgba(29,78,137,0.55)] hover:-translate-y-0.5 transition-all">
+          Probar Demo Gratis
+          <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        <a href="#como-funciona" class="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-white border-2 border-slate-200 text-ink font-extrabold text-[13.5px] uppercase tracking-wide hover:border-deep hover:text-deep transition-colors">
+          Ver cómo funciona
+        </a>
+      </div>
 
-                <div class="space-y-2 categoria-select-wrapper">
-                    <label class="text-xs font-black text-olive ml-2 uppercase flex items-center gap-2">
-                        <i data-lucide="layout-grid" class="w-4 h-4"></i> Rubro / Categoría del Negocio
-                    </label>
-                    <select id="c_categoria" class="input-dynamic" onchange="cambiarCategoria(this.value)" data-req="true" data-label="Rubro / Categoría del Negocio" data-nav="cliente"></select>
-                    <p class="text-[11px] text-slate-400 ml-2">Al elegir el rubro, las opciones de Servicios y Materiales se adaptan automáticamente.</p>
-
-                    <div id="cont-categoria-personalizada" class="hidden space-y-2 pt-2">
-                        <label class="text-xs font-black text-olive ml-2 uppercase flex items-center gap-2">
-                            <i data-lucide="pencil-line" class="w-4 h-4"></i> Nombre de tu Rubro
-                        </label>
-                        <input type="text" id="c_categoria_personalizada" class="input-dynamic" placeholder="Ej: Diseño de Interiores, Veterinaria, Consultoría..." oninput="guardarNombreRubroPersonalizado(this.value)">
-                        <p class="text-[11px] text-slate-400 ml-2">Este nombre aparecerá como título de tus secciones de Servicios y Materiales, y en el PDF.</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2 md:col-span-2">
-                        <label class="text-xs font-black text-slate-500 ml-2 uppercase">Nombre del Cliente / Empresa</label>
-                        <input type="text" id="c_nombre" class="input-dynamic" placeholder="Ej: Constructora ABC S.A.S." data-req="true" data-label="Nombre del Cliente / Empresa" data-nav="cliente">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-slate-500 ml-2 uppercase">NIT / Documento</label>
-                        <input type="text" id="c_nit" class="input-dynamic" placeholder="Ej: 900.123.456-7">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-slate-500 ml-2 uppercase">Teléfono</label>
-                        <input type="tel" id="c_tel" class="input-dynamic w-full" placeholder="300..." data-req="true" data-label="Teléfono del Cliente" data-nav="cliente">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-slate-500 ml-2 uppercase">Correo Electrónico</label>
-                        <input type="email" id="c_email" class="input-dynamic" placeholder="contacto@empresa.com">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-slate-500 ml-2 uppercase">Dirección / Obra</label>
-                        <input type="text" id="c_obra" class="input-dynamic" placeholder="Ciudad, Barrio o Dirección exacta" data-req="true" data-label="Dirección / Obra" data-nav="cliente">
-                    </div>
-
-                    <div class="md:col-span-2 bg-slate-50 border border-slate-200 p-5 rounded-[2rem] grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <div class="space-y-2">
-                            <label class="text-xs font-black text-olive ml-2 uppercase">Tipo Documento</label>
-                            <select id="c_tipo" class="input-dynamic font-bold" onchange="toggleFacturaField()" data-req="true" data-label="Tipo de Documento" data-nav="cliente">
-                                <option value="" disabled selected>-- Seleccionar --</option>
-                                <option value="COTIZACIÓN">COTIZACIÓN</option>
-                                <option value="FACTURA">FACTURA</option>
-                                <option value="PRESUPUESTO">PRESUPUESTO</option>
-                                <option value="CUENTA COBRO">CUENTA COBRO</option>
-                                <option value="ORDEN DE TRABAJO">ORDEN DE TRABAJO</option>
-                                <option value="RECIBO DE CAJA">RECIBO DE CAJA</option>
-                                <option value="NOTA DE ENTREGA">NOTA DE ENTREGA</option>
-                                <option value="CONTRATO DE SERVICIO">CONTRATO DE SERVICIO</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-black text-olive ml-2 uppercase" id="label-tiempo">Validez / Garantía (Días)</label>
-                            <input type="number" id="c_garantia" value="15" class="input-dynamic font-bold text-center">
-                        </div>
-                        <div id="contenedor-num-factura" class="space-y-2 hidden">
-                            <label class="text-xs font-black text-red-600 ml-2 uppercase">Número / Folio</label>
-                            <input type="text" id="c_num_factura" placeholder="Ej: FAC-001" class="input-dynamic font-bold border-red-200 focus:border-red-500" data-req="true" data-label="Número / Folio del Documento" data-nav="cliente">
-                        </div>
-                    </div>
-                </div>
-
-                <div id="anticipoSection" class="bg-olive/5 border border-olive/20 rounded-[2rem] p-6 hover-dynamic transition-all">
-    <div class="flex justify-between items-center cursor-pointer" onclick="document.getElementById('chk_anticipo').click()">
-        <div class="flex items-center gap-4">
-            <div class="bg-white p-3 rounded-xl shadow-sm"><i data-lucide="coins" class="text-olive"></i></div>
-            <div>
-                <p id="anticipo-titulo" class="text-base font-black text-slate-800 uppercase">Gestión de Anticipo</p>
-                <p id="anticipo-subtitulo" class="text-xs text-slate-500 font-medium">Requerido para inicio de operaciones</p>
-            </div>
+      <div class="mt-10 flex items-center gap-6 text-slate-500">
+        <div class="flex -space-x-2.5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-deep border-2 border-white"></div>
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-green border-2 border-white"></div>
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 border-2 border-white"></div>
         </div>
-                        <input type="checkbox" id="chk_anticipo" class="w-6 h-6 accent-olive cursor-pointer" onclick="event.stopPropagation()" onchange="toggleAnticipo()">
-                    </div>
-                    <div id="panel_anticipo" class="hidden mt-6 pt-6 border-t border-olive/20">
-                        <div class="grid grid-cols-2 gap-6 items-end">
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold text-slate-500 ml-2 uppercase">Porcentaje Solicitado (%)</label>
-                                <input type="number" id="val_anticipo_pct" value="0" class="input-dynamic text-center text-lg font-black" oninput="calcular()">
-                            </div>
-                            <div class="text-right bg-white p-4 rounded-xl border border-olive/10 shadow-sm">
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Monto a Facturar</label>
-                                <div id="monto_anticipo_final" class="text-2xl font-black text-olive">$ 0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. SERVICIOS -->
-        <section id="sec-mo" class="app-section">
-            <div class="flex justify-between items-end mb-6 px-2 flex-wrap gap-3">
-                <div>
-                    <span class="rubro-badge mb-2" id="titulo-rubro-mo">Rubro</span>
-                    <h2 class="font-black text-slate-800 text-2xl uppercase leading-none">Servicios Operativos</h2>
-                    <p class="text-sm text-slate-500 font-medium mt-1">Mano de obra y ejecución según tu rubro</p>
-                </div>
-                <div id="sub_mo" class="text-olive font-black text-2xl bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100">$ 0</div>
-            </div>
-            <div id="cont-mo" class="space-y-6"></div>
-            <button onclick="addItem('MO')" class="btn-primary w-full py-5 mt-8 flex items-center justify-center gap-3 text-lg hover-dynamic">
-                <i data-lucide="plus-circle"></i> Agregar Servicio / Tarea
-            </button>
-        </section>
-
-        <!-- 3. MATERIALES -->
-        <section id="sec-mat" class="app-section">
-            <div class="flex justify-between items-end mb-6 px-2 flex-wrap gap-3">
-                <div>
-                    <span class="rubro-badge mb-2" id="titulo-rubro-mat">Rubro</span>
-                    <h2 class="font-black text-slate-800 text-2xl uppercase leading-none">Insumos y Materiales</h2>
-                    <p class="text-sm text-slate-500 font-medium mt-1">Suministros requeridos según tu rubro</p>
-                </div>
-                <div id="sub_mat" class="text-slate-700 font-black text-2xl bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100">$ 0</div>
-            </div>
-            <div id="cont-mat" class="space-y-6"></div>
-            <button onclick="addItem('MAT')" class="btn-secondary w-full py-5 mt-8 flex items-center justify-center gap-3 text-lg hover-dynamic">
-                <i data-lucide="box"></i> Agregar Material / Equipo
-            </button>
-        </section>
-
-
-        <!-- 6. RESUMEN Y CIERRE -->
-        <section id="sec-pdf" class="app-section">
-            <div class="space-y-6">
-
-                <!-- Encabezado del dashboard -->
-                <div class="glass-card p-6 lg:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                       
-                        <h3 id="titulo-dashboard-tour" class="font-black text-2xl lg:text-3xl text-slate-800 uppercase">Dashboard del Documento</h3>
-                        <p class="text-slate-500 text-sm font-medium mt-1">Resumen ejecutivo antes de generar tu <span id="doc-tipo-resumen-texto">documento</span></p>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span id="badge-rubro-resumen" class="rubro-badge"><i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Rubro</span>
-                        <span id="badge-tipo-resumen" class="rubro-badge"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> Tipo</span>
-                        <span id="badge-items-resumen" class="rubro-badge"><i data-lucide="list-checks" class="w-3.5 h-3.5"></i> 0 items</span>
-                    </div>
-                </div>
-
-
-                <!-- Fila de tarjetas KPI -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="kpi-card">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="bg-olive/10 p-2 rounded-xl"><i data-lucide="cog" class="w-4 h-4 text-olive"></i></div>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Servicios</span>
-                        </div>
-                        <div id="kpi-total-servicios" class="text-xl lg:text-2xl font-black text-slate-800">$ 0</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="bg-slate-100 p-2 rounded-xl"><i data-lucide="package" class="w-4 h-4 text-slate-600"></i></div>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Materiales</span>
-                        </div>
-                        <div id="kpi-total-materiales" class="text-xl lg:text-2xl font-black text-slate-800">$ 0</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="bg-olive/10 p-2 rounded-xl"><i data-lucide="coins" class="w-4 h-4 text-olive"></i></div>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Anticipo</span>
-                        </div>
-                        <div id="kpi-anticipo" class="text-xl lg:text-2xl font-black text-slate-800">No aplica</div>
-                    </div>
-                    <div class="kpi-card" style="border-color: var(--olive);">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="bg-olive/10 p-2 rounded-xl"><i data-lucide="wallet" class="w-4 h-4 text-olive"></i></div>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total General</span>
-                        </div>
-                        <div id="finalTotal" class="text-xl lg:text-2xl font-black text-olive">$ 0</div>
-                    </div>
-                </div>
-
-                <!-- Gráfico + desglose -->
-                <div class="glass-card p-6 lg:p-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-                    <div class="relative h-64 lg:h-72 w-full flex justify-center">
-                        <canvas id="statsChart"></canvas>
-                    </div>
-                    <div class="space-y-5">
-                        <p id="statsSummary" class="text-sm font-bold text-olive uppercase bg-olive/10 inline-block px-4 py-2 rounded-full"></p>
-
-                        <div class="space-y-3">
-                            <div class="flex justify-between text-xs font-black uppercase text-slate-500">
-                                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-olive inline-block"></span> Servicios / M.O.</span>
-                                <span id="pct-servicios">0%</span>
-                            </div>
-                            <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div id="bar-servicios" class="h-full bg-olive rounded-full transition-all" style="width:0%"></div>
-                            </div>
-
-                            <div class="flex justify-between text-xs font-black uppercase text-slate-500 pt-2">
-                                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-800 inline-block"></span> Insumos / Materiales</span>
-                                <span id="pct-materiales">0%</span>
-                            </div>
-                            <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div id="bar-materiales" class="h-full bg-slate-800 rounded-full transition-all" style="width:0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-<!-- opciones adicionales -->
-
-<div class="glass-card p-6 lg:p-8 space-y-6 mb-6">
-    <h3 class="font-black text-lg text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-4">Opciones Adicionales</h3>
-
-    <div id="tour-switch-fotos" class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 transition-all hover-dynamic">
-        <div class="flex items-center gap-4">
-            <div class="bg-olive/10 p-3 rounded-xl shadow-sm"><i data-lucide="camera" class="w-5 h-5 text-olive"></i></div>
-            <div>
-                <p class="text-sm font-black text-slate-800 uppercase">Evidencia Fotográfica</p>
-                <p class="text-xs text-slate-500 font-medium">Adjunta fotografías del estado inicial o avances.</p>
-            </div>
-        </div>
-        <label class="relative inline-flex items-center cursor-pointer shrink-0">
-            <input type="checkbox" id="chk_evidencia" class="sr-only peer" onchange="toggleEvidencia()">
-            <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--olive)]"></div>
-        </label>
-    </div>
-    
-    <div id="panel_evidencia" class="hidden pt-4 space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div id="cont-fotos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4"></div>
-        <label class="w-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-olive/40 cursor-pointer hover:bg-olive/5 transition-all rounded-[2rem] hover-dynamic bg-white">
-            <input type="file" class="hidden" multiple accept="image/*" onchange="handlePhotos(this)">
-            <div class="bg-olive/10 p-4 rounded-full mb-3"><i data-lucide="camera" class="w-8 h-8 text-olive"></i></div>
-            <span class="text-sm font-black uppercase text-slate-700 tracking-widest">Click para Subir Fotos</span>
-        </label>
+        <p class="text-[12.5px] font-semibold leading-tight">
+          Usado por técnicos, contratistas<br class="hidden sm:block"> y prestadores de servicios
+        </p>
+      </div>
     </div>
 
-    <div id="tour-switch-firma" class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 transition-all hover-dynamic">
-        <div class="flex items-center gap-4">
-            <div class="bg-olive/10 p-3 rounded-xl shadow-sm"><i data-lucide="pen-tool" class="w-5 h-5 text-olive"></i></div>
-            <div>
-                <p class="text-sm font-black text-slate-800 uppercase">Requerir Firma Digital</p>
-                <p class="text-xs text-slate-500 font-medium">Habilita el lienzo para la firma de ambas partes.</p>
-            </div>
+    <!-- Mockup: laptop dashboard + floating phone with document + signature -->
+    <div class="relative reveal" data-reveal>
+      <div class="doc-mock relative mx-auto max-w-[300px] md:max-w-[340px] p-6 rotate-[-3deg]">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <p class="mono text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cotización</p>
+            <p class="mono text-[13px] font-bold text-ink">N° 0148</p>
+          </div>
+          <span class="w-10 h-10 rounded-lg bg-soft flex items-center justify-center">
+            <i data-lucide="hammer" class="w-5 h-5 text-deep"></i>
+          </span>
         </div>
-        <label class="relative inline-flex items-center cursor-pointer shrink-0">
-            <input type="checkbox" id="chk_firma_modulo" class="sr-only peer" onchange="toggleFirmaModulo()">
-            <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--olive)]"></div>
-        </label>
-    </div>
 
-    <div id="panel_firma" class="hidden pt-4 space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center bg-white p-2 rounded-2xl border border-slate-200 mx-auto md:mx-0 w-fit shadow-sm">
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="switch-firma" class="sr-only peer" onchange="cambiarFirmante()">
-                    <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--olive)]"></div>
-                    <span id="label-firmante" class="ml-3 text-[10px] font-black text-slate-600 uppercase tracking-widest">Firma: EMPRESA</span>
-                </label>
-            </div>
-            <button onclick="limpiarCanvas()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl flex items-center justify-center gap-2 transition-all text-xs uppercase">
-                <i data-lucide="eraser" class="w-4 h-4"></i> Limpiar
-            </button>
+        <div class="space-y-2.5 mb-5">
+          <div class="flex justify-between items-center">
+            <div class="doc-line w-28"></div>
+            <span class="mono text-[11px] font-bold text-slate-500">$ 45.000</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <div class="doc-line w-20"></div>
+            <span class="mono text-[11px] font-bold text-slate-500">$ 22.500</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <div class="doc-line w-24"></div>
+            <span class="mono text-[11px] font-bold text-slate-500">$ 61.000</span>
+          </div>
         </div>
-        <div class="relative w-full max-w-lg mx-auto bg-white rounded-2xl border-2 border-dashed border-slate-300 overflow-hidden shadow-inner touch-none">
-            <canvas id="canvas-firma" class="w-full h-64 cursor-crosshair"></canvas>
-            <div class="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none">
-                <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">Área de Firma</span>
-            </div>
+
+        <div class="border-t border-dashed border-slate-200 pt-3 mb-5 flex justify-between items-center">
+          <span class="text-[12px] font-extrabold text-ink uppercase tracking-wide">Total</span>
+          <span class="mono text-[16px] font-extrabold text-deep">$ 128.500</span>
         </div>
+
+        <div class="relative h-16 rounded-xl bg-soft/60 flex items-center justify-center overflow-hidden">
+          <svg viewBox="0 0 220 60" class="w-40 h-10">
+            <path class="sig-path" d="M8,42 C 22,10 34,10 42,32 C 50,54 58,20 66,18 C 74,16 78,44 90,40 C 104,36 108,14 122,16 C 138,18 138,46 152,44 C 166,42 168,20 182,24 C 194,27 198,40 210,34"
+              fill="none" stroke="#1D4E89" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span class="stamp-paid absolute bottom-1 right-3 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded">Firmado</span>
+        </div>
+      </div>
+
+      <!-- WhatsApp send bubble -->
+      <div class="wa-bubble absolute -bottom-4 -left-4 md:-left-10 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-2.5 max-w-[210px]">
+        <span class="w-8 h-8 rounded-full bg-green flex items-center justify-center flex-shrink-0">
+          <i data-lucide="send" class="w-3.5 h-3.5 text-white"></i>
+        </span>
+        <p class="text-[11.5px] font-bold text-ink leading-tight">Enviado por WhatsApp ✓</p>
+      </div>
+
+      <!-- floating phone chip -->
+      <div class="phone-float absolute -top-6 -right-3 md:-right-8 bg-white rounded-2xl shadow-xl p-3 hidden sm:block">
+        <i data-lucide="smartphone" class="w-6 h-6 text-deep"></i>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- signature divider -->
+<div class="max-w-6xl mx-auto px-6 -mt-2 mb-4">
+  <svg class="sig-divider w-full h-6" data-sig viewBox="0 0 1000 30" preserveAspectRatio="none">
+    <path d="M0,15 C 100,2 150,28 250,15 C 350,2 400,28 500,15 C 600,2 650,28 750,15 C 850,2 900,28 1000,15" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+  </svg>
 </div>
 
-
-                <!-- Acciones -->
-                <div class="glass-card p-6 lg:p-10 space-y-6">
-                    <div id="Generar-PDF">
-                        <button onclick="abrirModalEnviarDocumento()" class="btn-primary w-full py-2 text-base flex items-center justify-center gap-3 hover-dynamic">
-                            <i data-lucide="send" class="w-6 h-6"></i> Enviar / Descargar
-                        </button>
-                    </div>
-
-                   
-
-                    <button onclick="nuevoDocumento()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-2xl py-4 font-black text-xs uppercase flex items-center justify-center gap-3 transition-all border border-slate-200">
-                        <i data-lucide="file-plus-2" class="w-5 h-5"></i> Crear Nuevo / Limpiar Todo
-                    </button>
-                </div>
-            </div>
-        </section>
-
+<!-- ============ PROBLEMA VS SOLUCIÓN ============ -->
+<section class="py-20 md:py-28">
+  <div class="max-w-6xl mx-auto px-5 md:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-14 reveal" data-reveal>
+      <p class="text-[12px] font-extrabold uppercase tracking-widest text-accent mb-3">Antes vs. Ahora</p>
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-ink tracking-tight">Cotizar ya no debería tomarte toda la tarde</h2>
     </div>
-</main>
-    <nav id="mobile-nav" class="hidden lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 px-4 py-3 pb-6 flex justify-start items-center gap-2 overflow-x-auto z-[100] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-    <button onclick="nav('empresa', this)" class="tab-btn" id="tab-btn-empresa"><i data-lucide="building-2"></i></button>
-    <button onclick="nav('cliente', this)" class="tab-btn active"><i data-lucide="user-circle"></i></button>
-    <button onclick="nav('mo', this)" class="tab-btn"><i data-lucide="cog"></i></button>
-    <button onclick="nav('mat', this)" class="tab-btn"><i data-lucide="package"></i></button>
-    <button onclick="nav('pdf', this)" class="tab-btn"><i data-lucide="file-check"></i></button>
-</nav>
 
-<!-- MODAL DE SOPORTE / AYUDA -->
-<div id="modal-soporte" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
-    <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-8 relative">
-        <button onclick="cerrarModalSoporte()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
-            <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-blue-50">
-            <i data-lucide="life-buoy" class="w-7 h-7 text-blue-600"></i>
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Antes -->
+      <div class="reveal bg-white border border-slate-200 rounded-3xl p-8" data-reveal>
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+            <i data-lucide="file-x" class="w-5 h-5 text-slate-400"></i>
+          </span>
+          <h3 class="font-display font-extrabold text-lg text-slate-500">A la antigua</h3>
         </div>
+        <ul class="space-y-4">
+          <li class="flex items-start gap-3">
+            <i data-lucide="x" class="w-4 h-4 text-slate-400 mt-1 flex-shrink-0"></i>
+            <span class="old-way text-slate-500 font-medium">Planillas de Excel distintas para cada cliente</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="x" class="w-4 h-4 text-slate-400 mt-1 flex-shrink-0"></i>
+            <span class="old-way text-slate-500 font-medium">Presupuestos a mano, difíciles de leer</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="x" class="w-4 h-4 text-slate-400 mt-1 flex-shrink-0"></i>
+            <span class="old-way text-slate-500 font-medium">Transcribir montos al chat, uno por uno</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="x" class="w-4 h-4 text-slate-400 mt-1 flex-shrink-0"></i>
+            <span class="old-way text-slate-500 font-medium">Sin registro de qué se firmó ni cuándo</span>
+          </li>
+        </ul>
+      </div>
 
-        <h3 class="text-xl font-black text-slate-800 mb-1">¿Necesitas ayuda?</h3>
-        <p class="text-sm text-slate-500 mb-6">Si algo falló o tienes dudas usando la app, aquí tienes opciones rápidas.</p>
-
-        <div class="space-y-3 mb-6">
-            <div class="flex items-start gap-3 bg-slate-50 rounded-2xl p-4">
-                <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
-                <p class="text-xs font-semibold text-slate-600">Si la pantalla se ve rara o un botón no responde, primero intenta <b>recargar la página</b> (no perderás la sesión iniciada).</p>
-            </div>
-            <div class="flex items-start gap-3 bg-slate-50 rounded-2xl p-4">
-                <i data-lucide="save" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
-                <p class="text-xs font-semibold text-slate-600">Tu logo y datos de empresa se guardan en este navegador. Si cambias de computador, deberás configurarlos de nuevo.</p>
-            </div>
+      <!-- Ahora -->
+      <div class="reveal bg-dark rounded-3xl p-8 relative overflow-hidden" data-reveal>
+        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-green/20 rounded-full glow-blob"></div>
+        <div class="relative flex items-center gap-3 mb-6">
+          <span class="w-10 h-10 rounded-xl bg-green/20 flex items-center justify-center">
+            <i data-lucide="badge-check" class="w-5 h-5 text-green"></i>
+          </span>
+          <h3 class="font-display font-extrabold text-lg text-white">Con Gestor PRO</h3>
         </div>
-
-        <button onclick="location.reload()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl flex items-center justify-center gap-2 mb-3 transition-all">
-            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Recargar la aplicación
-        </button>
-
-        <div class="grid grid-cols-2 gap-3">
-            <button onclick="contactarSoportePorWhatsApp()" class="py-3 bg-[#25D366] hover:bg-[#20b858] text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs uppercase transition-all">
-                <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
-            </button>
-            <button onclick="contactarSoportePorEmail()" class="py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs uppercase transition-all">
-                <i data-lucide="mail" class="w-4 h-4"></i> Correo
-            </button>
-        </div>
+        <ul class="relative space-y-4">
+          <li class="flex items-start gap-3">
+            <i data-lucide="check" class="w-4 h-4 text-green mt-1 flex-shrink-0"></i>
+            <span class="text-slate-200 font-medium">Una plantilla por rubro, lista para usar</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="check" class="w-4 h-4 text-green mt-1 flex-shrink-0"></i>
+            <span class="text-slate-200 font-medium">PDF profesional con tu logo, en un clic</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="check" class="w-4 h-4 text-green mt-1 flex-shrink-0"></i>
+            <span class="text-slate-200 font-medium">Mensaje de WhatsApp redactado automáticamente</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="check" class="w-4 h-4 text-green mt-1 flex-shrink-0"></i>
+            <span class="text-slate-200 font-medium">Firma digital guardada junto al documento</span>
+          </li>
+        </ul>
+      </div>
     </div>
-</div>
-<!-- MODAL DE CAMPOS PENDIENTES POR COMPLETAR -->
-<div id="modal-campos-pendientes" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
-    <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-8 relative max-h-[85vh] overflow-y-auto">
-        <button onclick="cerrarModalCamposPendientes()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
-            <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-red-50">
-            <i data-lucide="clipboard-list" class="w-7 h-7 text-red-500"></i>
-        </div>
-        <h3 class="text-xl font-black text-slate-800 mb-1">Faltan datos por completar</h3>
-        <p class="text-sm text-slate-500 mb-6">Antes de generar el documento, completa los siguientes campos. Toca uno para ir directo a él.</p>
-        <div id="lista-campos-pendientes" class="space-y-2 mb-2"></div>
+  </div>
+</section>
+
+<!-- ============ GRID DE FUNCIONES ============ -->
+<section id="funciones" class="py-20 md:py-28 bg-soft/50">
+  <div class="max-w-6xl mx-auto px-5 md:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-14 reveal" data-reveal>
+      <p class="text-[12px] font-extrabold uppercase tracking-widest text-accent mb-3">Todo en una sola app</p>
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-ink tracking-tight">Los seis superpoderes de tu negocio</h2>
     </div>
-</div>
 
-<!-- MODAL: ELEGIR CÓMO ENVIAR / DESCARGAR EL DOCUMENTO -->
-<div id="modal-enviar-documento" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
-    <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-8 relative max-h-[85vh] overflow-y-auto">
-        <button onclick="cerrarModalEnviarDocumento()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
-            <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-olive-soft">
-            <i data-lucide="send" class="w-7 h-7 text-olive"></i>
-        </div>
-        <h3 class="text-xl font-black text-slate-800 mb-1">¿Cómo quieres entregar el documento?</h3>
-        <p class="text-sm text-slate-500 mb-6">Elige una opción. Puedes volver a este mismo lugar cuando quieras usar otra vía de envío.</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="feat-card reveal bg-white border border-slate-200 rounded-3xl p-7" data-reveal>
+        <span class="w-12 h-12 rounded-2xl bg-soft flex items-center justify-center mb-5">
+          <i data-lucide="layout-grid" class="w-6 h-6 text-deep"></i>
+        </span>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">Multi-rubro inteligente</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed">La app se adapta a tu sector —construcción, belleza, tecnología, hogar— y precarga servicios e insumos típicos para que cotices sin escribir todo de cero.</p>
+      </div>
 
-        <div class="space-y-3">
-            <button onclick="accionEnviarDocumento('pdf')" class="w-full flex items-center gap-4 text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-olive hover:bg-olive-soft transition-all">
-                <div class="bg-olive/10 p-3 rounded-xl shrink-0"><i data-lucide="file-check-2" class="w-5 h-5 text-olive"></i></div>
-                <div class="flex-1 min-w-0">
-                    <p class="font-black text-sm text-slate-800">Generar PDF</p>
-                    <p class="text-[11px] text-slate-500 font-medium leading-snug">Descarga el documento en tu dispositivo, listo para guardar o imprimir.</p>
-                </div>
-            </button>
+      <div class="feat-card reveal bg-white border border-slate-200 rounded-3xl p-7" data-reveal>
+        <span class="w-12 h-12 rounded-2xl bg-soft flex items-center justify-center mb-5">
+          <i data-lucide="signature" class="w-6 h-6 text-deep"></i>
+        </span>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">Firma digital integrada</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed">Cliente y empresa firman directo en la pantalla, con el dedo o el mouse. El documento queda validado sin imprimir nada.</p>
+      </div>
 
-            <button onclick="accionEnviarDocumento('whatsapp')" class="w-full flex items-center gap-4 text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-[#25D366] hover:bg-green-50 transition-all">
-                <div class="bg-green-100 p-3 rounded-xl shrink-0"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-5 h-5" alt="WhatsApp"></div>
-                <div class="flex-1 min-w-0">
-                    <p class="font-black text-sm text-slate-800">Enviar por WhatsApp</p>
-                    <p class="text-[11px] text-slate-500 font-medium leading-snug">Abre WhatsApp con un mensaje listo para tu cliente.</p>
-                </div>
-            </button>
+      <div class="feat-card reveal bg-white border border-slate-200 rounded-3xl p-7" data-reveal>
+        <span class="w-12 h-12 rounded-2xl bg-soft flex items-center justify-center mb-5">
+          <i data-lucide="file-output" class="w-6 h-6 text-deep"></i>
+        </span>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">PDF PRO con tu logo</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed">Cotizaciones, facturas y órdenes de trabajo con los colores de tu marca y desglose profesional, generadas en un solo clic.</p>
+      </div>
 
-            <button onclick="accionEnviarDocumento('email')" class="w-full flex items-center gap-4 text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-slate-800 hover:bg-slate-50 transition-all">
-                <div class="bg-slate-100 p-3 rounded-xl shrink-0"><i data-lucide="mail" class="w-5 h-5 text-slate-700"></i></div>
-                <div class="flex-1 min-w-0">
-                    <p class="font-black text-sm text-slate-800">Enviar por Correo</p>
-                    <p class="text-[11px] text-slate-500 font-medium leading-snug">Abre tu app de correo con el mensaje pre-armado para tu cliente.</p>
-                </div>
-            </button>
-        </div>
+      <div class="feat-card reveal bg-white border border-slate-200 rounded-3xl p-7" data-reveal>
+        <span class="w-12 h-12 rounded-2xl bg-green/10 flex items-center justify-center mb-5">
+          <i data-lucide="message-circle" class="w-6 h-6 text-green"></i>
+        </span>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">Envío instantáneo por WhatsApp</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed">El resumen de importes y anticipos se redacta solo y queda listo para enviar al chat del cliente. Nada de transcribir a mano.</p>
+      </div>
+
+      <div class="feat-card reveal bg-white border border-slate-200 rounded-3xl p-7" data-reveal>
+        <span class="w-12 h-12 rounded-2xl bg-soft flex items-center justify-center mb-5">
+          <i data-lucide="chart-no-axes-combined" class="w-6 h-6 text-deep"></i>
+        </span>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">Anticipos y KPIs en vivo</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed">Calcula porcentajes de adelanto al instante y mira un panel financiero con el total de mano de obra y materiales.</p>
+      </div>
+
+      <div class="feat-card reveal bg-white border border-slate-200 rounded-3xl p-7" data-reveal>
+        <span class="w-12 h-12 rounded-2xl bg-soft flex items-center justify-center mb-5">
+          <i data-lucide="smartphone" class="w-6 h-6 text-deep"></i>
+        </span>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">100% mobile-first</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed">Fluida y liviana tanto en la oficina como en el terreno. Sin instalaciones pesadas, sin fricción, siempre a mano.</p>
+      </div>
     </div>
-</div>
+  </div>
+</section>
 
-<!-- Contenedor de la notificación flotante móvil "Configura tu empresa" (se rellena desde script.js) -->
-<div id="toast-aviso-empresa-wrapper"></div>
+<!-- ============ CÓMO FUNCIONA ============ -->
+<section id="como-funciona" class="py-20 md:py-28">
+  <div class="max-w-6xl mx-auto px-5 md:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-16 reveal" data-reveal>
+      <p class="text-[12px] font-extrabold uppercase tracking-widest text-accent mb-3">Tres pasos, no treinta</p>
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-ink tracking-tight">De cero a cotización enviada</h2>
+    </div>
 
-<!-- Contenedor del Tour guiado (se rellena desde script.js) -->
-<div id="tour-wrapper"></div>
+    <div class="grid md:grid-cols-3 gap-8 relative">
+      <div class="hidden md:block absolute top-9 left-[16%] right-[16%] h-px bg-slate-200"></div>
+
+      <div class="reveal relative text-center" data-reveal>
+        <div class="mono w-14 h-14 mx-auto rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center font-bold text-deep text-lg mb-6">01</div>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">Configura tu empresa</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed max-w-xs mx-auto">Carga los datos de tu negocio y sube tu logo. Tus documentos salen con tu marca desde el primer día.</p>
+      </div>
+
+      <div class="reveal relative text-center" data-reveal>
+        <div class="mono w-14 h-14 mx-auto rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center font-bold text-deep text-lg mb-6">02</div>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">Elige tu rubro</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed max-w-xs mx-auto">Selecciona tu sector y carga servicios o materiales con precios que ya vienen precargados.</p>
+      </div>
+
+      <div class="reveal relative text-center" data-reveal>
+        <div class="mono w-14 h-14 mx-auto rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center font-bold text-deep text-lg mb-6">03</div>
+        <h3 class="font-display font-extrabold text-[17px] text-ink mb-2">Envía y cobra</h3>
+        <p class="text-[14px] text-slate-500 leading-relaxed max-w-xs mx-auto">Manda por WhatsApp o descarga el PDF firmado. Todo en segundos, sin salir de la app.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRECIOS ============ -->
+<section id="precios" class="py-20 md:py-28 bg-soft/50">
+  <div class="max-w-6xl mx-auto px-5 md:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-14 reveal" data-reveal>
+      <p class="text-[12px] font-extrabold uppercase tracking-widest text-accent mb-3">Precios</p>
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-ink tracking-tight">Un plan, todas las funciones</h2>
+      <p class="mt-4 text-slate-500">Sin letra chica. Cancela cuando quieras.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+      <!-- Mensual -->
+      <div class="reveal bg-white border border-slate-200 rounded-3xl p-8 flex flex-col" data-reveal>
+        <h3 class="font-display font-extrabold text-lg text-ink mb-1">Mensual</h3>
+        <p class="text-[13px] text-slate-500 mb-6">Ideal para empezar</p>
+        <div class="mono flex items-baseline gap-1 mb-6">
+          <span class="text-4xl font-bold text-ink">$9.990</span>
+          <span class="text-slate-400 font-semibold text-sm">/mes</span>
+        </div>
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Cotizaciones y facturas ilimitadas</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Firma digital y PDF con tu logo</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Envío directo por WhatsApp</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Panel de KPIs y anticipos</li>
+        </ul>
+        <a href="app/app.html"target="_blank" rel="noopener noreferrer" class="text-center px-6 py-3.5 rounded-xl border-2 border-slate-200 font-extrabold text-[13px] uppercase tracking-wide text-ink hover:border-deep hover:text-deep transition-colors">Probar Demo Gratis</a>
+      </div>
+
+      <!-- Anual -->
+      <div class="reveal price-card-pro rounded-3xl p-8 flex flex-col relative overflow-hidden shadow-[0_25px_50px_-15px_rgba(15,44,76,0.45)]" data-reveal>
+        <span class="absolute top-6 right-6 bg-green text-white text-[10px] font-extrabold uppercase tracking-wider rounded-full px-3 py-1">2 meses gratis</span>
+        <h3 class="font-display font-extrabold text-lg text-white mb-1">Anual PRO</h3>
+        <p class="text-[13px] text-blue-200 mb-6">Para negocios en crecimiento</p>
+        <div class="mono flex items-baseline gap-1 mb-6">
+          <span class="text-4xl font-bold text-white">$7.990</span>
+          <span class="text-blue-200 font-semibold text-sm">/mes</span>
+        </div>
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-blue-100"><i data-lucide="check" class="w-4 h-4 text-green"></i>Todo lo del plan mensual</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-blue-100"><i data-lucide="check" class="w-4 h-4 text-green"></i>Múltiples rubros en una cuenta</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-blue-100"><i data-lucide="check" class="w-4 h-4 text-green"></i>Soporte prioritario por WhatsApp</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-blue-100"><i data-lucide="check" class="w-4 h-4 text-green"></i>Respaldo automático de documentos</li>
+        </ul>
+        <a href="#top" class="text-center px-6 py-3.5 rounded-xl bg-white text-dark font-extrabold text-[13px] uppercase tracking-wide hover:bg-blue-50 transition-colors">Adquirir Licencia PRO</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="py-20 md:py-28">
+  <div class="max-w-3xl mx-auto px-5 md:px-6">
+    <div class="text-center mb-14 reveal" data-reveal>
+      <p class="text-[12px] font-extrabold uppercase tracking-widest text-accent mb-3">Preguntas frecuentes</p>
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-ink tracking-tight">Dudas resueltas</h2>
+    </div>
+
+    <div class="space-y-3">
+      <details class="faq-item reveal bg-white border border-slate-200 rounded-2xl px-6 py-5" data-reveal>
+        <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[15px] text-ink">
+          ¿Puedo usarlo en mi celular?
+          <i data-lucide="plus" class="chev w-5 h-5 text-deep transition-transform flex-shrink-0"></i>
+        </summary>
+        <p class="faq-body text-[14px] text-slate-500 leading-relaxed mt-3">Sí. Gestor PRO es 100% mobile-first: funciona igual de rápido en tu celular que en tu computadora, sin instalar nada pesado.</p>
+      </details>
+
+      <details class="faq-item reveal bg-white border border-slate-200 rounded-2xl px-6 py-5" data-reveal>
+        <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[15px] text-ink">
+          ¿Mis datos están seguros?
+          <i data-lucide="plus" class="chev w-5 h-5 text-deep transition-transform flex-shrink-0"></i>
+        </summary>
+        <p class="faq-body text-[14px] text-slate-500 leading-relaxed mt-3">Tus cotizaciones, facturas y firmas se guardan de forma cifrada, con respaldo automático, para que nunca pierdas un documento.</p>
+      </details>
+
+      <details class="faq-item reveal bg-white border border-slate-200 rounded-2xl px-6 py-5" data-reveal>
+        <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[15px] text-ink">
+          ¿Puedo personalizar mi rubro?
+          <i data-lucide="plus" class="chev w-5 h-5 text-deep transition-transform flex-shrink-0"></i>
+        </summary>
+        <p class="faq-body text-[14px] text-slate-500 leading-relaxed mt-3">Sí. Además de las plantillas precargadas por sector, puedes agregar, editar o quitar servicios e insumos según cómo trabajes tú.</p>
+      </details>
+
+      <details class="faq-item reveal bg-white border border-slate-200 rounded-2xl px-6 py-5" data-reveal>
+        <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[15px] text-ink">
+          ¿La firma digital tiene validez?
+          <i data-lucide="plus" class="chev w-5 h-5 text-deep transition-transform flex-shrink-0"></i>
+        </summary>
+        <p class="faq-body text-[14px] text-slate-500 leading-relaxed mt-3">La firma queda registrada junto al documento como constancia de conformidad entre las partes, adjunta al PDF final.</p>
+      </details>
+
+      <details class="faq-item reveal bg-white border border-slate-200 rounded-2xl px-6 py-5" data-reveal>
+        <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[15px] text-ink">
+          ¿Puedo cancelar cuando quiera?
+          <i data-lucide="plus" class="chev w-5 h-5 text-deep transition-transform flex-shrink-0"></i>
+        </summary>
+        <p class="faq-body text-[14px] text-slate-500 leading-relaxed mt-3">Sí, no hay contratos forzosos. Cancelas cuando quieras desde tu cuenta, sin llamadas ni trámites.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<section class="py-16 md:py-20">
+  <div class="max-w-5xl mx-auto px-5 md:px-6">
+    <div class="reveal relative bg-gradient-to-br from-deep to-dark rounded-[32px] px-8 py-14 md:py-16 text-center overflow-hidden" data-reveal>
+      <div class="absolute -top-16 -right-16 w-64 h-64 bg-green/20 rounded-full glow-blob"></div>
+      <div class="absolute -bottom-16 -left-16 w-64 h-64 bg-accent/20 rounded-full glow-blob"></div>
+      <div class="relative">
+        <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white tracking-tight mb-4">Tu próxima cotización, lista en minutos</h2>
+        <p class="text-blue-100 max-w-xl mx-auto mb-8">Profesionaliza tu negocio hoy. Sin tarjeta de crédito para empezar.</p>
+
+
+
+        <a href="app/app.html" target="_blank" rel="noopener noreferrer"class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-dark font-extrabold text-[13.5px] uppercase tracking-wide shadow-xl hover:-translate-y-0.5 transition-transform">
+          Probar Demo Gratis
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-slate-200 pt-14 pb-8">
+  <div class="max-w-6xl mx-auto px-5 md:px-6">
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+      <div class="col-span-2 md:col-span-1">
+        <a href="#top" class="flex items-center gap-2.5 mb-4">
+          <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-deep to-dark flex items-center justify-center">
+            <i data-lucide="file-signature" class="w-4 h-4 text-white"></i>
+          </span>
+          <span class="font-display font-extrabold text-[14px] text-ink">Gestor<span class="text-deep">PRO</span></span>
+        </a>
+        <p class="text-[13px] text-slate-500 leading-relaxed max-w-[220px]">Cotizaciones y facturas profesionales, firmadas y enviadas en segundos.</p>
+      </div>
+
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Producto</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li><a href="#funciones" class="hover:text-deep transition-colors">Funciones</a></li>
+          <li><a href="#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a></li>
+          <li><a href="#precios" class="hover:text-deep transition-colors">Precios</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Soporte</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li><a href="#faq" class="hover:text-deep transition-colors">Preguntas frecuentes</a></li>
+          <li><a href="#" class="hover:text-deep transition-colors">Centro de ayuda</a></li>
+          <li><a href="#" class="hover:text-deep transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Contacto</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li class="flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>hola@gestorpro.app</li>
+          <li class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3.5 h-3.5 text-slate-400"></i>Chat por WhatsApp</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-[12px] text-slate-400 font-medium">© 2026 Gestor PRO. Todos los derechos reservados.</p>
+      <div class="flex items-center gap-5 text-[12px] font-semibold text-slate-400">
+        <a href="#" class="hover:text-deep transition-colors">Privacidad</a>
+        <a href="#" class="hover:text-deep transition-colors">Términos</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script src="script.js"></script>
+
 </body>
 </html>

@@ -1,0 +1,350 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
+
+:root {
+    --olive: #1D4E89;
+    --olive-light: #3B82F6;
+    --olive-dark: #0F2C4C;
+    --olive-soft: #EAF2FB;
+    --slate: #1e293b;
+    --slate-light: #64748b;
+    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
+}
+
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--slate);
+    overscroll-behavior-y: none;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--olive-light); }
+
+.input-dynamic, select, textarea {
+    background-color: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    padding: 0.9rem 1.2rem !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    outline: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);
+    width: 100%;
+    box-sizing: border-box;
+    font-weight: 600;
+    color: var(--slate);
+}
+
+.input-dynamic:hover, select:hover, textarea:hover {
+    border-color: #cbd5e1 !important;
+    transform: translateY(-1px);
+}
+
+.input-dynamic:focus, select:focus, textarea:focus {
+    border-color: var(--olive) !important;
+    box-shadow: 0 0 0 5px rgba(85, 107, 47, 0.15) !important;
+    transform: translateY(-2px);
+    background-color: #fff !important;
+}
+
+.iti { width: 100%; }
+#c_tel { padding-left: 55px !important; }
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--olive), var(--olive-dark));
+    color: white;
+    border-radius: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px -5px rgba(85, 107, 47, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--slate), #0f172a);
+    color: white;
+    border-radius: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px -5px rgba(30, 41, 59, 0.4);
+}
+
+.hover-dynamic:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.hover-dynamic:active { transform: translateY(1px) scale(0.98); }
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 28px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.tab-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 10px; color: #94a3b8;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 16px; width: 48px; height: 48px; position: relative;
+    flex-shrink: 0;
+}
+
+
+.tab-btn.active {
+    color: var(--olive); background: var(--olive-soft);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 15px -3px rgba(85, 107, 47, 0.1);
+}
+
+/* ---- Menú Móvil: Scroll Horizontal Fluido ---- */
+#mobile-nav {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Hace que el deslizamiento sea nativo y suave en iOS */
+    scrollbar-width: none; /* Oculta la barra en Firefox */
+}
+
+/* Oculta la barra de scroll en Chrome, Safari y navegadores móviles Chromium */
+#mobile-nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* Opcional: Asegura que el último botón no quede pegado al borde derecho al scrollear hasta el final */
+#mobile-nav::after {
+    content: '';
+    min-width: 8px;
+    height: 1px;
+}
+
+
+/* ---- Corrección de Centrado (Menú Móvil) ---- */
+
+/* 1. Centra el icono y el texto DENTRO de cada botón */
+#mobile-nav .tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 58px; /* Un ancho uniforme evita que se apachurren */
+    text-align: center;
+}
+
+/* 2. Centra TODO el grupo de botones en la pantalla */
+/* (Si sobran espacio se centran; si faltan espacio, se scrollean) */
+#mobile-nav::before,
+#mobile-nav::after {
+    content: '';
+    margin: auto;
+}
+
+
+
+
+
+
+.tab-btn-desktop { position: relative; overflow: hidden; }
+.tab-btn-desktop.active { background: var(--olive-soft); color: var(--olive); border-right: 4px solid var(--olive); }
+
+.app-section { display: none; opacity: 0; }
+.active-section { display: block; animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+@keyframes fadeSlideUp {
+    0% { opacity: 0; transform: translateY(30px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#signaturePad, #canvas-firma {
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 20px 20px;
+    touch-action: none;
+}
+
+/* ---- Nuevo: Selector de categorías tipo "chips" ---- */
+.categoria-select-wrapper {
+    position: relative;
+}
+.categoria-select-wrapper select {
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+}
+
+/* ---- Nuevo: Zona de subida de Logo ---- */
+.logo-dropzone {
+    border: 2px dashed rgba(85, 107, 47, 0.4);
+    border-radius: 24px;
+    background: var(--olive-soft);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.logo-dropzone:hover { background: #eaf0dd; border-color: var(--olive); }
+
+.logo-mini { object-fit: contain; }
+
+/* ---- Badge de rubro ---- */
+.rubro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--olive-soft);
+    color: var(--olive-dark);
+    font-weight: 800;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 6px 14px;
+    border-radius: 999px;
+}
+
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+/* ---- Caja de logo con fondo blanco (login) para que los PNG con transparencia se vean bien ---- */
+.login-logo-box {
+    background: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* ---- Tarjetas KPI del Dashboard (Resumen Financiero) ---- */
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid #eef2f6;
+    border-radius: 24px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--olive), var(--olive-light));
+}
+.kpi-card:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -10px rgba(0,0,0,0.08); }
+
+/* ---- Notificación flotante móvil: "Configura tu empresa" ---- */
+@keyframes toastEntrada {
+    0%   { opacity: 0; transform: translateY(20px) scale(0.9); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastRebote {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+#toast-aviso-empresa {
+    animation: toastEntrada 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+#toast-aviso-empresa .toast-icono {
+    animation: toastRebote 1.6s ease-in-out infinite;
+}
+
+
+/* ---- Login rediseñado: 100% ligado al color de marca (--olive) ---- */
+@keyframes loginBlobFloat1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(20px, 30px) scale(1.1); }
+}
+@keyframes loginBlobFloat2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-25px, -20px) scale(1.15); }
+}
+.login-blob-1 { animation: loginBlobFloat1 8s ease-in-out infinite; }
+.login-blob-2 { animation: loginBlobFloat2 10s ease-in-out infinite; }
+
+.login-input:hover { border-color: #cbd5e1; }
+.login-input:focus {
+    border-color: var(--olive) !important;
+    background: #fff !important;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--olive) 15%, transparent);
+}
+.login-input:focus ~ .login-icon-focus,
+.group\/input:focus-within .login-icon-focus { color: var(--olive); }
+
+.login-submit-btn {
+    background: linear-gradient(135deg, var(--olive), var(--olive-dark));
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--olive) 40%, transparent);
+}
+.login-submit-btn:hover {
+    background: var(--olive-dark);
+    box-shadow: 0 15px 40px color-mix(in srgb, var(--olive) 50%, transparent);
+}
+
+/* ---- TOUR GUIADO: ventana pequeña que sigue al elemento (spotlight) ---- */
+.tour-blocker {
+    position: fixed; inset: 0; z-index: 304; background: transparent;
+}
+.tour-spotlight {
+    position: fixed; z-index: 305; pointer-events: none;
+    border-radius: 16px;
+    box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55);
+    transition: top 0.35s cubic-bezier(0.65,0,0.35,1), left 0.35s cubic-bezier(0.65,0,0.35,1),
+                width 0.35s cubic-bezier(0.65,0,0.35,1), height 0.35s cubic-bezier(0.65,0,0.35,1);
+}
+.tour-popover {
+    position: fixed; z-index: 310;
+    width: min(300px, 88vw);
+    background: #fff; border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    padding: 18px; animation: tourPopIn 0.25s ease;
+}
+@keyframes tourPopIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+.tour-popover-arrow {
+    position: absolute; width: 14px; height: 14px; background: #fff;
+    transform: rotate(45deg);
+}
+.tour-dots { display: flex; gap: 5px; margin-top: 14px; }
+.tour-dot { width: 7px; height: 7px; border-radius: 999px; background: #e2e8f0; transition: all 0.3s ease; }
+.tour-dot.activo { width: 18px; background: var(--olive); }
+
+/* Durante el tour, las secciones cambian sin animación (para poder medir posición al instante) */
+body.tour-activo .active-section { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+/* ---- Campos obligatorios sin completar (validación antes de generar PDF) ---- */
+.campo-invalido, select.campo-invalido, .input-dynamic.campo-invalido {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
+    background-color: #fef2f2 !important;
+}
+@keyframes campoInvalidoShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+}
+.campo-invalido-shake { animation: campoInvalidoShake 0.35s ease; }
+
+.item-campo-pendiente {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    transition: all 0.2s ease;
+}
+.item-campo-pendiente:hover { background: #fee2e2; transform: translateX(3px); }
+
+/* ---- Ventana de bienvenida al Tour (mismo formato que tour-popover) ---- */
+.tour-welcome-overlay {
+    position: fixed; inset: 0; z-index: 306;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    animation: tourPopIn 0.25s ease;
+}
