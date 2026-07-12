@@ -1528,61 +1528,320 @@ function enviarEmail() {
 }
 
 // ---------------------------------------------------------------------
-// 12. SESIÓN, LIMPIEZA Y ARRANQUE
+// 12. SESIÓN (FIREBASE AUTH), REGISTRO, PRUEBA GRATIS Y PANEL ADMIN
 // ---------------------------------------------------------------------
-const USUARIOS_AUTORIZADOS = [
-    { user: "admin", pass: "admin2026", nombre: "Administrador" },
-    { user: "miguel", pass: "2356", nombre: "miguel_coronell" }
-];
+let usuarioFirebase = null;   // objeto de Auth de Firebase
+let perfilUsuario = null;     // documento de Firestore (estado, fechaVencimiento, esAdmin, etc.)
+let modoAuth = 'login';       // 'login' | 'registro'
 
-document.getElementById('login-form').addEventListener('submit', function (e) {
+// --- Cambia entre el formulario de "Iniciar sesión" y "Crear cuenta" ---
+function cambiarModoAuth(modo) {
+    modoAuth = modo;
+    const esRegistro = modo === 'registro';
+
+    document.getElementById('tab-login-btn').classList.toggle('bg-white', !esRegistro);
+    document.getElementById('tab-login-btn').classList.toggle('text-olive', !esRegistro);
+    document.getElementById('tab-login-btn').classList.toggle('shadow-sm', !esRegistro);
+    document.getElementById('tab-login-btn').classList.toggle('text-slate-400', esRegistro);
+
+    document.getElementById('tab-registro-btn').classList.toggle('bg-white', esRegistro);
+    document.getElementById('tab-registro-btn').classList.toggle('text-olive', esRegistro);
+    document.getElementById('tab-registro-btn').classList.toggle('shadow-sm', esRegistro);
+    document.getElementById('tab-registro-btn').classList.toggle('text-slate-400', !esRegistro);
+
+    document.getElementById('campo-nombre-empresa-registro').classList.toggle('hidden', !esRegistro);
+    document.getElementById('hint-pass-registro').classList.toggle('hidden', !esRegistro);
+    document.getElementById('fila-recordar-sesion').classList.toggle('hidden', esRegistro);
+
+    document.getElementById('login-titulo').textContent = esRegistro ? 'Crea tu cuenta' : 'Te damos la bienvenida';
+    document.getElementById('login-subtitulo').textContent = esRegistro
+        ? 'Empieza gratis: 3 días de prueba, sin tarjeta.'
+        : 'Ingresa tus credenciales para continuar';
+    document.getElementById('login-submit-texto').textContent = esRegistro ? 'Crear cuenta' : 'Iniciar Sesión';
+    document.getElementById('caja-info-auth-texto').textContent = esRegistro
+        ? '¿Ya tienes cuenta? Toca "Iniciar sesión" arriba'
+        : '¿Aún no tienes cuenta? Crea una y prueba gratis 3 días';
+
+    document.getElementById('login-error').classList.add('hidden');
+    lucide.createIcons();
+}
+
+// --- Traduce los códigos de error de Firebase a mensajes claros en español ---
+function traducirErrorFirebase(code) {
+    switch (code) {
+        case 'auth/invalid-email': return 'El correo ingresado no es válido.';
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential': return 'Correo o contraseña incorrectos.';
+        case 'auth/email-already-in-use': return 'Ya existe una cuenta con ese correo. Prueba iniciar sesión.';
+        case 'auth/weak-password': return 'La contraseña debe tener al menos 6 caracteres.';
+        case 'auth/too-many-requests': return 'Demasiados intentos. Espera unos minutos e intenta de nuevo.';
+        case 'auth/network-request-failed': return 'Sin conexión a internet. Verifica tu red.';
+        default: return 'Ocurrió un error. Intenta nuevamente.';
+    }
+}
+
+document.getElementById('login-form').addEventListener('submit', async function (e) {
     e.preventDefault();
-    const userIn = document.getElementById('user-input').value.trim();
-    const passIn = document.getElementById('pass-input').value.trim();
-    const recordar = document.getElementById('recordar-sesion').checked; // <-- NUEVO
+    const email = document.getElementById('user-input').value.trim();
+    const pass = document.getElementById('pass-input').value;
+    const recordar = document.getElementById('recordar-sesion').checked;
     const errorBox = document.getElementById('login-error');
+    const errorMsg = document.getElementById('login-error-msg');
     const loginCard = document.querySelector('#login-container > div');
-    const btnSubmit = e.target.querySelector('button[type="submit"]');
+    const btnSubmit = document.getElementById('login-submit-btn');
+    const btnTexto = document.getElementById('login-submit-texto');
+    const textoOriginal = btnTexto.textContent;
 
-    // Se compara el usuario sin importar mayúsculas/minúsculas (los celulares
-    // suelen poner en mayúscula la primera letra automáticamente). La
-    // contraseña sí respeta mayúsculas/minúsculas por seguridad.
-    const acceso = USUARIOS_AUTORIZADOS.find(u => u.user.toLowerCase() === userIn.toLowerCase() && u.pass === passIn);
+    errorBox.classList.add('hidden');
 
-    if (acceso) {
-        errorBox.classList.add('hidden');
-        btnSubmit.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5 animate-bounce"></i> ACCEDIENDO...`;
-        lucide.createIcons();
-        btnSubmit.style.backgroundColor = "#22c55e";
+    if (!window.FB) {
+        errorMsg.textContent = 'Conectando con el servidor, espera unos segundos e intenta de nuevo.';
+        errorBox.classList.remove('hidden');
+        return;
+    }
 
-        // --- NUEVO: guarda según si se marcó "Recordar sesión" ---
-        if (recordar) {
-            localStorage.setItem('sesion_activa', acceso.nombre);
-            localStorage.setItem('ultimo_usuario', userIn);
-            sessionStorage.removeItem('sesion_activa'); // evita choques entre ambos storages
+    btnTexto.textContent = modoAuth === 'registro' ? 'CREANDO CUENTA...' : 'ACCEDIENDO...';
+    btnSubmit.disabled = true;
+    btnSubmit.classList.add('opacity-80');
+
+    try {
+        if (modoAuth === 'registro') {
+            if (pass.length < 6) throw { code: 'auth/weak-password' };
+            const nombreEmpresa = document.getElementById('empresa-registro-input').value.trim();
+            await window.FB.registrarUsuario(email, pass, nombreEmpresa);
         } else {
-            sessionStorage.setItem('sesion_activa', acceso.nombre);
-            localStorage.removeItem('sesion_activa');
-            localStorage.removeItem('ultimo_usuario');
+            await window.FB.iniciarSesion(email, pass, recordar);
         }
-
-        loginCard.classList.add('translate-y-10', 'opacity-0', 'transition-all', 'duration-500');
-        setTimeout(() => {
-            document.getElementById('login-container').classList.add('opacity-0', 'pointer-events-none');
-            const navMovil = document.getElementById('mobile-nav');
-            if (navMovil) { navMovil.classList.remove('hidden'); navMovil.classList.add('flex'); }
-            setTimeout(() => { document.getElementById('login-container').style.display = 'none'; }, 500);
-           setTimeout(verificarYIniciarTour, 400); // <-- aviso de configuración, tras entrar
-        }, 600);
-    } else {
+        // Si todo salió bien, el listener de onAuthStateChanged se encarga
+        // de ocultar el login y mostrar la app (o la pantalla de prueba vencida).
+    } catch (err) {
+        errorMsg.textContent = traducirErrorFirebase(err.code);
         errorBox.classList.remove('hidden');
         loginCard.classList.add('animate-shake');
         setTimeout(() => loginCard.classList.remove('animate-shake'), 500);
-        document.getElementById('pass-input').value = "";
-        document.getElementById('pass-input').focus();
+        btnTexto.textContent = textoOriginal;
+        btnSubmit.disabled = false;
+        btnSubmit.classList.remove('opacity-80');
         lucide.createIcons();
     }
 });
+
+// --- Calcula cuántos días completos quedan hasta una fecha ISO (puede ser negativo) ---
+function diasRestantesHasta(fechaISO) {
+    if (!fechaISO) return null;
+    const ahora = new Date();
+    const fin = new Date(fechaISO);
+    return Math.ceil((fin - ahora) / (1000 * 60 * 60 * 24));
+}
+
+// --- Pinta el badge de estado de cuenta (prueba / activo / vencido) en el sidebar ---
+function actualizarBadgeEstadoCuenta(perfil) {
+    const badge = document.getElementById('badge-estado-cuenta');
+    if (!badge) return;
+    if (!perfil) { badge.classList.add('hidden'); return; }
+
+    badge.classList.remove('hidden');
+
+    if (perfil.esAdmin) {
+        badge.className = 'mt-3 rounded-2xl px-4 py-2.5 text-center bg-slate-800';
+        badge.innerHTML = `<span class="text-[10px] font-black text-white uppercase tracking-wider">Cuenta Administrador</span>`;
+        return;
+    }
+
+    const dias = diasRestantesHasta(perfil.fechaVencimiento);
+
+    if (perfil.estado === 'activo') {
+        badge.className = 'mt-3 rounded-2xl px-4 py-2.5 text-center bg-green-50 border border-green-100';
+        badge.innerHTML = `<span class="text-[10px] font-black text-green-600 uppercase tracking-wider">Suscripción activa · ${dias >= 0 ? dias + ' días' : 'vence hoy'}</span>`;
+    } else if (perfil.estado === 'prueba') {
+        badge.className = 'mt-3 rounded-2xl px-4 py-2.5 text-center bg-olive-soft border border-olive/20';
+        badge.innerHTML = `<span class="text-[10px] font-black text-olive uppercase tracking-wider">Prueba gratis · ${dias >= 0 ? dias + ' día(s)' : 'vencida'}</span>`;
+    } else {
+        badge.className = 'mt-3 rounded-2xl px-4 py-2.5 text-center bg-red-50 border border-red-100';
+        badge.innerHTML = `<span class="text-[10px] font-black text-red-600 uppercase tracking-wider">Cuenta vencida</span>`;
+    }
+}
+
+function mostrarLogin() {
+    const loginPage = document.getElementById('login-container');
+    const navMovil = document.getElementById('mobile-nav');
+    document.getElementById('pantalla-vencido').classList.add('hidden');
+    loginPage.style.display = 'flex';
+    loginPage.classList.remove('opacity-0', 'pointer-events-none');
+    const loginCard = loginPage.querySelector('#login-container > div');
+    loginCard.classList.remove('translate-y-10', 'opacity-0');
+    if (navMovil) { navMovil.classList.add('hidden'); navMovil.classList.remove('flex'); }
+    document.getElementById('login-form').reset();
+    const btnSubmit = document.getElementById('login-submit-btn');
+    btnSubmit.disabled = false;
+    btnSubmit.classList.remove('opacity-80');
+    lucide.createIcons();
+}
+
+function mostrarPantallaVencida() {
+    document.getElementById('login-container').style.display = 'none';
+    const navMovil = document.getElementById('mobile-nav');
+    if (navMovil) { navMovil.classList.add('hidden'); navMovil.classList.remove('flex'); }
+    document.getElementById('pantalla-vencido').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function mostrarApp() {
+    const loginPage = document.getElementById('login-container');
+    document.getElementById('pantalla-vencido').classList.add('hidden');
+    const navMovil = document.getElementById('mobile-nav');
+    if (navMovil) { navMovil.classList.remove('hidden'); navMovil.classList.add('flex'); }
+    loginPage.classList.add('opacity-0', 'pointer-events-none');
+    setTimeout(() => { loginPage.style.display = 'none'; }, 300);
+
+    const esAdmin = !!(perfilUsuario && perfilUsuario.esAdmin);
+    document.getElementById('tab-btn-admin-desktop').classList.toggle('hidden', !esAdmin);
+    document.getElementById('tab-btn-admin-movil').classList.toggle('hidden', !esAdmin);
+
+    actualizarBadgeEstadoCuenta(perfilUsuario);
+    lucide.createIcons();
+    setTimeout(verificarYIniciarTour, 400);
+}
+
+// --- Escucha los cambios de sesión de Firebase (login, logout, recarga de página) ---
+async function manejarCambioDeAuth(user) {
+    usuarioFirebase = user;
+
+    if (!user) {
+        perfilUsuario = null;
+        mostrarLogin();
+        return;
+    }
+
+    let perfil = await window.FB.obtenerPerfilUsuario(user.uid);
+    // Pequeño reintento por si el documento de Firestore aún se está creando
+    // justo después de un registro nuevo.
+    if (!perfil) {
+        await new Promise(r => setTimeout(r, 1200));
+        perfil = await window.FB.obtenerPerfilUsuario(user.uid);
+    }
+    perfilUsuario = perfil;
+
+    if (!perfil) {
+        mostrarLogin();
+        return;
+    }
+
+    if (perfil.esAdmin) { mostrarApp(); return; }
+
+    const dias = diasRestantesHasta(perfil.fechaVencimiento);
+    const vencida = perfil.estado === 'vencido' || (dias !== null && dias < 0);
+
+    if (vencida) {
+        if (perfil.estado !== 'vencido') {
+            // Actualiza el estado en la base para que quede reflejado en el panel admin
+            try { await window.FB.marcarVencido(user.uid); } catch (_) {}
+            perfilUsuario.estado = 'vencido';
+        }
+        mostrarPantallaVencida();
+        return;
+    }
+
+    mostrarApp();
+}
+
+function iniciarListenerAuth() {
+    if (!window.FB) return;
+    window.FB.onAuthStateChanged(manejarCambioDeAuth);
+}
+if (window.FB) { iniciarListenerAuth(); } else { window.addEventListener('firebase-listo', iniciarListenerAuth); }
+
+// ---------------------------------------------------------------------
+// PANEL DE ADMINISTRACIÓN: listar usuarios, marcar pagos/vencimientos
+// ---------------------------------------------------------------------
+async function cargarPanelAdmin() {
+    const tabla = document.getElementById('admin-tabla-usuarios');
+    const resumen = document.getElementById('admin-resumen');
+    const cargando = document.getElementById('admin-cargando');
+    if (!tabla || !window.FB) return;
+
+    cargando.classList.remove('hidden');
+    tabla.innerHTML = '';
+    resumen.innerHTML = '';
+
+    let usuarios = [];
+    try {
+        usuarios = await window.FB.listarUsuarios();
+    } catch (err) {
+        cargando.textContent = 'No se pudo cargar la lista de usuarios.';
+        return;
+    }
+    cargando.classList.add('hidden');
+
+    const totalActivos = usuarios.filter(u => u.estado === 'activo').length;
+    const totalPrueba = usuarios.filter(u => u.estado === 'prueba').length;
+    const totalVencidos = usuarios.filter(u => u.estado === 'vencido').length;
+
+    resumen.innerHTML = `
+        <div class="kpi-card !p-3 text-center"><div class="text-2xl font-black text-green-600">${totalActivos}</div><div class="text-[10px] font-black text-slate-400 uppercase">Activos</div></div>
+        <div class="kpi-card !p-3 text-center"><div class="text-2xl font-black text-olive">${totalPrueba}</div><div class="text-[10px] font-black text-slate-400 uppercase">En prueba</div></div>
+        <div class="kpi-card !p-3 text-center"><div class="text-2xl font-black text-red-500">${totalVencidos}</div><div class="text-[10px] font-black text-slate-400 uppercase">Vencidos</div></div>
+    `;
+
+    if (usuarios.length === 0) {
+        tabla.innerHTML = `<tr><td colspan="5" class="text-center text-slate-400 font-bold py-8">Todavía no hay usuarios registrados.</td></tr>`;
+        return;
+    }
+
+    tabla.innerHTML = usuarios.map(u => {
+        const dias = diasRestantesHasta(u.fechaVencimiento);
+        let colorEstado = 'bg-slate-100 text-slate-500';
+        let textoEstado = u.estado || '—';
+        if (u.esAdmin) { colorEstado = 'bg-slate-800 text-white'; textoEstado = 'admin'; }
+        else if (u.estado === 'activo') colorEstado = 'bg-green-100 text-green-700';
+        else if (u.estado === 'prueba') colorEstado = 'bg-olive-soft text-olive';
+        else if (u.estado === 'vencido') colorEstado = 'bg-red-100 text-red-600';
+
+        const fechaTexto = u.fechaVencimiento ? new Date(u.fechaVencimiento).toLocaleDateString('es-AR') : '—';
+        const diasTexto = (u.esAdmin || dias === null) ? '—' : (dias >= 0 ? dias + ' d' : 'vencido');
+
+        return `
+        <tr class="border-b border-slate-50 hover:bg-slate-50/60">
+            <td class="px-2 py-3">
+                <div class="font-black text-slate-700">${u.nombreEmpresa || '(sin nombre)'}</div>
+                <div class="text-[11px] text-slate-400 font-semibold">${u.email || ''}</div>
+            </td>
+            <td class="px-2 py-3"><span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${colorEstado}">${textoEstado}</span></td>
+            <td class="px-2 py-3 text-slate-500 font-semibold text-xs">${fechaTexto}</td>
+            <td class="px-2 py-3 text-slate-500 font-semibold text-xs">${diasTexto}</td>
+            <td class="px-2 py-3">
+                <div class="flex justify-end gap-1.5 flex-wrap">
+                    ${u.esAdmin ? '' : `
+                    <button onclick="accionAdminMarcarPago('${u.id}')" class="px-2.5 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg text-[10px] font-black uppercase transition-all">Marcar pagado</button>
+                    <button onclick="accionAdminMarcarVencido('${u.id}')" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-[10px] font-black uppercase transition-all">Vencer</button>
+                    `}
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+
+    lucide.createIcons();
+}
+
+async function accionAdminMarcarPago(uid) {
+    if (!confirm('¿Marcar esta cuenta como pagada y extender ' + window.FB.DIAS_PAGO + ' días?')) return;
+    await window.FB.marcarPago(uid, window.FB.DIAS_PAGO);
+    cargarPanelAdmin();
+}
+
+async function accionAdminMarcarVencido(uid) {
+    if (!confirm('¿Marcar esta cuenta como vencida? El usuario perderá el acceso.')) return;
+    await window.FB.marcarVencido(uid);
+    cargarPanelAdmin();
+}
+
+// Cuando se navega al panel admin, se carga (o recarga) la tabla automáticamente
+const _navOriginalAdmin = nav;
+nav = function (id, btn) {
+    _navOriginalAdmin(id, btn);
+    if (id === 'admin') cargarPanelAdmin();
+};
 
 const shakeStyle = document.createElement('style');
 shakeStyle.innerHTML = `
@@ -1907,9 +2166,11 @@ function verificarYIniciarTour() {
 
 function cerrarSesion() {
     if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-        sessionStorage.removeItem('sesion_activa');
-        localStorage.removeItem('sesion_activa');   // <-- NUEVO: también borra la persistente
-        window.location.reload();
+        if (window.FB) {
+            window.FB.cerrarSesionFirebase().finally(() => window.location.reload());
+        } else {
+            window.location.reload();
+        }
     }
 }
 
@@ -1917,7 +2178,7 @@ function cerrarSesion() {
 // SOPORTE / AYUDA
 // ---------------------------------------------------------------------
 const SOPORTE_WHATSAPP = "542613863563"; // <-- reemplaza por el número de soporte (con indicativo, sin '+')
-const SOPORTE_EMAIL = "miguelcarrasquillac@gmail.com"; // <-- reemplaza por tu correo de soporte
+const SOPORTE_EMAIL = "miguelcoronell94@gmail.com"; // <-- reemplaza por tu correo de soporte
 
 function abrirModalSoporte() {
     document.getElementById('modal-soporte').classList.remove('hidden');
@@ -1927,12 +2188,14 @@ function cerrarModalSoporte() {
     document.getElementById('modal-soporte').classList.add('hidden');
 }
 function contactarSoportePorWhatsApp() {
-    const texto = `Hola, necesito soporte con la app de cotizaciones. Usuario: ${sessionStorage.getItem('sesion_activa') || 'N/A'}.`;
+    const identificacion = (perfilUsuario && perfilUsuario.email) || (usuarioFirebase && usuarioFirebase.email) || 'N/A';
+    const texto = `Hola, necesito soporte con la app de cotizaciones. Usuario: ${identificacion}.`;
     window.open(`https://wa.me/${SOPORTE_WHATSAPP}?text=${encodeURIComponent(texto)}`, '_blank');
 }
 function contactarSoportePorEmail() {
+    const identificacion = (perfilUsuario && perfilUsuario.email) || (usuarioFirebase && usuarioFirebase.email) || 'N/A';
     const asunto = "Soporte - App de Cotizaciones";
-    const cuerpo = `Hola,\n\nTengo un problema con la app.\nUsuario: ${sessionStorage.getItem('sesion_activa') || 'N/A'}\nDescripción del problema:\n\n`;
+    const cuerpo = `Hola,\n\nTengo un problema con la app.\nUsuario: ${identificacion}\nDescripción del problema:\n\n`;
     window.location.href = `mailto:${SOPORTE_EMAIL}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
 }
 
@@ -1983,28 +2246,8 @@ document.addEventListener('change', (e) => {
 });
 
 window.addEventListener('load', () => {
-    // --- NUEVO: revisa primero localStorage (persistente), luego sessionStorage (temporal) ---
-    const sesion = localStorage.getItem('sesion_activa') || sessionStorage.getItem('sesion_activa');
-    const loginPage = document.getElementById('login-container');
-    const navMovil = document.getElementById('mobile-nav');
-
-    if (sesion) {
-        loginPage.style.display = 'none';
-        if (navMovil) { navMovil.classList.remove('hidden'); navMovil.classList.add('flex'); }
-        setTimeout(verificarYIniciarTour, 400); // <-- aviso de configuración, si ya había sesión
-    } else {
-        loginPage.style.display = 'flex';
-        if (navMovil) { navMovil.classList.add('hidden'); navMovil.classList.remove('flex'); }
-
-        // --- NUEVO: prellena el usuario recordado y marca el checkbox ---
-        const ultimoUsuario = localStorage.getItem('ultimo_usuario');
-        if (ultimoUsuario) {
-            const inputUser = document.getElementById('user-input');
-            const chkRecordar = document.getElementById('recordar-sesion');
-            if (inputUser) inputUser.value = ultimoUsuario;
-            if (chkRecordar) chkRecordar.checked = true;
-        }
-    }
+    // La visibilidad de login / app / pantalla de prueba vencida ahora la
+    // controla Firebase a través de manejarCambioDeAuth() (ver sección 12).
     lucide.createIcons();
 });
 

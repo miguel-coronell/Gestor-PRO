@@ -340,6 +340,13 @@ body.tour-activo .active-section { animation: none !important; opacity: 1 !impor
 }
 .item-campo-pendiente:hover { background: #fee2e2; transform: translateX(3px); }
 
+/* ---- Panel de Administración: tabla de usuarios ---- */
+#admin-tabla-usuarios tr:last-child { border-bottom: none; }
+#sec-admin .kpi-card { border-radius: 18px; }
+
+/* ---- Pantalla de prueba / suscripción vencida ---- */
+#pantalla-vencido { animation: tourPopIn 0.3s ease; }
+
 /* ---- Ventana de bienvenida al Tour (mismo formato que tour-popover) ---- */
 .tour-welcome-overlay {
     position: fixed; inset: 0; z-index: 306;
