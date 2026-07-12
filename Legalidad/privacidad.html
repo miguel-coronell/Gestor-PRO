@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Política de Privacidad — Gestor PRO</title>
+<meta name="description" content="Cómo Gestor PRO recopila, usa y protege tus datos.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="../img/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="../img/favicon.ico">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          deep: '#1D4E89', dark: '#0F2C4C', accent: '#3B82F6', soft: '#EAF2FB',
+          ink: '#0F172A', paper: '#F8FAFC', green: '#0FA76F', greendark: '#0B7F55',
+        },
+        fontFamily: {
+          display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; color: #0F172A; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+  :focus-visible { outline: 2px solid #3B82F6; outline-offset: 3px; border-radius: 4px; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  .mobile-menu { max-height: 0; overflow: hidden; opacity: 0; transform: translateY(-8px); transition: max-height .4s cubic-bezier(0.16,1,0.3,1), opacity .3s ease, transform .3s ease; }
+  .mobile-menu.open { max-height: 420px; opacity: 1; transform: translateY(0); }
+  .mobile-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(15,23,42,0.45); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .mobile-backdrop.open { opacity: 1; pointer-events: auto; }
+  .mobile-link + .mobile-link { margin-top: 2px; }
+
+  .toc-link.active { color: #1D4E89; background: #EAF2FB; }
+  .legal-card { scroll-margin-top: 120px; }
+
+  .data-chip { background: #EAF2FB; color: #0F2C4C; font-weight: 700; font-size: 12px; padding: 6px 12px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ============ NAV ============ -->
+<header class="fixed top-0 inset-x-0 z-50">
+  <div class="mx-3 mt-3 md:mx-6 md:mt-4">
+    <nav class="relative max-w-6xl mx-auto flex items-center justify-between bg-white/80 backdrop-blur-xl border border-white rounded-2xl px-5 py-3 shadow-[0_10px_30px_-10px_rgba(15,44,76,0.15)]">
+      <a href="#top" class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-deep to-dark flex items-center justify-center shadow-md">
+          <i data-lucide="file-signature" class="w-5 h-5 text-white"></i>
+        </span>
+        <span class="font-display font-extrabold text-[15px] tracking-tight text-ink">Gestor<span class="text-deep">PRO</span></span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-8 text-[13.5px] font-semibold text-slate-500">
+        <a href="../index.html#funciones" class="hover:text-deep transition-colors">Funciones</a>
+        <a href="../index.html#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a>
+        <a href="../index.html#precios" class="hover:text-deep transition-colors">Precios</a>
+        <a href="../index.html#faq" class="hover:text-deep transition-colors">Preguntas</a>
+        <a href="contacto.html" class="hover:text-deep transition-colors">Contacto</a>
+      </div>
+      <a href="../index.html#precios" class="hidden md:inline-flex text-[13px] font-bold px-4 py-2.5 rounded-xl bg-deep text-white hover:bg-dark transition-colors shadow-sm">
+        Probar Gratis
+      </a>
+
+      <!-- Botón hamburguesa (solo móvil) -->
+      <button id="menu-btn" type="button" class="md:hidden relative w-10 h-10 rounded-xl bg-soft flex items-center justify-center" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+        <i data-lucide="menu" id="menu-icon-open" class="w-5 h-5 text-deep"></i>
+        <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 text-deep hidden"></i>
+      </button>
+    </nav>
+
+    <!-- Panel de menú móvil -->
+    <div id="mobile-menu" class="mobile-menu max-w-6xl mx-auto md:hidden">
+      <div class="mt-2 bg-white rounded-2xl border border-slate-100 shadow-[0_20px_40px_-10px_rgba(15,44,76,0.25)] p-3">
+        <a href="../index.html#funciones" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="layout-grid" class="w-[18px] h-[18px] text-deep"></i> Funciones
+        </a>
+        <a href="../index.html#como-funciona" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="route" class="w-[18px] h-[18px] text-deep"></i> Cómo funciona
+        </a>
+        <a href="../index.html#precios" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="tag" class="w-[18px] h-[18px] text-deep"></i> Precios
+        </a>
+        <a href="../index.html#faq" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="circle-help" class="w-[18px] h-[18px] text-deep"></i> Preguntas
+        </a>
+        <a href="../Legalidad/contacto.html" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+        <i data-lucide="mail" class="w-[18px] h-[18px] text-deep"></i> Contacto
+       </a>
+        <a href="../index.html#precios" class="mobile-link mt-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-deep text-white font-extrabold text-[13px] uppercase tracking-wide">
+          <i data-lucide="arrow-right" class="w-4 h-4"></i> Probar Demo Gratis
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="mobile-backdrop" class="mobile-backdrop md:hidden"></div>
+
+<!-- ============ HERO ============ -->
+<section class="pt-36 pb-14 md:pt-44 md:pb-16 bg-soft/50">
+  <div class="max-w-5xl mx-auto px-5 md:px-6">
+    <a href="../index.html" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-slate-500 hover:text-deep transition-colors mb-6">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al inicio
+    </a>
+    <span class="inline-flex items-center gap-2 bg-white border border-deep/10 rounded-full px-3.5 py-1.5 mb-5">
+      <i data-lucide="shield-check" class="w-3.5 h-3.5 text-deep"></i>
+      <span class="text-[11.5px] font-extrabold uppercase tracking-wider text-dark">Privacidad</span>
+    </span>
+    <h1 class="font-display font-extrabold text-ink text-3xl md:text-5xl tracking-tight mb-4">Política de Privacidad</h1>
+    <p class="text-slate-500 text-[15px] max-w-xl mb-6">Última actualización: <span class="mono font-semibold text-slate-600">11 de julio de 2026</span>. Aquí te explicamos, en lenguaje simple, qué datos usamos y por qué.</p>
+    <div class="flex flex-wrap gap-2">
+      <span class="data-chip"><i data-lucide="lock" class="w-3.5 h-3.5"></i>Datos cifrados</span>
+      <span class="data-chip"><i data-lucide="ban" class="w-3.5 h-3.5"></i>No vendemos tus datos</span>
+      <span class="data-chip"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i>Puedes eliminar tu cuenta cuando quieras</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTENIDO ============ -->
+<section class="py-14 md:py-20">
+  <div class="max-w-5xl mx-auto px-5 md:px-6 grid lg:grid-cols-[220px_1fr] gap-10">
+
+    <aside class="hidden lg:block sticky top-28 self-start">
+      <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-3 px-3">En esta página</p>
+      <nav id="toc" class="space-y-1">
+        <a href="#recopilamos" class="toc-link block px-3 py-2 rounded-lg text-[13px] font-semibold text-slate-500 hover:text-deep hover:bg-soft transition-colors">1. Qué recopilamos</a>
+        <a href="#uso-datos" class="toc-link block px-3 py-2 rounded-lg text-[13px] font-semibold text-slate-500 hover:text-deep hover:bg-soft transition-colors">2. Cómo lo usamos</a>
+        <a href="#almacenamiento" class="toc-link block px-3 py-2 rounded-lg text-[13px] font-semibold text-slate-500 hover:text-deep hover:bg-soft transition-colors">3. Almacenamiento</a>
+        <a href="#terceros" class="toc-link block px-3 py-2 rounded-lg text-[13px] font-semibold text-slate-500 hover:text-deep hover:bg-soft transition-colors">4. Terceros</a>
+        <a href="#cookies" class="toc-link block px-3 py-2 rounded-lg text-[13px] font-semibold text-slate-500 hover:text-deep hover:bg-soft transition-colors">5. Cookies</a>
+        <a href="#derechos" class="toc-link block px-3 py-2 rounded-lg text-[13px] font-semibold text-slate-500 hover:text-deep hover:bg-soft transition-colors">6. Tus derechos</a>
+        <a href="#cambios-priv" class="toc-link block px-3 py-2 rounded-lg text-[13px] font-semibold text-slate-500 hover:text-deep hover:bg-soft transition-colors">7. Cambios</a>
+        <a href="#contacto-priv" class="toc-link block px-3 py-2 rounded-lg text-[13px] font-semibold text-slate-500 hover:text-deep hover:bg-soft transition-colors">8. Contacto</a>
+      </nav>
+    </aside>
+
+    <div class="space-y-6">
+      <div id="recopilamos" class="legal-card reveal bg-white border border-slate-200 rounded-3xl p-7 md:p-8" data-reveal>
+        <h2 class="font-display font-extrabold text-xl text-ink mb-3 flex items-center gap-3">
+          <span class="mono w-8 h-8 rounded-lg bg-soft text-deep flex items-center justify-center text-[13px] font-bold flex-shrink-0">01</span>
+          Qué información recopilamos
+        </h2>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed mb-3">Recopilamos la información necesaria para que puedas emitir tus documentos:</p>
+        <ul class="space-y-2.5">
+          <li class="flex items-start gap-2.5 text-[14.5px] text-slate-600"><i data-lucide="user" class="w-4 h-4 text-deep mt-1 flex-shrink-0"></i>Datos de tu cuenta: nombre, correo, teléfono, rubro.</li>
+          <li class="flex items-start gap-2.5 text-[14.5px] text-slate-600"><i data-lucide="building-2" class="w-4 h-4 text-deep mt-1 flex-shrink-0"></i>Datos de tu empresa: razón social, logo, colores de marca.</li>
+          <li class="flex items-start gap-2.5 text-[14.5px] text-slate-600"><i data-lucide="file-text" class="w-4 h-4 text-deep mt-1 flex-shrink-0"></i>Contenido de tus cotizaciones y facturas, incluida la firma digital.</li>
+          <li class="flex items-start gap-2.5 text-[14.5px] text-slate-600"><i data-lucide="smartphone" class="w-4 h-4 text-deep mt-1 flex-shrink-0"></i>Datos técnicos básicos del dispositivo, para mantener la app funcionando bien.</li>
+        </ul>
+      </div>
+
+      <div id="uso-datos" class="legal-card reveal bg-white border border-slate-200 rounded-3xl p-7 md:p-8" data-reveal>
+        <h2 class="font-display font-extrabold text-xl text-ink mb-3 flex items-center gap-3">
+          <span class="mono w-8 h-8 rounded-lg bg-soft text-deep flex items-center justify-center text-[13px] font-bold flex-shrink-0">02</span>
+          Cómo usamos tu información
+        </h2>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed">Usamos tus datos exclusivamente para generar tus documentos, mantener tu historial, mostrarte el panel de KPIs y brindarte soporte cuando lo necesites. No usamos tu información para fines distintos a los descritos en esta política sin tu consentimiento explícito.</p>
+      </div>
+
+      <div id="almacenamiento" class="legal-card reveal bg-white border border-slate-200 rounded-3xl p-7 md:p-8" data-reveal>
+        <h2 class="font-display font-extrabold text-xl text-ink mb-3 flex items-center gap-3">
+          <span class="mono w-8 h-8 rounded-lg bg-soft text-deep flex items-center justify-center text-[13px] font-bold flex-shrink-0">03</span>
+          Almacenamiento y seguridad
+        </h2>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed">Tu información se almacena de forma cifrada, con respaldos automáticos periódicos. Aplicamos controles de acceso para que solo tú puedas ver tus documentos, y monitoreamos la plataforma para detectar accesos indebidos.</p>
+      </div>
+
+      <div id="terceros" class="legal-card reveal bg-white border border-slate-200 rounded-3xl p-7 md:p-8" data-reveal>
+        <h2 class="font-display font-extrabold text-xl text-ink mb-3 flex items-center gap-3">
+          <span class="mono w-8 h-8 rounded-lg bg-soft text-deep flex items-center justify-center text-[13px] font-bold flex-shrink-0">04</span>
+          Compartir información con terceros
+        </h2>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed">No vendemos ni alquilamos tus datos. Solo compartimos información con proveedores estrictamente necesarios para operar el servicio (por ejemplo, envío de mensajes por WhatsApp o alojamiento en la nube), quienes están obligados a proteger tu información.</p>
+      </div>
+
+      <div id="cookies" class="legal-card reveal bg-white border border-slate-200 rounded-3xl p-7 md:p-8" data-reveal>
+        <h2 class="font-display font-extrabold text-xl text-ink mb-3 flex items-center gap-3">
+          <span class="mono w-8 h-8 rounded-lg bg-soft text-deep flex items-center justify-center text-[13px] font-bold flex-shrink-0">05</span>
+          Cookies y tecnologías similares
+        </h2>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed">Usamos cookies esenciales para mantener tu sesión iniciada y cookies de análisis para entender cómo se usa la plataforma y mejorarla. Puedes gestionar las cookies desde la configuración de tu navegador.</p>
+      </div>
+
+      <div id="derechos" class="legal-card reveal bg-white border border-slate-200 rounded-3xl p-7 md:p-8" data-reveal>
+        <h2 class="font-display font-extrabold text-xl text-ink mb-3 flex items-center gap-3">
+          <span class="mono w-8 h-8 rounded-lg bg-soft text-deep flex items-center justify-center text-[13px] font-bold flex-shrink-0">06</span>
+          Tus derechos sobre tus datos
+        </h2>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed mb-3">En cualquier momento puedes solicitarnos:</p>
+        <ul class="grid sm:grid-cols-2 gap-2.5">
+          <li class="flex items-center gap-2.5 text-[14px] font-semibold text-slate-600"><i data-lucide="eye" class="w-4 h-4 text-deep"></i>Acceder a tus datos</li>
+          <li class="flex items-center gap-2.5 text-[14px] font-semibold text-slate-600"><i data-lucide="pencil" class="w-4 h-4 text-deep"></i>Corregir información</li>
+          <li class="flex items-center gap-2.5 text-[14px] font-semibold text-slate-600"><i data-lucide="download" class="w-4 h-4 text-deep"></i>Exportar tus documentos</li>
+          <li class="flex items-center gap-2.5 text-[14px] font-semibold text-slate-600"><i data-lucide="trash-2" class="w-4 h-4 text-deep"></i>Eliminar tu cuenta</li>
+        </ul>
+      </div>
+
+      <div id="cambios-priv" class="legal-card reveal bg-white border border-slate-200 rounded-3xl p-7 md:p-8" data-reveal>
+        <h2 class="font-display font-extrabold text-xl text-ink mb-3 flex items-center gap-3">
+          <span class="mono w-8 h-8 rounded-lg bg-soft text-deep flex items-center justify-center text-[13px] font-bold flex-shrink-0">07</span>
+          Cambios a esta política
+        </h2>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed">Si actualizamos esta política de forma relevante, te lo notificaremos por correo o dentro de la app antes de que entre en vigencia.</p>
+      </div>
+
+      <div id="contacto-priv" class="legal-card reveal bg-dark rounded-3xl p-7 md:p-8 flex flex-col sm:flex-row sm:items-center gap-5 justify-between" data-reveal>
+        <div>
+          <h2 class="font-display font-extrabold text-lg text-white mb-1.5">¿Quieres ejercer alguno de tus derechos?</h2>
+          <p class="text-[13.5px] text-blue-200">Contáctanos y lo resolvemos directamente.</p>
+        </div>
+        <a href="contacto.html" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-dark font-extrabold text-[13px] uppercase tracking-wide flex-shrink-0 hover:bg-blue-50 transition-colors">
+          Contactar <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-slate-200 pt-14 pb-8">
+  <div class="max-w-6xl mx-auto px-5 md:px-6">
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+      <div class="col-span-2 md:col-span-1">
+        <a href="#top" class="flex items-center gap-2.5 mb-4">
+          <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-deep to-dark flex items-center justify-center">
+            <i data-lucide="file-signature" class="w-4 h-4 text-white"></i>
+          </span>
+          <span class="font-display font-extrabold text-[14px] text-ink">Gestor<span class="text-deep">PRO</span></span>
+        </a>
+        <p class="text-[13px] text-slate-500 leading-relaxed max-w-[220px]">Cotizaciones y facturas profesionales, firmadas y enviadas en segundos.</p>
+      </div>
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Producto</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li><a href="../index.html#funciones" class="hover:text-deep transition-colors">Funciones</a></li>
+          <li><a href="../index.html#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a></li>
+          <li><a href="../index.html#precios" class="hover:text-deep transition-colors">Precios</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Soporte</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li><a href="../index.html#faq" class="hover:text-deep transition-colors">Preguntas frecuentes</a></li>
+          <li><a href="centro_ayuda.html" class="hover:text-deep transition-colors">Centro de ayuda</a></li>
+          <li><a href="contacto.html" class="hover:text-deep transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Contacto</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li class="flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>miguelcoronell@outlook.com</li>
+          <li class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3.5 h-3.5 text-slate-400"></i>Chat por WhatsApp</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-[12px] text-slate-400 font-medium">© 2026 Gestor PRO. Todos los derechos reservados.</p>
+      <div class="flex items-center gap-5 text-[12px] font-semibold text-slate-400">
+        <a href="privacidad.html" class="hover:text-deep transition-colors">Privacidad</a>
+        <a href="terminos.html" class="hover:text-deep transition-colors">Términos</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileBackdrop = document.getElementById('mobile-backdrop');
+  const iconOpen = document.getElementById('menu-icon-open');
+  const iconClose = document.getElementById('menu-icon-close');
+
+  function toggleMobileMenu(forceClose) {
+    const isOpen = mobileMenu.classList.contains('open');
+    const shouldOpen = forceClose ? false : !isOpen;
+    mobileMenu.classList.toggle('open', shouldOpen);
+    mobileBackdrop.classList.toggle('open', shouldOpen);
+    iconOpen.classList.toggle('hidden', shouldOpen);
+    iconClose.classList.toggle('hidden', !shouldOpen);
+    menuBtn.setAttribute('aria-expanded', String(shouldOpen));
+    document.body.style.overflow = shouldOpen ? 'hidden' : '';
+  }
+  menuBtn.addEventListener('click', () => toggleMobileMenu());
+  mobileBackdrop.addEventListener('click', () => toggleMobileMenu(true));
+  document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => toggleMobileMenu(true)));
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMobileMenu(true); });
+
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
+
+  const sections = document.querySelectorAll('.legal-card[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const tocIo = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => tocIo.observe(s));
+</script>
+
+</body>
+</html>

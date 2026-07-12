@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Ayuda — Gestor PRO</title>
+<meta name="description" content="Encuentra respuestas rápidas sobre cotizaciones, facturas, firma digital, WhatsApp y planes en Gestor PRO.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="../img/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="../img/favicon.ico">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          deep: '#1D4E89', dark: '#0F2C4C', accent: '#3B82F6', soft: '#EAF2FB',
+          ink: '#0F172A', paper: '#F8FAFC', green: '#0FA76F', greendark: '#0B7F55',
+        },
+        fontFamily: {
+          display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; color: #0F172A; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+  :focus-visible { outline: 2px solid #3B82F6; outline-offset: 3px; border-radius: 4px; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  .mobile-menu { max-height: 0; overflow: hidden; opacity: 0; transform: translateY(-8px); transition: max-height .4s cubic-bezier(0.16,1,0.3,1), opacity .3s ease, transform .3s ease; }
+  .mobile-menu.open { max-height: 420px; opacity: 1; transform: translateY(0); }
+  .mobile-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(15,23,42,0.45); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .mobile-backdrop.open { opacity: 1; pointer-events: auto; }
+  .mobile-link + .mobile-link { margin-top: 2px; }
+
+  .cat-accordion summary { list-style: none; cursor: pointer; }
+  .cat-accordion summary::-webkit-details-marker { display: none; }
+  .cat-accordion .cat-chev { transition: transform .3s cubic-bezier(0.16,1,0.3,1); }
+  .cat-accordion[open] .cat-chev { transform: rotate(180deg); }
+  .cat-accordion[open] .cat-summary { border-bottom: 1px solid transparent; }
+  .cat-accordion { transition: border-color .3s ease, box-shadow .3s ease; }
+  .cat-accordion:hover { border-color: #cbd5e1; }
+  .cat-accordion[open] { border-color: #1D4E89; box-shadow: 0 15px 30px -12px rgba(15,44,76,0.14); }
+  .cat-accordion[open] .cat-body { animation: faqOpen .35s cubic-bezier(0.16,1,0.3,1); }
+  .cat-accordion .faq-item summary::-webkit-details-marker { display: none; }
+  .cat-accordion .faq-item summary { list-style: none; }
+  .cat-accordion .faq-item[open] .chev { transform: rotate(45deg); }
+  .cat-accordion .faq-item[open] .faq-body { animation: faqOpen .25s ease; }
+
+  .faq-item[open] summary .chev { transform: rotate(45deg); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary { list-style: none; }
+  .faq-item[open] .faq-body { animation: faqOpen .3s ease; }
+  @keyframes faqOpen { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .faq-hidden { display: none !important; }
+
+  #search-input:focus { border-color: #1D4E89 !important; box-shadow: 0 0 0 4px rgba(29,78,137,0.12); }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ============ NAV ============ -->
+<header class="fixed top-0 inset-x-0 z-50">
+  <div class="mx-3 mt-3 md:mx-6 md:mt-4">
+    <nav class="relative max-w-6xl mx-auto flex items-center justify-between bg-white/80 backdrop-blur-xl border border-white rounded-2xl px-5 py-3 shadow-[0_10px_30px_-10px_rgba(15,44,76,0.15)]">
+      <a href="#top" class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-deep to-dark flex items-center justify-center shadow-md">
+          <i data-lucide="file-signature" class="w-5 h-5 text-white"></i>
+        </span>
+        <span class="font-display font-extrabold text-[15px] tracking-tight text-ink">Gestor<span class="text-deep">PRO</span></span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-8 text-[13.5px] font-semibold text-slate-500">
+        <a href="../index.html#funciones" class="hover:text-deep transition-colors">Funciones</a>
+        <a href="../index.html#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a>
+        <a href="../index.html#precios" class="hover:text-deep transition-colors">Precios</a>
+        <a href="../index.html#faq" class="hover:text-deep transition-colors">Preguntas</a>
+        <a href="contacto.html" class="hover:text-deep transition-colors">Contacto</a>
+      </div>
+      <a href="../index.html#precios" class="hidden md:inline-flex text-[13px] font-bold px-4 py-2.5 rounded-xl bg-deep text-white hover:bg-dark transition-colors shadow-sm">
+        Probar Gratis
+      </a>
+
+      <!-- Botón hamburguesa (solo móvil) -->
+      <button id="menu-btn" type="button" class="md:hidden relative w-10 h-10 rounded-xl bg-soft flex items-center justify-center" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+        <i data-lucide="menu" id="menu-icon-open" class="w-5 h-5 text-deep"></i>
+        <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 text-deep hidden"></i>
+      </button>
+    </nav>
+
+    <!-- Panel de menú móvil -->
+    <div id="mobile-menu" class="mobile-menu max-w-6xl mx-auto md:hidden">
+      <div class="mt-2 bg-white rounded-2xl border border-slate-100 shadow-[0_20px_40px_-10px_rgba(15,44,76,0.25)] p-3">
+        <a href="../index.html#funciones" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="layout-grid" class="w-[18px] h-[18px] text-deep"></i> Funciones
+        </a>
+        <a href="../index.html#como-funciona" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="route" class="w-[18px] h-[18px] text-deep"></i> Cómo funciona
+        </a>
+        <a href="../index.html#precios" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="tag" class="w-[18px] h-[18px] text-deep"></i> Precios
+        </a>
+        <a href="../index.html#faq" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="circle-help" class="w-[18px] h-[18px] text-deep"></i> Preguntas
+        </a>
+        <a href="../Legalidad/contacto.html" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+        <i data-lucide="mail" class="w-[18px] h-[18px] text-deep"></i> Contacto
+       </a>
+        <a href="../index.html#precios" class="mobile-link mt-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-deep text-white font-extrabold text-[13px] uppercase tracking-wide">
+          <i data-lucide="arrow-right" class="w-4 h-4"></i> Probar Demo Gratis
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+<div id="mobile-backdrop" class="mobile-backdrop md:hidden"></div>
+
+<!-- ============ HERO + BUSCADOR ============ -->
+<section class="pt-36 pb-16 md:pt-44 md:pb-20 bg-soft/50 relative overflow-hidden">
+  <div class="absolute -top-24 -right-24 w-[380px] h-[380px] bg-accent/10 rounded-full blur-[70px]"></div>
+  <div class="relative max-w-3xl mx-auto px-5 md:px-6 text-center">
+    <a href="../index.html" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-slate-500 hover:text-deep transition-colors mb-6">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al inicio
+    </a>
+    <h1 class="font-display font-extrabold text-ink text-3xl md:text-5xl tracking-tight mb-4">¿En qué te ayudamos?</h1>
+    <p class="text-slate-500 text-[15px] mb-8">Busca por palabra clave o elige una categoría.</p>
+
+    <div class="relative max-w-xl mx-auto">
+      <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-5 top-1/2 -translate-y-1/2"></i>
+      <input id="search-input" type="text" placeholder="Ej: firma digital, WhatsApp, PDF..."
+        class="w-full pl-13 pr-5 py-4 rounded-2xl border-2 border-slate-200 bg-white font-semibold text-[14.5px] text-ink outline-none transition-all"
+        style="padding-left: 3.2rem;">
+    </div>
+  </div>
+</section>
+
+<!-- ============ CATEGORÍAS + PREGUNTAS FRECUENTES ============ -->
+<section class="py-16 md:py-20">
+  <div class="max-w-3xl mx-auto px-5 md:px-6">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display font-extrabold text-2xl text-ink reveal" data-reveal>Explora por categoría</h2>
+      <span id="results-count" class="hidden text-[12.5px] font-bold text-slate-400 mono"></span>
+    </div>
+
+    <div id="cat-list" class="space-y-4">
+
+      <!-- ===== 1. Primeros pasos ===== -->
+      <details class="cat-accordion reveal bg-white border-2 border-slate-200 rounded-3xl overflow-hidden" data-reveal data-cat="primeros-pasos" open>
+        <summary class="cat-summary flex items-center gap-4 px-6 py-5 cursor-pointer">
+          <span class="w-11 h-11 rounded-xl bg-soft flex items-center justify-center flex-shrink-0"><i data-lucide="rocket" class="w-5 h-5 text-deep"></i></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display font-extrabold text-[15px] text-ink">Primeros pasos</h3>
+            <p class="text-[13px] text-slate-500">Configura tu cuenta y tu empresa</p>
+          </div>
+          <span class="cat-count mono text-[11px] font-bold text-slate-400 flex-shrink-0 hidden sm:block">6 preguntas</span>
+          <i data-lucide="chevron-down" class="cat-chev w-5 h-5 text-slate-400 transition-transform flex-shrink-0"></i>
+        </summary>
+        <div class="cat-body px-6 pb-6 pt-1 space-y-2.5 border-t border-slate-100">
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="crear cuenta registro">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo creo mi cuenta en Gestor PRO?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Entra a la app, presiona "Crear cuenta" e ingresa tu correo y una contraseña. En menos de un minuto puedes empezar a configurar tu empresa.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="empresa logo configurar cuenta">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo configuro los datos de mi empresa?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Entra a Configuración → Mi empresa. Ahí puedes cargar tu razón social, logo, datos de contacto y colores de marca. Estos datos se usan automáticamente en cada PDF que generes.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="logo subir imagen marca">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo subo mi logo?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">En Configuración → Mi empresa encontrarás la zona de "Subir logo". Aceptamos PNG y JPG; si tu logo tiene fondo transparente, se verá mejor en tus PDF.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="rubro sector categoria cambiar">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo elijo o cambio mi rubro?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Al crear tu cuenta te pedimos tu rubro principal para precargar servicios e insumos típicos. Puedes cambiarlo después desde Configuración → Rubro, sin perder tus documentos anteriores.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="gratis prueba demo tarjeta">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puedo probarlo gratis antes de pagar?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, puedes crear tu cuenta y probar la demo gratuita sin ingresar tarjeta de crédito. Cuando quieras desbloquear todas las funciones, eliges tu plan.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="celular computadora mobile pc sincronizar">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Funciona en computadora y celular al mismo tiempo?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí. Tu cuenta se sincroniza automáticamente: puedes empezar una cotización en la computadora de la oficina y terminarla o enviarla desde el celular en terreno.</p>
+          </details>
+
+        </div>
+      </details>
+
+      <!-- ===== 2. Cotizaciones y facturas ===== -->
+      <details class="cat-accordion reveal bg-white border-2 border-slate-200 rounded-3xl overflow-hidden" data-reveal data-cat="cotizaciones">
+        <summary class="cat-summary flex items-center gap-4 px-6 py-5 cursor-pointer">
+          <span class="w-11 h-11 rounded-xl bg-soft flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 text-deep"></i></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display font-extrabold text-[15px] text-ink">Cotizaciones y facturas</h3>
+            <p class="text-[13px] text-slate-500">Crea, edita y descarga documentos</p>
+          </div>
+          <span class="cat-count mono text-[11px] font-bold text-slate-400 flex-shrink-0 hidden sm:block">6 preguntas</span>
+          <i data-lucide="chevron-down" class="cat-chev w-5 h-5 text-slate-400 transition-transform flex-shrink-0"></i>
+        </summary>
+        <div class="cat-body px-6 pb-6 pt-1 space-y-2.5 border-t border-slate-100">
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="cotizacion pdf crear generar documento">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo genero una cotización en PDF?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Ve a Nueva cotización, agrega los ítems de servicios o materiales, y presiona "Generar PDF". El documento sale con tu logo, colores y desglose profesional en un solo clic.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="factura orden de trabajo diferencia">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cuál es la diferencia entre cotización, factura y orden de trabajo?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">La cotización es tu propuesta de precio antes de empezar el trabajo. La orden de trabajo detalla las tareas a realizar. La factura formaliza el cobro una vez terminado el servicio. Puedes convertir una en otra sin volver a escribir los datos.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="editar modificar enviada corregir">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puedo editar una cotización ya enviada?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, siempre que aún no haya sido firmada. Entra al documento, presiona "Editar", ajusta lo necesario y vuelve a generar el PDF. Si ya está firmado, deberás crear una nueva versión.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="agregar servicios materiales insumos propios">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo agrego mis propios servicios o materiales?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">En Configuración → Catálogo puedes agregar, editar o eliminar ítems con su precio, para que aparezcan como sugerencia rápida al armar una nueva cotización.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="descuento recargo porcentaje">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puedo aplicar descuentos o recargos?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, al armar el documento puedes agregar un descuento o recargo en monto fijo o porcentaje, y se reflejará automáticamente en el total.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="historial documentos emitidos ver buscar">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Dónde veo el historial de documentos que emití?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">En la sección "Documentos" tienes el listado completo, con filtros por cliente, fecha y estado (pendiente, firmado, pagado).</p>
+          </details>
+
+        </div>
+      </details>
+
+      <!-- ===== 3. Firma digital ===== -->
+      <details class="cat-accordion reveal bg-white border-2 border-slate-200 rounded-3xl overflow-hidden" data-reveal data-cat="firma">
+        <summary class="cat-summary flex items-center gap-4 px-6 py-5 cursor-pointer">
+          <span class="w-11 h-11 rounded-xl bg-soft flex items-center justify-center flex-shrink-0"><i data-lucide="signature" class="w-5 h-5 text-deep"></i></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display font-extrabold text-[15px] text-ink">Firma digital</h3>
+            <p class="text-[13px] text-slate-500">Cómo firmar y validar documentos</p>
+          </div>
+          <span class="cat-count mono text-[11px] font-bold text-slate-400 flex-shrink-0 hidden sm:block">5 preguntas</span>
+          <i data-lucide="chevron-down" class="cat-chev w-5 h-5 text-slate-400 transition-transform flex-shrink-0"></i>
+        </summary>
+        <div class="cat-body px-6 pb-6 pt-1 space-y-2.5 border-t border-slate-100">
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="firma digital tactil mouse cliente">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo firma el cliente un documento?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Antes de enviar, toca "Solicitar firma". El cliente firma con el dedo en la pantalla táctil o con el mouse, directo sobre el documento. La firma queda guardada junto al PDF final.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="firma empresa dos firmas ambas partes">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puede firmar también mi empresa, además del cliente?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, el documento admite firma de ambas partes. Puedes dejar guardada tu firma de empresa para que se agregue automáticamente en cada documento nuevo.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="validez legal firma">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿La firma digital tiene validez legal?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">La firma queda registrada junto al documento como constancia de conformidad entre las partes, adjunta al PDF final. Te recomendamos revisar la normativa de tu país si necesitas validez para trámites específicos.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="no puede firmar despues mas tarde">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Qué pasa si el cliente no puede firmar en el momento?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">No hay problema: envía el documento igual, con un link de firma. El cliente podrá abrirlo y firmar más tarde desde su celular o computadora, y tú recibirás una notificación cuando lo haga.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="descargar documento firmado nuevamente">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puedo volver a descargar un documento ya firmado?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, todos tus documentos firmados quedan guardados en "Documentos" y puedes descargarlos en PDF las veces que necesites.</p>
+          </details>
+
+        </div>
+      </details>
+
+      <!-- ===== 4. WhatsApp y envíos ===== -->
+      <details class="cat-accordion reveal bg-white border-2 border-slate-200 rounded-3xl overflow-hidden" data-reveal data-cat="envios">
+        <summary class="cat-summary flex items-center gap-4 px-6 py-5 cursor-pointer">
+          <span class="w-11 h-11 rounded-xl bg-green/10 flex items-center justify-center flex-shrink-0"><i data-lucide="message-circle" class="w-5 h-5 text-green"></i></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display font-extrabold text-[15px] text-ink">WhatsApp y envíos</h3>
+            <p class="text-[13px] text-slate-500">Manda tus documentos en segundos</p>
+          </div>
+          <span class="cat-count mono text-[11px] font-bold text-slate-400 flex-shrink-0 hidden sm:block">5 preguntas</span>
+          <i data-lucide="chevron-down" class="cat-chev w-5 h-5 text-slate-400 transition-transform flex-shrink-0"></i>
+        </summary>
+        <div class="cat-body px-6 pb-6 pt-1 space-y-2.5 border-t border-slate-100">
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="whatsapp enviar mensaje">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo envío una cotización por WhatsApp?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Al terminar tu documento, presiona el ícono de WhatsApp. Se abre el chat del cliente con un mensaje ya redactado, el resumen de montos y el PDF adjunto, listo para enviar.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="correo email enviar">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿También puedo enviar por correo electrónico?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, junto al botón de WhatsApp encontrarás la opción de enviar por correo, con el PDF adjunto automáticamente.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="mensaje redactado automatico texto">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿El mensaje de WhatsApp se redacta solo?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, incluye el nombre del cliente, el resumen de montos y el porcentaje de anticipo si corresponde. Puedes editarlo antes de enviarlo si quieres agregar algo personal.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="reenviar otro numero contacto">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puedo reenviar el mismo documento a otro número?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, desde "Documentos" abre el que quieras reenviar y presiona "Compartir" para elegir un nuevo contacto de WhatsApp o correo.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="registro cuando se envio historial">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Se guarda un registro de cuándo se envió?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, cada documento muestra la fecha y hora de envío, y si fue por WhatsApp o correo, directamente en su ficha dentro de "Documentos".</p>
+          </details>
+
+        </div>
+      </details>
+
+      <!-- ===== 5. Planes y facturación ===== -->
+      <details class="cat-accordion reveal bg-white border-2 border-slate-200 rounded-3xl overflow-hidden" data-reveal data-cat="facturacion">
+        <summary class="cat-summary flex items-center gap-4 px-6 py-5 cursor-pointer">
+          <span class="w-11 h-11 rounded-xl bg-soft flex items-center justify-center flex-shrink-0"><i data-lucide="credit-card" class="w-5 h-5 text-deep"></i></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display font-extrabold text-[15px] text-ink">Planes y facturación</h3>
+            <p class="text-[13px] text-slate-500">Precios, pagos y cancelaciones</p>
+          </div>
+          <span class="cat-count mono text-[11px] font-bold text-slate-400 flex-shrink-0 hidden sm:block">6 preguntas</span>
+          <i data-lucide="chevron-down" class="cat-chev w-5 h-5 text-slate-400 transition-transform flex-shrink-0"></i>
+        </summary>
+        <div class="cat-body px-6 pb-6 pt-1 space-y-2.5 border-t border-slate-100">
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="precio costo cuanto cuesta plan">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cuánto cuesta Gestor PRO?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Tenemos un plan mensual desde $9.990 y un plan anual desde $7.990 al mes (con 2 meses gratis). Ambos incluyen todas las funciones, sin letra chica. Puedes ver el detalle en la sección de Precios.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="plan precio mensual anual cambiar">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puedo cambiar de plan mensual a anual?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, desde Configuración → Suscripción puedes cambiar de plan en cualquier momento. El cambio se ajusta proporcionalmente en tu próximo cobro.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="cancelar suscripcion baja">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo cancelo mi suscripción?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Desde Configuración → Suscripción → Cancelar plan. Mantienes el acceso hasta el final del período ya pagado, sin llamadas ni trámites adicionales.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="dejo de pagar atraso vencido">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Qué pasa si se atrasa el pago de mi suscripción?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Te avisamos antes de intentar el cobro y, si falla, tienes unos días de gracia para regularizarlo sin perder tus documentos guardados. Pasado ese plazo, la cuenta queda en modo solo lectura hasta reactivarla.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="factura pago suscripcion boleta">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Emiten factura por el pago de la suscripción?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, cada cobro genera automáticamente un comprobante que puedes descargar desde Configuración → Suscripción → Historial de pagos.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="descuento anual ahorro">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Hay descuento por pago anual?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, el plan anual equivale a 2 meses gratis frente al plan mensual, además de incluir soporte prioritario y múltiples rubros en una misma cuenta.</p>
+          </details>
+
+        </div>
+      </details>
+
+      <!-- ===== 6. Cuenta y seguridad ===== -->
+      <details class="cat-accordion reveal bg-white border-2 border-slate-200 rounded-3xl overflow-hidden" data-reveal data-cat="cuenta">
+        <summary class="cat-summary flex items-center gap-4 px-6 py-5 cursor-pointer">
+          <span class="w-11 h-11 rounded-xl bg-soft flex items-center justify-center flex-shrink-0"><i data-lucide="shield-check" class="w-5 h-5 text-deep"></i></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display font-extrabold text-[15px] text-ink">Cuenta y seguridad</h3>
+            <p class="text-[13px] text-slate-500">Datos, acceso y privacidad</p>
+          </div>
+          <span class="cat-count mono text-[11px] font-bold text-slate-400 flex-shrink-0 hidden sm:block">5 preguntas</span>
+          <i data-lucide="chevron-down" class="cat-chev w-5 h-5 text-slate-400 transition-transform flex-shrink-0"></i>
+        </summary>
+        <div class="cat-body px-6 pb-6 pt-1 space-y-2.5 border-t border-slate-100">
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="contraseña password seguridad cambiar">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Cómo cambio mi contraseña?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Entra a Configuración → Seguridad → Cambiar contraseña. Te recomendamos usar una contraseña única que no utilices en otras plataformas.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="eliminar cuenta borrar datos">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puedo eliminar mi cuenta y mis datos?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí. Desde Configuración → Cuenta → Eliminar cuenta puedes solicitar la baja definitiva. También puedes escribirnos y lo gestionamos por ti.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="cifrado seguridad datos protegidos">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Mis datos están cifrados?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, tus cotizaciones, facturas y firmas se guardan de forma cifrada, con respaldo automático, para que nunca pierdas un documento.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="equipo colaborador acceso usuarios">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Puedo dar acceso a otro miembro de mi equipo?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Sí, en el plan Anual PRO puedes invitar colaboradores desde Configuración → Equipo, definiendo qué pueden ver o editar cada uno.</p>
+          </details>
+
+          <details class="faq-item bg-soft/40 rounded-2xl px-5 py-4" data-kw="perdi acceso correo recuperar">
+            <summary class="flex items-center justify-between cursor-pointer font-display font-bold text-[14px] text-ink gap-3">
+              ¿Qué hago si perdí acceso a mi correo?
+              <i data-lucide="plus" class="chev w-4 h-4 text-deep transition-transform flex-shrink-0"></i>
+            </summary>
+            <p class="faq-body text-[13.5px] text-slate-500 leading-relaxed mt-2.5">Escríbenos por WhatsApp desde el número asociado a tu cuenta, o contáctanos por correo alternativo. Verificamos tu identidad y te ayudamos a recuperar el acceso.</p>
+          </details>
+
+        </div>
+      </details>
+
+    </div>
+
+    <p id="no-results" class="hidden text-center text-slate-500 text-[14px] font-semibold py-10">No encontramos resultados para tu búsqueda. Prueba con otra palabra o escríbenos directamente.</p>
+  </div>
+</section>
+
+<!-- ============ CTA CONTACTO ============ -->
+<section class="pb-16 md:pb-24">
+  <div class="max-w-5xl mx-auto px-5 md:px-6">
+    <div class="reveal relative bg-gradient-to-br from-deep to-dark rounded-[32px] px-8 py-12 md:py-14 text-center overflow-hidden" data-reveal>
+      <div class="absolute -bottom-14 -left-14 w-56 h-56 bg-green/20 rounded-full blur-[70px]"></div>
+      <div class="relative">
+        <h2 class="font-display font-extrabold text-2xl md:text-3xl text-white tracking-tight mb-3">¿No encontraste lo que buscabas?</h2>
+        <p class="text-blue-100 max-w-md mx-auto mb-7 text-[14.5px]">Nuestro equipo responde por WhatsApp o correo, normalmente el mismo día.</p>
+        <a href="contacto.html" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white text-dark font-extrabold text-[13px] uppercase tracking-wide shadow-xl hover:-translate-y-0.5 transition-transform">
+          Escríbenos <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-slate-200 pt-14 pb-8">
+  <div class="max-w-6xl mx-auto px-5 md:px-6">
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+      <div class="col-span-2 md:col-span-1">
+        <a href="#top" class="flex items-center gap-2.5 mb-4">
+          <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-deep to-dark flex items-center justify-center">
+            <i data-lucide="file-signature" class="w-4 h-4 text-white"></i>
+          </span>
+          <span class="font-display font-extrabold text-[14px] text-ink">Gestor<span class="text-deep">PRO</span></span>
+        </a>
+        <p class="text-[13px] text-slate-500 leading-relaxed max-w-[220px]">Cotizaciones y facturas profesionales, firmadas y enviadas en segundos.</p>
+      </div>
+      <div>
+       <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Producto</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li><a href="../index.html#funciones" class="hover:text-deep transition-colors">Funciones</a></li>
+          <li><a href="../index.html#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a></li>
+          <li><a href="../index.html#precios" class="hover:text-deep transition-colors">Precios</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Soporte</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li><a href="../index.html#faq" class="hover:text-deep transition-colors">Preguntas frecuentes</a></li>
+          <li><a href="centro_ayuda.html" class="hover:text-deep transition-colors">Centro de ayuda</a></li>
+          <li><a href="contacto.html" class="hover:text-deep transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Contacto</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li class="flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>miguelcoronell@outlook.com</li>
+          <li class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3.5 h-3.5 text-slate-400"></i>Chat por WhatsApp</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-[12px] text-slate-400 font-medium">© 2026 Gestor PRO. Todos los derechos reservados.</p>
+      <div class="flex items-center gap-5 text-[12px] font-semibold text-slate-400">
+        <a href="privacidad.html" class="hover:text-deep transition-colors">Privacidad</a>
+        <a href="terminos.html" class="hover:text-deep transition-colors">Términos</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileBackdrop = document.getElementById('mobile-backdrop');
+  const iconOpen = document.getElementById('menu-icon-open');
+  const iconClose = document.getElementById('menu-icon-close');
+
+  function toggleMobileMenu(forceClose) {
+    const isOpen = mobileMenu.classList.contains('open');
+    const shouldOpen = forceClose ? false : !isOpen;
+    mobileMenu.classList.toggle('open', shouldOpen);
+    mobileBackdrop.classList.toggle('open', shouldOpen);
+    iconOpen.classList.toggle('hidden', shouldOpen);
+    iconClose.classList.toggle('hidden', !shouldOpen);
+    menuBtn.setAttribute('aria-expanded', String(shouldOpen));
+    document.body.style.overflow = shouldOpen ? 'hidden' : '';
+  }
+  menuBtn.addEventListener('click', () => toggleMobileMenu());
+  mobileBackdrop.addEventListener('click', () => toggleMobileMenu(true));
+  document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => toggleMobileMenu(true)));
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMobileMenu(true); });
+
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
+
+  // ---- Buscador + acordeones de categoría ----
+  const catAccordions = document.querySelectorAll('.cat-accordion');
+  const faqItems = document.querySelectorAll('.faq-item');
+  const searchInput = document.getElementById('search-input');
+  const noResults = document.getElementById('no-results');
+  const resultsCount = document.getElementById('results-count');
+
+  function updateCounts(query) {
+    catAccordions.forEach(cat => {
+      const items = cat.querySelectorAll('.faq-item');
+      const visible = cat.querySelectorAll('.faq-item:not(.faq-hidden)').length;
+      const countEl = cat.querySelector('.cat-count');
+      if (!countEl) return;
+      const n = query ? visible : items.length;
+      countEl.textContent = n + (n === 1 ? ' pregunta' : ' preguntas');
+    });
+  }
+
+  function applySearch() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    if (!query) {
+      faqItems.forEach(item => { item.classList.remove('faq-hidden'); item.open = false; });
+      catAccordions.forEach(cat => cat.classList.remove('faq-hidden'));
+      noResults.classList.add('hidden');
+      resultsCount.classList.add('hidden');
+      updateCounts(false);
+      return;
+    }
+
+    let totalVisible = 0;
+    catAccordions.forEach(cat => {
+      let catHasMatch = false;
+      cat.querySelectorAll('.faq-item').forEach(item => {
+        const haystack = ((item.dataset.kw || '') + ' ' + item.textContent).toLowerCase();
+        const match = haystack.includes(query);
+        item.classList.toggle('faq-hidden', !match);
+        item.open = match;
+        if (match) { catHasMatch = true; totalVisible++; }
+      });
+      cat.classList.toggle('faq-hidden', !catHasMatch);
+      cat.open = catHasMatch;
+    });
+
+    noResults.classList.toggle('hidden', totalVisible !== 0);
+    resultsCount.classList.remove('hidden');
+    resultsCount.textContent = totalVisible + (totalVisible === 1 ? ' resultado' : ' resultados');
+    updateCounts(true);
+  }
+
+  searchInput.addEventListener('input', applySearch);
+
+  // Al abrir una categoría manualmente, cerramos las demás para que sea más fácil de escanear
+  catAccordions.forEach(cat => {
+    cat.addEventListener('toggle', () => {
+      if (cat.open && !searchInput.value.trim()) {
+        catAccordions.forEach(other => { if (other !== cat) other.open = false; });
+      }
+    });
+  });
+
+  updateCounts(false);
+</script>
+
+</body>
+</html>

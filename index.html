@@ -14,8 +14,6 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <link rel="icon" href="img/favicon.ico" type="image/x-icon">
- 
-
 <link rel="apple-touch-icon" href="img/favicon.ico">
 
 </head>
@@ -37,6 +35,7 @@
         <a href="#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a>
         <a href="#precios" class="hover:text-deep transition-colors">Precios</a>
         <a href="#faq" class="hover:text-deep transition-colors">Preguntas</a>
+        <a href="Legalidad/contacto.html" class="hover:text-deep transition-colors">Contacto</a>
       </div>
       <a href="#precios" class="hidden md:inline-flex text-[13px] font-bold px-4 py-2.5 rounded-xl bg-deep text-white hover:bg-dark transition-colors shadow-sm">
         Probar Gratis
@@ -64,6 +63,9 @@
         <a href="#faq" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
           <i data-lucide="circle-help" class="w-[18px] h-[18px] text-deep"></i> Preguntas
         </a>
+        <a href="Legalidad/contacto.html" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+        <i data-lucide="mail" class="w-[18px] h-[18px] text-deep"></i> Contacto
+       </a>
         <a href="#precios" class="mobile-link mt-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-deep text-white font-extrabold text-[13px] uppercase tracking-wide">
           <i data-lucide="arrow-right" class="w-4 h-4"></i> Probar Demo Gratis
         </a>
@@ -344,22 +346,26 @@
   </div>
 </section>
 
+
 <!-- ============ PRECIOS ============ -->
 <section id="precios" class="py-20 md:py-28 bg-soft/50">
   <div class="max-w-6xl mx-auto px-5 md:px-6">
     <div class="text-center max-w-2xl mx-auto mb-14 reveal" data-reveal>
       <p class="text-[12px] font-extrabold uppercase tracking-widest text-accent mb-3">Precios</p>
-      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-ink tracking-tight">Un plan, todas las funciones</h2>
-      <p class="mt-4 text-slate-500">Sin letra chica. Cancela cuando quieras.</p>
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-ink tracking-tight">Elige el plan ideal para tu negocio</h2>
+      <p class="mt-4 text-slate-500">Sin letra chica. Pásate de plan o cancela cuando quieras.</p>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-      <!-- Mensual -->
+    <!-- Cambiamos a grid de 3 columnas (md:grid-cols-3) y ampliamos el ancho a max-w-5xl -->
+    <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+      
+      <!-- 1. TARJETA MENSUAL (Demo / Entrada) -->
+      <!-- 1. TARJETA MENSUAL (Con opción de pago directo + Demo) -->
       <div class="reveal bg-white border border-slate-200 rounded-3xl p-8 flex flex-col" data-reveal>
         <h3 class="font-display font-extrabold text-lg text-ink mb-1">Mensual</h3>
         <p class="text-[13px] text-slate-500 mb-6">Ideal para empezar</p>
         <div class="mono flex items-baseline gap-1 mb-6">
-          <span class="text-4xl font-bold text-ink">$9.990</span>
+          <span class="text-4xl font-bold text-ink">US$10</span>
           <span class="text-slate-400 font-semibold text-sm">/mes</span>
         </div>
         <ul class="space-y-3 mb-8 flex-1">
@@ -368,17 +374,25 @@
           <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Envío directo por WhatsApp</li>
           <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Panel de KPIs y anticipos</li>
         </ul>
-        <a href="app/app.html"target="_blank" rel="noopener noreferrer" class="text-center px-6 py-3.5 rounded-xl border-2 border-slate-200 font-extrabold text-[13px] uppercase tracking-wide text-ink hover:border-deep hover:text-deep transition-colors">Probar Demo Gratis</a>
+        
+        <!-- Contenedor de Botones (Pago Principal + Demo Secundario) -->
+        <div class="flex flex-col gap-2.5 mt-auto">
+          <!-- Botón Principal: Pagar con PayPal -->
+          <a href="https://www.paypal.com/paypalme/miguelcoronell/10USD" target="_blank" rel="noopener noreferrer" class="text-center px-6 py-3.5 rounded-xl bg-ink text-white font-extrabold text-[13px] uppercase tracking-wide hover:bg-deep transition-colors shadow-sm">
+            Suscribirse Ahora
+          </a>
+         
+        </div>
       </div>
 
-      <!-- Anual -->
+      <!-- 2. TARJETA ANUAL PRO (Suscripción Destacada) -->
       <div class="reveal price-card-pro rounded-3xl p-8 flex flex-col relative overflow-hidden shadow-[0_25px_50px_-15px_rgba(15,44,76,0.45)]" data-reveal>
         <span class="absolute top-6 right-6 bg-green text-white text-[10px] font-extrabold uppercase tracking-wider rounded-full px-3 py-1">2 meses gratis</span>
         <h3 class="font-display font-extrabold text-lg text-white mb-1">Anual PRO</h3>
         <p class="text-[13px] text-blue-200 mb-6">Para negocios en crecimiento</p>
         <div class="mono flex items-baseline gap-1 mb-6">
-          <span class="text-4xl font-bold text-white">$7.990</span>
-          <span class="text-blue-200 font-semibold text-sm">/mes</span>
+          <span class="text-4xl font-bold text-white">US$99</span>
+          <span class="text-blue-200 font-semibold text-sm">/año</span>
         </div>
         <ul class="space-y-3 mb-8 flex-1">
           <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-blue-100"><i data-lucide="check" class="w-4 h-4 text-green"></i>Todo lo del plan mensual</li>
@@ -386,10 +400,57 @@
           <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-blue-100"><i data-lucide="check" class="w-4 h-4 text-green"></i>Soporte prioritario por WhatsApp</li>
           <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-blue-100"><i data-lucide="check" class="w-4 h-4 text-green"></i>Respaldo automático de documentos</li>
         </ul>
-        <a href="#top" class="text-center px-6 py-3.5 rounded-xl bg-white text-dark font-extrabold text-[13px] uppercase tracking-wide hover:bg-blue-50 transition-colors">Adquirir Licencia PRO</a>
+        <a href="https://paypal.me/miguelcoronell/99USD" target="_blank" rel="noopener noreferrer" class="text-center px-6 py-3.5 rounded-xl bg-white text-dark font-extrabold text-[13px] uppercase tracking-wide hover:bg-blue-50 transition-colors">Adquirir Licencia PRO</a>
       </div>
+
+      <!-- 3. TARJETA PAGO ÚNICO (Licencia de por vida - Nuevo) -->
+      <div class="reveal bg-white border-2 border-deep/20 rounded-3xl p-8 flex flex-col relative overflow-hidden shadow-xl" data-reveal>
+        <span class="absolute top-6 right-6 bg-deep text-white text-[10px] font-extrabold uppercase tracking-wider rounded-full px-3 py-1">Sin cuotas</span>
+        <h3 class="font-display font-extrabold text-lg text-ink mb-1">Licencia Perpetua</h3>
+        <p class="text-[13px] text-slate-500 mb-6">Pagas una vez, es tuyo para siempre</p>
+        <div class="mono flex items-baseline gap-1 mb-6">
+          <span class="text-4xl font-bold text-ink">US$249</span>
+          <span class="text-slate-400 font-semibold text-sm">pago único</span>
+        </div>
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i><strong>Acceso de por vida</strong> sin pagos anuales</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Todas las funciones de Anual PRO</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Todas las actualizaciones futuras gratis</li>
+          <li class="flex items-center gap-2.5 text-[13.5px] font-semibold text-slate-600"><i data-lucide="check" class="w-4 h-4 text-green"></i>Configuración inicial personalizada</li>
+        </ul>
+        <a href="https://paypal.me/miguelcoronell/249USD" target="_blank" rel="noopener noreferrer" class="text-center px-6 py-3.5 rounded-xl bg-deep text-white font-extrabold text-[13px] uppercase tracking-wide hover:bg-deep/90 shadow-md transition-all">Comprar Para Siempre</a>
+      </div>
+
     </div>
   </div>
+
+<!-- ============ BANDA INTERMEDIA: PROBAR DEMO ============ -->
+    <div class="mt-16 max-w-4xl mx-auto reveal" data-reveal>
+      <div class="bg-gradient-to-r from-white via-slate-50 to-white border border-slate-200/80 rounded-3xl p-8 md:p-10 shadow-[0_15px_30px_-10px_rgba(15,44,76,0.08)] flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        
+        <!-- Texto explicativo -->
+        <div class="max-w-xl">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-deep text-[11px] font-extrabold uppercase tracking-wider mb-3">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-deep"></i> Sin compromiso
+          </span>
+          <h4 class="font-display font-extrabold text-xl md:text-2xl text-ink tracking-tight mb-2">
+            ¿Aún no estás seguro de cuál plan elegir?
+          </h4>
+          <p class="text-[14px] text-slate-500 leading-relaxed">
+            Explora todas las herramientas PRO en un entorno real. No te pediremos tarjeta de crédito ni datos de pago para empezar.
+          </p>
+        </div>
+
+        <!-- Botón de Acción -->
+        <div class="flex-shrink-0 w-full md:w-auto">
+          <a href="app/app.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2.5 w-full md:w-auto px-7 py-4 rounded-2xl bg-deep text-white font-extrabold text-[13.5px] uppercase tracking-wide hover:bg-deep/90 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md group">
+            <span>Probar Demo Gratis</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-white group-hover:translate-x-1 transition-transform"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
 </section>
 
 <!-- ============ FAQ ============ -->
@@ -444,21 +505,22 @@
   </div>
 </section>
 
-<!-- ============ CTA FINAL ============ -->
+<!-- ============ CTA FINAL: CENTRO DE CONTACTO ============ -->
 <section class="py-16 md:py-20">
   <div class="max-w-5xl mx-auto px-5 md:px-6">
     <div class="reveal relative bg-gradient-to-br from-deep to-dark rounded-[32px] px-8 py-14 md:py-16 text-center overflow-hidden" data-reveal>
       <div class="absolute -top-16 -right-16 w-64 h-64 bg-green/20 rounded-full glow-blob"></div>
       <div class="absolute -bottom-16 -left-16 w-64 h-64 bg-accent/20 rounded-full glow-blob"></div>
       <div class="relative">
-        <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white tracking-tight mb-4">Tu próxima cotización, lista en minutos</h2>
-        <p class="text-blue-100 max-w-xl mx-auto mb-8">Profesionaliza tu negocio hoy. Sin tarjeta de crédito para empezar.</p>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-[11px] font-extrabold uppercase tracking-wider mb-4 border border-white/15">
+          <i data-lucide="headset" class="w-3.5 h-3.5 text-blue-300"></i> Atención Personalizada
+        </span>
+        <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white tracking-tight mb-4">¿Tienes dudas o necesitas una solución a tu medida?</h2>
+        <p class="text-blue-100 max-w-xl mx-auto mb-8">Sabemos que cada negocio es único. Escríbenos a nuestro centro de contacto y te ayudaremos a elegir el plan ideal o a resolver cualquier consulta técnica.</p>
 
-
-
-        <a href="app/app.html" target="_blank" rel="noopener noreferrer"class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-dark font-extrabold text-[13.5px] uppercase tracking-wide shadow-xl hover:-translate-y-0.5 transition-transform">
-          Probar Demo Gratis
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        <a href="Legalidad/contacto.html" class="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-white text-dark font-extrabold text-[13.5px] uppercase tracking-wide shadow-xl hover:-translate-y-0.5 hover:bg-blue-50 transition-all">
+          <i data-lucide="mail-question" class="w-4 h-4 text-deep"></i>
+          Ir al Formulario de Contacto
         </a>
       </div>
     </div>
@@ -492,8 +554,8 @@
         <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Soporte</h4>
         <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
           <li><a href="#faq" class="hover:text-deep transition-colors">Preguntas frecuentes</a></li>
-          <li><a href="#" class="hover:text-deep transition-colors">Centro de ayuda</a></li>
-          <li><a href="#" class="hover:text-deep transition-colors">Contacto</a></li>
+          <li><a href="Legalidad/centro_ayuda.html" class="hover:text-deep transition-colors">Centro de ayuda</a></li>
+          <li><a href="Legalidad/contacto.html" class="hover:text-deep transition-colors">Contacto</a></li>
         </ul>
       </div>
 
@@ -509,8 +571,8 @@
     <div class="border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
       <p class="text-[12px] text-slate-400 font-medium">© 2026 Gestor PRO. Todos los derechos reservados.</p>
       <div class="flex items-center gap-5 text-[12px] font-semibold text-slate-400">
-        <a href="#" class="hover:text-deep transition-colors">Privacidad</a>
-        <a href="#" class="hover:text-deep transition-colors">Términos</a>
+        <a href="Legalidad/privacidad.html" class="hover:text-deep transition-colors">Privacidad</a>
+        <a href="Legalidad/terminos.html" class="hover:text-deep transition-colors">Términos</a>
       </div>
     </div>
   </div>

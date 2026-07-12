@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto — Gestor PRO</title>
+<meta name="description" content="Escríbenos por WhatsApp, correo o el formulario de contacto. Te respondemos a la brevedad.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="../img/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="../img/favicon.ico">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          deep: '#1D4E89', dark: '#0F2C4C', accent: '#3B82F6', soft: '#EAF2FB',
+          ink: '#0F172A', paper: '#F8FAFC', green: '#0FA76F', greendark: '#0B7F55',
+        },
+        fontFamily: {
+          display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; color: #0F172A; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+  :focus-visible { outline: 2px solid #3B82F6; outline-offset: 3px; border-radius: 4px; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  .mobile-menu { max-height: 0; overflow: hidden; opacity: 0; transform: translateY(-8px); transition: max-height .4s cubic-bezier(0.16,1,0.3,1), opacity .3s ease, transform .3s ease; }
+  .mobile-menu.open { max-height: 420px; opacity: 1; transform: translateY(0); }
+  .mobile-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(15,23,42,0.45); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .mobile-backdrop.open { opacity: 1; pointer-events: auto; }
+  .mobile-link + .mobile-link { margin-top: 2px; }
+
+  .field-input, .field-select, .field-textarea {
+    background: #fff; border: 2px solid #e2e8f0; border-radius: 16px;
+    padding: 0.85rem 1.1rem; width: 100%; font-weight: 600; color: #0F172A;
+    transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275); outline: none;
+  }
+  .field-input:hover, .field-select:hover, .field-textarea:hover { border-color: #cbd5e1; }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: #1D4E89; box-shadow: 0 0 0 4px rgba(29,78,137,0.12); transform: translateY(-1px);
+  }
+  .field-input.field-error, .field-select.field-error, .field-textarea.field-error {
+    border-color: #ef4444; background: #fef2f2;
+  }
+  .field-error-msg { color: #dc2626; font-size: 12px; font-weight: 700; margin-top: 6px; display: none; }
+  .field-error-msg.show { display: flex; align-items: center; gap: 5px; }
+
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } }
+  .shake { animation: shake .35s ease; }
+
+  .contact-icon-card { transition: transform .3s ease, box-shadow .3s ease; }
+  .contact-icon-card:hover { transform: translateY(-3px); box-shadow: 0 18px 32px -12px rgba(15,44,76,0.16); }
+
+  #success-panel { display: none; }
+  #success-panel.show { display: flex; animation: faqOpen .4s cubic-bezier(0.16,1,0.3,1); }
+  @keyframes faqOpen { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ============ NAV ============ -->
+<header class="fixed top-0 inset-x-0 z-50">
+  <div class="mx-3 mt-3 md:mx-6 md:mt-4">
+    <nav class="relative max-w-6xl mx-auto flex items-center justify-between bg-white/80 backdrop-blur-xl border border-white rounded-2xl px-5 py-3 shadow-[0_10px_30px_-10px_rgba(15,44,76,0.15)]">
+      <a href="#top" class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-deep to-dark flex items-center justify-center shadow-md">
+          <i data-lucide="file-signature" class="w-5 h-5 text-white"></i>
+        </span>
+        <span class="font-display font-extrabold text-[15px] tracking-tight text-ink">Gestor<span class="text-deep">PRO</span></span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-8 text-[13.5px] font-semibold text-slate-500">
+        <a href="../index.html#funciones" class="hover:text-deep transition-colors">Funciones</a>
+        <a href="../index.html#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a>
+        <a href="../index.html#precios" class="hover:text-deep transition-colors">Precios</a>
+        <a href="../index.html#faq" class="hover:text-deep transition-colors">Preguntas</a>
+        <a href="contacto.html" class="hover:text-deep transition-colors">Contacto</a>
+      </div>
+      <a href="../index.html#precios" class="hidden md:inline-flex text-[13px] font-bold px-4 py-2.5 rounded-xl bg-deep text-white hover:bg-dark transition-colors shadow-sm">
+        Probar Gratis
+      </a>
+
+      <!-- Botón hamburguesa (solo móvil) -->
+      <button id="menu-btn" type="button" class="md:hidden relative w-10 h-10 rounded-xl bg-soft flex items-center justify-center" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+        <i data-lucide="menu" id="menu-icon-open" class="w-5 h-5 text-deep"></i>
+        <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 text-deep hidden"></i>
+      </button>
+    </nav>
+
+    <!-- Panel de menú móvil -->
+    <div id="mobile-menu" class="mobile-menu max-w-6xl mx-auto md:hidden">
+      <div class="mt-2 bg-white rounded-2xl border border-slate-100 shadow-[0_20px_40px_-10px_rgba(15,44,76,0.25)] p-3">
+        <a href="../index.html#funciones" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="layout-grid" class="w-[18px] h-[18px] text-deep"></i> Funciones
+        </a>
+        <a href="../index.html#como-funciona" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="route" class="w-[18px] h-[18px] text-deep"></i> Cómo funciona
+        </a>
+        <a href="../index.html#precios" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="tag" class="w-[18px] h-[18px] text-deep"></i> Precios
+        </a>
+        <a href="../index.html#faq" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+          <i data-lucide="circle-help" class="w-[18px] h-[18px] text-deep"></i> Preguntas
+        </a>
+        <a href="../Legalidad/contacto.html" class="mobile-link flex items-center gap-3 px-4 py-3.5 rounded-xl font-semibold text-[14.5px] text-slate-600 hover:bg-soft hover:text-deep transition-colors">
+        <i data-lucide="mail" class="w-[18px] h-[18px] text-deep"></i> Contacto
+       </a>
+        <a href="../index.html#precios" class="mobile-link mt-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-deep text-white font-extrabold text-[13px] uppercase tracking-wide">
+          <i data-lucide="arrow-right" class="w-4 h-4"></i> Probar Demo Gratis
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="mobile-backdrop" class="mobile-backdrop md:hidden"></div>
+
+<!-- ============ HERO ============ -->
+<section class="pt-36 pb-10 md:pt-44 md:pb-14 bg-soft/50 relative overflow-hidden">
+  <div class="absolute -top-20 -right-20 w-[360px] h-[360px] bg-accent/10 rounded-full blur-[70px]"></div>
+  <div class="relative max-w-5xl mx-auto px-5 md:px-6">
+    <a href="../index.html" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-slate-500 hover:text-deep transition-colors mb-6">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al inicio
+    </a>
+
+    <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-10 items-center">
+      <div>
+        <span class="inline-flex items-center gap-2 bg-white border border-deep/10 rounded-full px-3.5 py-1.5 mb-5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-deep"></i>
+          <span class="text-[11.5px] font-extrabold uppercase tracking-wider text-dark">Estamos para ayudarte</span>
+        </span>
+        <h1 class="font-display font-extrabold text-ink text-3xl md:text-5xl tracking-tight mb-4 leading-[1.08]">Hablemos de tu negocio</h1>
+        <p class="text-slate-600 text-[15.5px] max-w-lg leading-relaxed">Ya sea que quieras ver cómo funciona Gestor PRO, resolver una duda técnica o simplemente saber si se ajusta a tu rubro: escríbenos. Un humano de verdad te responde, no un bot — y normalmente el mismo día hábil.</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 lg:gap-4">
+        <div class="bg-white rounded-2xl p-4 text-center border border-slate-200">
+          <p class="mono font-extrabold text-2xl text-deep">+2.400</p>
+          <p class="text-[11px] font-bold text-slate-500 leading-tight mt-1">Negocios activos</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 text-center border border-slate-200">
+          <p class="mono font-extrabold text-2xl text-deep">&lt; 3h</p>
+          <p class="text-[11px] font-bold text-slate-500 leading-tight mt-1">Respuesta promedio</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 text-center border border-slate-200">
+          <p class="mono font-extrabold text-2xl text-deep">4.8/5</p>
+          <p class="text-[11px] font-bold text-slate-500 leading-tight mt-1">Satisfacción soporte</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TARJETAS DE CONTACTO ============ -->
+<section class="pt-10 md:pt-14 pb-6">
+  <div class="max-w-5xl mx-auto px-5 md:px-6">
+    <div class="text-center max-w-xl mx-auto mb-10 reveal" data-reveal>
+      <h2 class="font-display font-extrabold text-2xl md:text-3xl text-ink tracking-tight mb-2">Elige el canal que más te acomode</h2>
+      <p class="text-slate-500 text-[14.5px]">Todos llegan al mismo equipo. Ninguno es un buzón sin respuesta.</p>
+    </div>
+    <div class="grid sm:grid-cols-3 gap-5">
+      <div class="contact-icon-card reveal bg-white border border-slate-200 rounded-3xl p-6" data-reveal>
+        <span class="w-11 h-11 rounded-xl bg-green/10 flex items-center justify-center mb-4"><i data-lucide="message-circle" class="w-5 h-5 text-green"></i></span>
+        <h3 class="font-display font-extrabold text-[15px] text-ink mb-1">WhatsApp</h3>
+        <p class="text-[13px] text-slate-500 mb-3 leading-relaxed">Ideal si prefieres algo rápido e informal, igual que como cotizas con tus propios clientes. Es nuestro canal más ágil.</p>
+        <a href="https://wa.me/542613863563" target="_blank" rel="noopener" class="text-[13px] font-extrabold text-green hover:text-greendark transition-colors mono">+54 261 386 3563</a>
+      </div>
+      <div class="contact-icon-card reveal bg-white border border-slate-200 rounded-3xl p-6" data-reveal>
+        <span class="w-11 h-11 rounded-xl bg-soft flex items-center justify-center mb-4"><i data-lucide="mail" class="w-5 h-5 text-deep"></i></span>
+        <h3 class="font-display font-extrabold text-[15px] text-ink mb-1">Correo</h3>
+        <p class="text-[13px] text-slate-500 mb-3 leading-relaxed">Perfecto para consultas más detalladas, o si necesitas adjuntar capturas de pantalla o documentos.</p>
+        <a href="mailto:hola@gestorpro.app" class="text-[13px] font-extrabold text-deep hover:text-dark transition-colors mono">miguelcoronell@outlook.com</a>
+      </div>
+      <div class="contact-icon-card reveal bg-white border border-slate-200 rounded-3xl p-6" data-reveal>
+        <span class="w-11 h-11 rounded-xl bg-soft flex items-center justify-center mb-4"><i data-lucide="clock" class="w-5 h-5 text-deep"></i></span>
+        <h3 class="font-display font-extrabold text-[15px] text-ink mb-1">Horario de atención</h3>
+        <p class="text-[13px] text-slate-500 mb-3 leading-relaxed">Fuera de este horario igual puedes escribirnos: tu mensaje queda guardado y es lo primero que respondemos al reabrir.</p>
+        <p class="text-[13px] font-extrabold text-ink mono">Lun–Vie, 9:00–18:00</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMULARIO ============ -->
+<section class="py-10 md:py-16">
+  <div class="max-w-5xl mx-auto px-5 md:px-6 grid lg:grid-cols-[0.85fr_1.15fr] gap-8 items-start">
+
+    <!-- Columna motivacional -->
+    <div class="reveal lg:sticky lg:top-28 space-y-6" data-reveal>
+      <div>
+        <h2 class="font-display font-extrabold text-2xl md:text-[26px] text-ink tracking-tight mb-3 leading-snug">Este mensaje puede ser el último Excel que uses para cotizar</h2>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed">No necesitas saber de tecnología ni tener todo resuelto antes de escribirnos. Cuéntanos cómo trabajas hoy y te mostramos exactamente cómo se vería tu primera cotización en Gestor PRO.</p>
+      </div>
+
+      <ul class="space-y-4">
+        <li class="flex items-start gap-3">
+          <span class="w-9 h-9 rounded-xl bg-soft flex items-center justify-center flex-shrink-0"><i data-lucide="user-check" class="w-4 h-4 text-deep"></i></span>
+          <div>
+            <p class="font-display font-bold text-[14px] text-ink">Asesoría según tu rubro</p>
+            <p class="text-[13px] text-slate-500 leading-relaxed">Te ayudamos a armar tus primeras plantillas de servicios o materiales.</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-9 h-9 rounded-xl bg-soft flex items-center justify-center flex-shrink-0"><i data-lucide="shield-check" class="w-4 h-4 text-deep"></i></span>
+          <div>
+            <p class="font-display font-bold text-[14px] text-ink">Cero presión de venta</p>
+            <p class="text-[13px] text-slate-500 leading-relaxed">Puedes escribirnos solo para resolver dudas, sin compromiso de compra.</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-9 h-9 rounded-xl bg-soft flex items-center justify-center flex-shrink-0"><i data-lucide="zap" class="w-4 h-4 text-deep"></i></span>
+          <div>
+            <p class="font-display font-bold text-[14px] text-ink">Puesta en marcha rápida</p>
+            <p class="text-[13px] text-slate-500 leading-relaxed">La mayoría de los negocios envía su primera cotización el mismo día.</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="bg-dark rounded-3xl p-6 relative overflow-hidden">
+        <i data-lucide="quote" class="w-7 h-7 text-white/20 mb-3"></i>
+        <p class="text-[14px] text-blue-100 leading-relaxed mb-4">Escribí un lunes con dudas sobre mi rubro y el mismo día ya tenía mi primera cotización enviada por WhatsApp. Nunca más volví al Excel.</p>
+        <div class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-deep flex items-center justify-center text-white font-extrabold text-[12px]">MJ</span>
+          <div>
+            <p class="text-[12.5px] font-extrabold text-white">Marcela Jiménez</p>
+            <p class="text-[11.5px] text-blue-300">Servicios de gasfitería</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="reveal bg-white border border-slate-200 rounded-3xl p-7 md:p-10" data-reveal>
+
+      <div id="form-wrapper">
+        <h2 class="font-display font-extrabold text-2xl text-ink mb-1.5">Envíanos un mensaje</h2>
+        <p class="text-[14px] text-slate-500 mb-7">Completa el formulario y te contactamos por correo.</p>
+
+        <form id="contact-form" novalidate>
+          <div class="grid sm:grid-cols-2 gap-5 mb-5">
+            <div>
+              <label for="nombre" class="block text-[12.5px] font-extrabold text-slate-600 uppercase tracking-wide mb-2">Nombre</label>
+              <input id="nombre" name="nombre" type="text" class="field-input" placeholder="Tu nombre">
+              <p class="field-error-msg"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>Ingresa tu nombre.</p>
+            </div>
+            <div>
+              <label for="email" class="block text-[12.5px] font-extrabold text-slate-600 uppercase tracking-wide mb-2">Correo</label>
+              <input id="email" name="email" type="email" class="field-input" placeholder="tu@correo.com">
+              <p class="field-error-msg"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>Ingresa un correo válido.</p>
+            </div>
+          </div>
+
+          <div class="mb-5">
+            <label for="asunto" class="block text-[12.5px] font-extrabold text-slate-600 uppercase tracking-wide mb-2">Asunto</label>
+            <select id="asunto" name="asunto" class="field-select">
+              <option value="">Selecciona un motivo</option>
+              <option value="ventas">Quiero contratar Gestor PRO</option>
+              <option value="soporte">Necesito ayuda técnica</option>
+              <option value="facturacion">Dudas sobre mi plan o cobro</option>
+              <option value="otro">Otro</option>
+            </select>
+            <p class="field-error-msg"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>Selecciona un asunto.</p>
+          </div>
+
+          <div class="mb-7">
+            <label for="mensaje" class="block text-[12.5px] font-extrabold text-slate-600 uppercase tracking-wide mb-2">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" rows="5" class="field-textarea" placeholder="Cuéntanos en qué te podemos ayudar..."></textarea>
+            <p class="field-error-msg"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>Escribe tu mensaje.</p>
+          </div>
+
+          <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-br from-deep to-dark text-white font-extrabold text-[13.5px] uppercase tracking-wide shadow-[0_16px_30px_-8px_rgba(29,78,137,0.4)] hover:shadow-[0_20px_35px_-8px_rgba(29,78,137,0.5)] hover:-translate-y-0.5 transition-all">
+            Enviar mensaje <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Estado de éxito -->
+      <div id="success-panel" class="flex-col items-center text-center py-6">
+        <span class="w-16 h-16 rounded-full bg-green/10 flex items-center justify-center mb-5">
+          <i data-lucide="check-circle-2" class="w-8 h-8 text-green"></i>
+        </span>
+        <h2 class="font-display font-extrabold text-2xl text-ink mb-2">¡Mensaje enviado!</h2>
+        <p class="text-[14px] text-slate-500 max-w-sm mb-7">Gracias por escribirnos. Te responderemos a tu correo a la brevedad, normalmente el mismo día hábil.</p>
+        <button id="reset-form" type="button" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border-2 border-slate-200 font-extrabold text-[13px] uppercase tracking-wide text-ink hover:border-deep hover:text-deep transition-colors">
+          Enviar otro mensaje
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ALTERNATIVA: AUTOAYUDA ============ -->
+<section class="pb-16 md:pb-24">
+  <div class="max-w-5xl mx-auto px-5 md:px-6">
+    <div class="reveal bg-soft/60 border border-deep/10 rounded-3xl p-7 md:p-8 flex flex-col sm:flex-row items-center gap-6 justify-between" data-reveal>
+      <div class="flex items-center gap-4">
+        <span class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+          <i data-lucide="search" class="w-5 h-5 text-deep"></i>
+        </span>
+        <div>
+          <h3 class="font-display font-extrabold text-[16px] text-ink mb-1">¿Prefieres resolverlo tú mismo?</h3>
+          <p class="text-[13.5px] text-slate-500">Muchas dudas sobre firma digital, WhatsApp o planes ya están respondidas en nuestro Centro de ayuda.</p>
+        </div>
+      </div>
+      <a href="centro_ayuda.html" class="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white border-2 border-slate-200 font-extrabold text-[13px] uppercase tracking-wide text-ink hover:border-deep hover:text-deep transition-colors">
+        Ver Centro de ayuda <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-slate-200 pt-14 pb-8">
+  <div class="max-w-6xl mx-auto px-5 md:px-6">
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+      <div class="col-span-2 md:col-span-1">
+        <a href="#top" class="flex items-center gap-2.5 mb-4">
+          <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-deep to-dark flex items-center justify-center">
+            <i data-lucide="file-signature" class="w-4 h-4 text-white"></i>
+          </span>
+          <span class="font-display font-extrabold text-[14px] text-ink">Gestor<span class="text-deep">PRO</span></span>
+        </a>
+        <p class="text-[13px] text-slate-500 leading-relaxed max-w-[220px]">Cotizaciones y facturas profesionales, firmadas y enviadas en segundos.</p>
+      </div>
+      <div>
+       <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Producto</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li><a href="../index.html#funciones" class="hover:text-deep transition-colors">Funciones</a></li>
+          <li><a href="../index.html#como-funciona" class="hover:text-deep transition-colors">Cómo funciona</a></li>
+          <li><a href="../index.html#precios" class="hover:text-deep transition-colors">Precios</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Soporte</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li><a href="../index.html#faq" class="hover:text-deep transition-colors">Preguntas frecuentes</a></li>
+          <li><a href="centro_ayuda.html" class="hover:text-deep transition-colors">Centro de ayuda</a></li>
+          <li><a href="contacto.html" class="hover:text-deep transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-4">Contacto</h4>
+        <ul class="space-y-2.5 text-[13.5px] font-semibold text-slate-600">
+          <li class="flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>miguelcoronell@outlook.com</li>
+          <li class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3.5 h-3.5 text-slate-400"></i>Chat por WhatsApp</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-[12px] text-slate-400 font-medium">© 2026 Gestor PRO. Todos los derechos reservados.</p>
+      <div class="flex items-center gap-5 text-[12px] font-semibold text-slate-400">
+        <a href="privacidad.html" class="hover:text-deep transition-colors">Privacidad</a>
+        <a href="terminos.html" class="hover:text-deep transition-colors">Términos</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileBackdrop = document.getElementById('mobile-backdrop');
+  const iconOpen = document.getElementById('menu-icon-open');
+  const iconClose = document.getElementById('menu-icon-close');
+
+  function toggleMobileMenu(forceClose) {
+    const isOpen = mobileMenu.classList.contains('open');
+    const shouldOpen = forceClose ? false : !isOpen;
+    mobileMenu.classList.toggle('open', shouldOpen);
+    mobileBackdrop.classList.toggle('open', shouldOpen);
+    iconOpen.classList.toggle('hidden', shouldOpen);
+    iconClose.classList.toggle('hidden', !shouldOpen);
+    menuBtn.setAttribute('aria-expanded', String(shouldOpen));
+    document.body.style.overflow = shouldOpen ? 'hidden' : '';
+  }
+  menuBtn.addEventListener('click', () => toggleMobileMenu());
+  mobileBackdrop.addEventListener('click', () => toggleMobileMenu(true));
+  document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => toggleMobileMenu(true)));
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMobileMenu(true); });
+
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
+
+  // ---- Formulario de contacto (validación + estado de éxito, sin backend) ----
+  const form = document.getElementById('contact-form');
+  const formWrapper = document.getElementById('form-wrapper');
+  const successPanel = document.getElementById('success-panel');
+  const resetBtn = document.getElementById('reset-form');
+
+  function setFieldError(field, hasError) {
+    const msg = field.parentElement.querySelector('.field-error-msg');
+    field.classList.toggle('field-error', hasError);
+    if (msg) msg.classList.toggle('show', hasError);
+    if (hasError) {
+      field.classList.add('shake');
+      setTimeout(() => field.classList.remove('shake'), 350);
+    }
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nombre = document.getElementById('nombre');
+    const email = document.getElementById('email');
+    const asunto = document.getElementById('asunto');
+    const mensaje = document.getElementById('mensaje');
+
+    let valid = true;
+    if (!nombre.value.trim()) { setFieldError(nombre, true); valid = false; } else setFieldError(nombre, false);
+    if (!isValidEmail(email.value.trim())) { setFieldError(email, true); valid = false; } else setFieldError(email, false);
+    if (!asunto.value) { setFieldError(asunto, true); valid = false; } else setFieldError(asunto, false);
+    if (!mensaje.value.trim()) { setFieldError(mensaje, true); valid = false; } else setFieldError(mensaje, false);
+
+    if (!valid) {
+      const firstError = form.querySelector('.field-error');
+      if (firstError) firstError.focus();
+      return;
+    }
+
+    // No hay backend conectado: mostramos el estado de éxito localmente.
+    formWrapper.style.display = 'none';
+    successPanel.classList.add('show');
+  });
+
+  resetBtn.addEventListener('click', () => {
+    form.reset();
+    document.querySelectorAll('.field-error').forEach(f => f.classList.remove('field-error'));
+    document.querySelectorAll('.field-error-msg.show').forEach(m => m.classList.remove('show'));
+    successPanel.classList.remove('show');
+    formWrapper.style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
