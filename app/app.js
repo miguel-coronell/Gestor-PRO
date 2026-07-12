@@ -1707,45 +1707,42 @@ function mostrarApp() {
 // --- Escucha los cambios de sesión de Firebase (login, logout, recarga de página) ---
 async function manejarCambioDeAuth(user) {
     usuarioFirebase = user;
+    if (!user) { perfilUsuario = null; mostrarLogin(); return; }
 
-    if (!user) {
-        perfilUsuario = null;
-        mostrarLogin();
-        return;
-    }
-
-    let perfil = await window.FB.obtenerPerfilUsuario(user.uid);
-    // Pequeño reintento por si el documento de Firestore aún se está creando
-    // justo después de un registro nuevo.
-    if (!perfil) {
-        await new Promise(r => setTimeout(r, 1200));
-        perfil = await window.FB.obtenerPerfilUsuario(user.uid);
-    }
-    perfilUsuario = perfil;
-
-    if (!perfil) {
-        mostrarLogin();
-        return;
-    }
-
-    if (perfil.esAdmin) { mostrarApp(); return; }
-
-    const dias = diasRestantesHasta(perfil.fechaVencimiento);
-    const vencida = perfil.estado === 'vencido' || (dias !== null && dias < 0);
-
-    if (vencida) {
-        if (perfil.estado !== 'vencido') {
-            // Actualiza el estado en la base para que quede reflejado en el panel admin
-            try { await window.FB.marcarVencido(user.uid); } catch (_) {}
-            perfilUsuario.estado = 'vencido';
+    try {
+        let perfil = await window.FB.obtenerPerfilUsuario(user.uid);
+        if (!perfil) {
+            await new Promise(r => setTimeout(r, 1200));
+            perfil = await window.FB.obtenerPerfilUsuario(user.uid);
         }
-        mostrarPantallaVencida();
-        return;
+        perfilUsuario = perfil;
+
+        if (!perfil) { mostrarLogin(); return; }
+        if (perfil.esAdmin) { mostrarApp(); return; }
+
+        const dias = diasRestantesHasta(perfil.fechaVencimiento);
+        const vencida = perfil.estado === 'vencido' || (dias !== null && dias < 0);
+
+        if (vencida) {
+            if (perfil.estado !== 'vencido') {
+                try { await window.FB.marcarVencido(user.uid); } catch (_) {}
+                perfilUsuario.estado = 'vencido';
+            }
+            mostrarPantallaVencida();
+            return;
+        }
+        mostrarApp();
+    } catch (err) {
+        console.error('Error al cargar el perfil de usuario:', err);
+        mostrarLogin();
+        const errorBox = document.getElementById('login-error');
+        const errorMsg = document.getElementById('login-error-msg');
+        if (errorBox && errorMsg) {
+            errorMsg.textContent = 'No se pudo verificar tu cuenta. Revisa tu conexión e intenta de nuevo.';
+            errorBox.classList.remove('hidden');
+        }
     }
-
-    mostrarApp();
 }
-
 function iniciarListenerAuth() {
     if (!window.FB) return;
     window.FB.onAuthStateChanged(manejarCambioDeAuth);
