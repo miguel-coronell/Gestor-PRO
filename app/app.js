@@ -348,26 +348,77 @@ function actualizarTiposDocumentoPorRubro(rubroKey) {
 let LOGO_BASE64 = "";
 let LOGO_DEFAULT_BASE64 = ""; // se genera una sola vez, en memoria (no se guarda en localStorage)
 
-// Genera un logo genérico (insignia circular con la inicial del negocio, en
-// el color de marca actual) para usarlo en el PDF cuando el cliente no subió
-// su propio logo. Así el documento nunca sale sin ningún tipo de logo.
+// Genera el logo por defecto (insignia de marca GestorPRO: cuadrado con
+// degradado azul + ícono de documento y lápiz, igual que en el login y el
+// menú) para usarlo en el PDF cuando el cliente no subió su propio logo.
+// Así el documento nunca sale sin ningún tipo de logo.
 function obtenerLogoPorDefecto() {
     if (LOGO_DEFAULT_BASE64) return LOGO_DEFAULT_BASE64;
     try {
         const canvas = document.createElement('canvas');
         canvas.width = 240; canvas.height = 240;
         const ctx = canvas.getContext('2d');
-        const [r, g, b] = COLOR_MARCA && COLOR_MARCA.length === 3 ? COLOR_MARCA : [29, 78, 137];
-        ctx.fillStyle = `rgb(${r},${g},${b})`;
-        ctx.beginPath();
-        ctx.arc(120, 120, 120, 0, Math.PI * 2);
-        ctx.fill();
+
+        // Fondo: cuadrado redondeado con el mismo degradado azul de marca
+        // (#3B82F6 -> #1D4E89) que se usa en el login y en el sidebar.
+        const grad = ctx.createLinearGradient(0, 0, 240, 240);
+        grad.addColorStop(0, '#3B82F6');
+        grad.addColorStop(1, '#1D4E89');
+        ctx.fillStyle = grad;
+        if (ctx.roundRect) {
+            ctx.beginPath();
+            ctx.roundRect(0, 0, 240, 240, 44);
+            ctx.fill();
+        } else {
+            ctx.fillRect(0, 0, 240, 240);
+        }
+
+        // Ícono blanco tipo "documento con lápiz" (file-pen-line), estilo GestorPRO
+        ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = '#ffffff';
-        ctx.font = '900 130px "Plus Jakarta Sans", Arial, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const inicial = (EMPRESA.nombre || 'M').trim().charAt(0).toUpperCase() || 'M';
-        ctx.fillText(inicial, 120, 132);
+        ctx.lineWidth = 10;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        // Silueta del documento (con esquina doblada)
+        ctx.beginPath();
+        ctx.moveTo(76, 52);
+        ctx.lineTo(132, 52);
+        ctx.lineTo(168, 88);
+        ctx.lineTo(168, 150);
+        ctx.lineTo(76, 150);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(132, 52);
+        ctx.lineTo(132, 88);
+        ctx.lineTo(168, 88);
+        ctx.stroke();
+
+        // Líneas de texto dentro del documento
+        ctx.beginPath();
+        ctx.moveTo(92, 108);
+        ctx.lineTo(138, 108);
+        ctx.moveTo(92, 126);
+        ctx.lineTo(120, 126);
+        ctx.stroke();
+
+        // Lápiz en diagonal (representa el "pen-line")
+        ctx.lineWidth = 11;
+        ctx.beginPath();
+        ctx.moveTo(120, 175);
+        ctx.lineTo(150, 145);
+        ctx.lineTo(168, 163);
+        ctx.lineTo(138, 193);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(120, 175);
+        ctx.lineTo(112, 200);
+        ctx.lineTo(138, 193);
+        ctx.closePath();
+        ctx.fill();
+
         LOGO_DEFAULT_BASE64 = canvas.toDataURL('image/png');
     } catch (e) {
         console.warn('No se pudo generar el logo por defecto', e);
@@ -1537,9 +1588,8 @@ async function generarPDF() {
     doc.setFillColor(...colorGrayLight);
     doc.rect(0, 0, 210, 42, 'F');
 
-    // Si el cliente no cargó su propio logo, se usa uno genérico por defecto
-    // (insignia con la inicial del negocio, en el color de marca) para que el
-    // PDF nunca salga sin logo.
+    // Si el cliente no cargó su propio logo, se usa el ícono de marca de
+    // GestorPRO por defecto, para que el PDF nunca salga sin logo.
     const logoParaPDF = LOGO_BASE64 || obtenerLogoPorDefecto();
     if (logoParaPDF) {
         try { doc.addImage(logoParaPDF, 'PNG', 15, 8, 28, 28); } catch (e) { console.warn("Logo no válido para PDF", e); }
