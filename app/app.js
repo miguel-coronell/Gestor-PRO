@@ -266,7 +266,81 @@ const CATEGORIAS = {
     }
 };
 
+// El campo "Dirección / Obra" cambia de nombre y ejemplo según el rubro,
+// para que tenga sentido en cada tipo de negocio.
+const CAMPO_UBICACION_POR_RUBRO = {
+    construccion:  { label: "Dirección / Obra",            placeholder: "Ciudad, barrio o dirección exacta de la obra" },
+    hogar:         { label: "Dirección de Instalación",    placeholder: "Dirección donde se presta el servicio" },
+    automotriz:    { label: "Vehículo (Placa / Modelo)",   placeholder: "Ej: ABC123 - Toyota Corolla 2019" },
+    veterinaria:   { label: "Nombre / Especie de la Mascota", placeholder: "Ej: Firulais - Perro - Labrador" },
+    salud:         { label: "Dirección del Paciente",      placeholder: "Dirección o consultorio" },
+    eventos:       { label: "Lugar del Evento",            placeholder: "Salón, dirección o ciudad del evento" },
+    transporte:    { label: "Origen / Destino",            placeholder: "Ej: Bogotá - Medellín" },
+    gastronomia:   { label: "Lugar de Entrega",             placeholder: "Dirección de entrega o del evento" },
+    inmobiliaria:  { label: "Dirección del Inmueble",       placeholder: "Dirección completa del inmueble" },
+    turismo:       { label: "Destino / Ruta",               placeholder: "Ej: Cartagena - Islas del Rosario" },
+    agropecuario:  { label: "Ubicación del Predio",         placeholder: "Finca, vereda o ubicación" },
+    tecnologia:    { label: "Dirección / Sitio del Servicio", placeholder: "Oficina, hogar o dirección remota" },
+    default:       { label: "Dirección / Obra",             placeholder: "Ciudad, Barrio o Dirección exacta" }
+};
+
+function actualizarCampoUbicacionPorRubro(rubroKey) {
+    const cfg = CAMPO_UBICACION_POR_RUBRO[rubroKey] || CAMPO_UBICACION_POR_RUBRO.default;
+    const label = document.getElementById('label-c-obra');
+    const input = document.getElementById('c_obra');
+    if (label) label.innerText = cfg.label;
+    if (input) input.placeholder = cfg.placeholder;
+}
+
 let categoriaActual = "";
+
+// ---------------------------------------------------------------------
+// 1B. TIPOS DE DOCUMENTO DISPONIBLES SEGÚN EL RUBRO
+// ---------------------------------------------------------------------
+const TODOS_LOS_TIPOS_DOCUMENTO = [
+    "COTIZACIÓN", "FACTURA", "PRESUPUESTO", "CUENTA COBRO", "ORDEN DE TRABAJO",
+    "RECIBO DE CAJA", "NOTA DE ENTREGA", "CONTRATO DE SERVICIO"
+];
+const TIPOS_DOCUMENTO_POR_RUBRO = {
+    construccion:   ["COTIZACIÓN", "ORDEN DE TRABAJO", "FACTURA", "CONTRATO DE SERVICIO", "CUENTA COBRO"],
+    salud:          ["COTIZACIÓN", "FACTURA", "RECIBO DE CAJA", "CONTRATO DE SERVICIO"],
+    hogar:          ["COTIZACIÓN", "ORDEN DE TRABAJO", "FACTURA", "RECIBO DE CAJA", "NOTA DE ENTREGA"],
+    tecnologia:     ["COTIZACIÓN", "FACTURA", "ORDEN DE TRABAJO", "CONTRATO DE SERVICIO"],
+    belleza:        ["COTIZACIÓN", "FACTURA", "RECIBO DE CAJA"],
+    eventos:        ["COTIZACIÓN", "PRESUPUESTO", "FACTURA", "CONTRATO DE SERVICIO", "CUENTA COBRO"],
+    transporte:     ["COTIZACIÓN", "FACTURA", "NOTA DE ENTREGA", "CUENTA COBRO"],
+    gastronomia:    ["COTIZACIÓN", "FACTURA", "NOTA DE ENTREGA", "RECIBO DE CAJA"],
+    contabilidad:   ["COTIZACIÓN", "FACTURA", "CONTRATO DE SERVICIO", "CUENTA COBRO"],
+    educacion:      ["COTIZACIÓN", "FACTURA", "CONTRATO DE SERVICIO", "RECIBO DE CAJA"],
+    legal:          ["COTIZACIÓN", "FACTURA", "CONTRATO DE SERVICIO", "CUENTA COBRO"],
+    marketing:      ["COTIZACIÓN", "FACTURA", "CONTRATO DE SERVICIO", "PRESUPUESTO"],
+    agropecuario:   ["COTIZACIÓN", "FACTURA", "NOTA DE ENTREGA", "ORDEN DE TRABAJO"],
+    veterinaria:    ["COTIZACIÓN", "FACTURA", "RECIBO DE CAJA"],
+    inmobiliaria:   ["COTIZACIÓN", "FACTURA", "CONTRATO DE SERVICIO", "CUENTA COBRO"],
+    automotriz:     ["COTIZACIÓN", "ORDEN DE TRABAJO", "FACTURA", "RECIBO DE CAJA"],
+    turismo:        ["COTIZACIÓN", "FACTURA", "PRESUPUESTO", "CONTRATO DE SERVICIO"],
+    seguridad:      ["COTIZACIÓN", "FACTURA", "CONTRATO DE SERVICIO", "CUENTA COBRO"],
+    otro:           TODOS_LOS_TIPOS_DOCUMENTO
+};
+
+// Reconstruye las opciones del selector "Tipo Documento" según el rubro elegido.
+function actualizarTiposDocumentoPorRubro(rubroKey) {
+    const select = document.getElementById('c_tipo');
+    if (!select) return;
+    const valorPrevio = select.value;
+    const tipos = TIPOS_DOCUMENTO_POR_RUBRO[rubroKey] || TODOS_LOS_TIPOS_DOCUMENTO;
+
+    select.innerHTML = '<option value="" disabled selected>-- Seleccionar --</option>' +
+        tipos.map(t => `<option value="${t}">${t}</option>`).join('');
+
+    // Si el tipo elegido antes sigue disponible para el nuevo rubro, se conserva.
+    if (tipos.includes(valorPrevio)) {
+        select.value = valorPrevio;
+    } else {
+        select.value = '';
+    }
+    toggleFacturaField();
+}
 
 // ---------------------------------------------------------------------
 // 2. CONFIGURACIÓN DE EMPRESA (nombre, contacto, LOGO propio)
@@ -312,16 +386,22 @@ const EMPRESA_DEFAULT = {
 };
 let EMPRESA = { ...EMPRESA_DEFAULT };
 
-function cargarConfigEmpresa() {
+async function cargarConfigEmpresa() {
+    // A partir de esta versión, los datos de empresa (nombre, logo, color, rubro
+    // personalizado) ya NO se guardan en el navegador: quedan ligados a la
+    // cuenta del usuario logueado (Firestore), por lo que viajan con él a
+    // cualquier dispositivo donde inicie sesión.
     try {
-        const guardado = localStorage.getItem('empresa_datos');
-        if (guardado) EMPRESA = { ...EMPRESA_DEFAULT, ...JSON.parse(guardado) };
-        const logo = localStorage.getItem('empresa_logo');
-        if (logo) LOGO_BASE64 = logo;
-
-        const colorGuardado = localStorage.getItem('empresa_color'); // <-- nuevo
-        if (colorGuardado) aplicarColorMarca(JSON.parse(colorGuardado)); // <-- nuevo
-    } catch (e) { console.warn("No se pudo cargar configuración guardada", e); }
+        if (window.FB && window.FB.obtenerDatosEmpresa) {
+            const datos = await window.FB.obtenerDatosEmpresa();
+            if (datos) {
+                EMPRESA = { ...EMPRESA_DEFAULT, ...datos };
+                if (datos.logoBase64) LOGO_BASE64 = datos.logoBase64;
+                if (datos.color) aplicarColorMarca(datos.color);
+                if (datos.rubroOtroNombre) CATEGORIAS.otro.label = datos.rubroOtroNombre;
+            }
+        }
+    } catch (e) { console.warn("No se pudo cargar la configuración de la cuenta", e); }
     pintarConfigEnFormulario();
 }
 
@@ -346,7 +426,7 @@ function pintarConfigEnFormulario() {
     }
 }
 
-function guardarConfigEmpresa() {
+async function guardarConfigEmpresa() {
     EMPRESA = {
         nombre: document.getElementById('emp_nombre').value || EMPRESA_DEFAULT.nombre,
         slogan: document.getElementById('emp_slogan').value,
@@ -356,14 +436,24 @@ function guardarConfigEmpresa() {
         direccion: document.getElementById('emp_direccion').value,
         firmante: document.getElementById('emp_firmante').value || EMPRESA_DEFAULT.firmante
     };
-    localStorage.setItem('empresa_datos', JSON.stringify(EMPRESA));
     actualizarMarcaEnUI();
     cerrarAvisoEmpresaMovil(); // <-- ya configuró, se oculta la notificación
 
     const btn = document.getElementById('btn-guardar-empresa');
     if (btn) {
         const original = btn.innerHTML;
-        btn.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> Guardado`;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Guardando...`;
+        lucide.createIcons();
+        try {
+            if (window.FB && window.FB.guardarDatosEmpresa) await window.FB.guardarDatosEmpresa(EMPRESA);
+            btn.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> Guardado`;
+        } catch (e) {
+            console.error('Error guardando datos de empresa:', e);
+            const motivo = (e && e.code === 'permission-denied')
+                ? 'Sin permiso (revisa las reglas de Firestore)'
+                : (e && e.code) ? e.code : 'Error al guardar';
+            btn.innerHTML = `<i data-lucide="alert-circle" class="w-5 h-5"></i> ${motivo}`;
+        }
         lucide.createIcons();
         setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 1800);
     }
@@ -387,7 +477,6 @@ function handleLogoUpload(input) {
     const reader = new FileReader();
     reader.onload = async (e) => {
         LOGO_BASE64 = e.target.result;
-        localStorage.setItem('empresa_logo', LOGO_BASE64);
         const prev = document.getElementById('logo-preview');
         const ph = document.getElementById('logo-placeholder');
         if (prev) { prev.src = LOGO_BASE64; prev.classList.remove('hidden'); }
@@ -395,23 +484,30 @@ function handleLogoUpload(input) {
         document.querySelectorAll('.logo-mini').forEach(img => { img.src = LOGO_BASE64; img.classList.remove('hidden'); });
         document.querySelectorAll('.logo-placeholder-icon').forEach(icon => icon.classList.add('hidden'));
 
-        // --- NUEVO: detectar color dominante y aplicarlo ---
+        // --- Detectar color dominante y aplicarlo ---
         const color = await extraerColorDominante(LOGO_BASE64);
-        if (color) {
-            aplicarColorMarca(color);
-            localStorage.setItem('empresa_color', JSON.stringify(color));
-        }
+        if (color) aplicarColorMarca(color);
+
+        // Se guarda en la cuenta del usuario (Firestore), no en el navegador.
+        try {
+            if (window.FB && window.FB.guardarDatosEmpresa) {
+                await window.FB.guardarDatosEmpresa({ logoBase64: LOGO_BASE64, color: color || null });
+            }
+        } catch (err) { console.error('No se pudo guardar el logo en tu cuenta', err); }
     };
     reader.readAsDataURL(file);
 }
 
 
-function quitarLogo() {
+async function quitarLogo() {
     if (!confirm("¿Quitar el logo actual?")) return;
     LOGO_BASE64 = "";
-    localStorage.removeItem('empresa_logo');
-    localStorage.removeItem('empresa_color');          // <-- nuevo
-    aplicarColorMarca([29, 78, 137]);                   // <-- nuevo: vuelve al azul por defecto
+    aplicarColorMarca([29, 78, 137]); // vuelve al azul por defecto
+    try {
+        if (window.FB && window.FB.guardarDatosEmpresa) {
+            await window.FB.guardarDatosEmpresa({ logoBase64: "", color: null });
+        }
+    } catch (err) { console.error('No se pudo quitar el logo de tu cuenta', err); }
     const prev = document.getElementById('logo-preview');
     const ph = document.getElementById('logo-placeholder');
     if (prev) prev.classList.add('hidden');
@@ -526,6 +622,10 @@ function cambiarCategoria(nuevoValor) {
     document.getElementById('titulo-rubro-mo').innerText = cat.label;
     document.getElementById('titulo-rubro-mat').innerText = cat.label;
 
+    // --- El Tipo de Documento disponible se adapta al rubro elegido ---
+    actualizarTiposDocumentoPorRubro(categoriaActual);
+    actualizarCampoUbicacionPorRubro(categoriaActual);
+
     // --- El icono del rubro se refleja también en las secciones e insignias (interfaz adaptada al rubro) ---
     document.querySelectorAll('.icono-rubro-dinamico').forEach(icon => {
         icon.setAttribute('data-lucide', cat.icon || 'layout-grid');
@@ -538,7 +638,9 @@ function cambiarCategoria(nuevoValor) {
 function guardarNombreRubroPersonalizado(valor) {
     const nombre = valor.trim() || 'Otro / Personalizado';
     CATEGORIAS.otro.label = nombre;
-    localStorage.setItem('rubro_otro_nombre', nombre);
+    if (window.FB && window.FB.guardarDatosEmpresa) {
+        window.FB.guardarDatosEmpresa({ rubroOtroNombre: nombre }).catch(err => console.error(err));
+    }
 
     if (categoriaActual === 'otro') {
         document.getElementById('titulo-rubro-mo').innerText = nombre;
@@ -562,6 +664,14 @@ const iti = window.intlTelInput(inputTel, {
     separateDialCode: true,
     utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/utils.js",
 });
+
+// Mismo selector de país (con banderas) para el teléfono del modal "Nuevo Cliente"
+const inputTelNuevoCliente = document.querySelector("#nc_telefono");
+const itiNuevoCliente = inputTelNuevoCliente ? window.intlTelInput(inputTelNuevoCliente, {
+    initialCountry: "co",
+    separateDialCode: true,
+    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/utils.js",
+}) : null;
 
 // ---------------------------------------------------------------------
 // 5. FIRMA DIGITAL DOBLE (CANVAS)
@@ -683,6 +793,14 @@ const CONFIG_ANTICIPO = {
     'FACTURA':          { visible: true,  titulo: 'Registrar Abono / Pago Parcial',  subtitulo: 'Si el cliente ya realizó un pago parcial' },
     'CUENTA COBRO':     { visible: false, titulo: '', subtitulo: '' }
 };
+
+// Muestra/oculta el campo numérico de Validez/Garantía; mientras está oculto
+// se sigue usando su valor por defecto (15 días) en el documento generado.
+function toggleGarantiaSwitch() {
+    const activo = document.getElementById('switch-garantia').checked;
+    document.getElementById('c_garantia').classList.toggle('hidden', !activo);
+    document.getElementById('c_garantia_desactivada_texto').classList.toggle('hidden', activo);
+}
 
 function toggleFacturaField() {
     const tipo = document.getElementById('c_tipo').value;
@@ -937,6 +1055,24 @@ function extractTableData(id) {
     return data;
 }
 
+// Igual que extractTableData, pero con valores crudos (sin formatear) — se usa
+// para guardar el "snapshot" del documento y poder reconstruir el formulario
+// más adelante desde el Panel de Documentos.
+function extractTableDataRaw(id) {
+    let data = [];
+    document.querySelectorAll(`#${id} > div`).forEach(c => {
+        const selEl = c.querySelector('.item-sel');
+        let desc = selEl.value;
+        const esOtro = desc === 'OTRO';
+        if (esOtro) desc = c.querySelector('.item-custom').value;
+        const u = c.querySelector('.item-u').value;
+        const q = parseFloat(c.querySelector('.item-q').value) || 0;
+        const p = parseFloat(c.querySelector('.item-p').value) || 0;
+        if (desc) data.push({ desc, u, q, p, esOtro });
+    });
+    return data;
+}
+
 function obtenerDatosResumen() {
     const tipoSeleccionado = document.getElementById('c_tipo').value;
     let folioFinal = "";
@@ -1097,7 +1233,7 @@ function mostrarAvisoDosOpciones(opciones) {
 // ¿La empresa ya guardó al menos una vez sus datos (botón "Guardar Datos de
 // la Empresa")? Se usa como condición antes de generar/enviar el documento.
 function datosEmpresaGuardados() {
-    return !!localStorage.getItem('empresa_datos');
+    return !!(EMPRESA && EMPRESA.nombre && EMPRESA.nombre !== EMPRESA_DEFAULT.nombre);
 }
 
 // Punto único de entrada para las 3 acciones de envío (PDF, WhatsApp, Correo).
@@ -1166,10 +1302,216 @@ function cerrarModalEnviarDocumento() {
 function accionEnviarDocumento(tipo) {
     cerrarModalEnviarDocumento();
     verificarDatosEmpresaYContinuar(() => {
+        // Antes de generar/enviar, si los campos obligatorios están completos,
+        // registramos (o actualizamos) el cliente en la base de datos de la cuenta.
+        if (validarCamposObligatorios().length === 0) guardarClienteDesdeDocumento();
+
         if (tipo === 'pdf') generarPDF();
         else if (tipo === 'whatsapp') enviarWhatsApp();
         else if (tipo === 'email') enviarEmail();
     });
+}
+
+// ---------------------------------------------------------------------
+// BASE DE DATOS DE CLIENTES (por usuario, en Firestore)
+// ---------------------------------------------------------------------
+let CLIENTES_GUARDADOS = [];
+
+async function cargarClientesGuardados() {
+    if (!window.FB || !window.FB.listarClientes) return;
+    try { CLIENTES_GUARDADOS = await window.FB.listarClientes(); }
+    catch (e) { console.error('No se pudieron cargar los clientes', e); CLIENTES_GUARDADOS = []; }
+}
+
+function toggleFormNuevoCliente() {
+    const form = document.getElementById('form-nuevo-cliente');
+    form.classList.toggle('hidden');
+    if (!form.classList.contains('hidden')) {
+        ['nc_nombre', 'nc_documento', 'nc_telefono', 'nc_email', 'nc_direccion'].forEach(id => document.getElementById(id).value = '');
+        if (itiNuevoCliente) { try { itiNuevoCliente.setNumber(''); } catch (e) {} }
+        setTimeout(() => document.getElementById('nc_nombre').focus(), 100);
+    }
+}
+
+async function guardarNuevoClienteManual() {
+    const nombre = document.getElementById('nc_nombre').value.trim();
+    if (!nombre) {
+        document.getElementById('nc_nombre').classList.add('campo-invalido', 'campo-invalido-shake');
+        setTimeout(() => document.getElementById('nc_nombre').classList.remove('campo-invalido-shake'), 400);
+        return;
+    }
+    if (!window.FB || !window.FB.guardarOActualizarCliente) return;
+
+    try {
+        const telefonoNuevoCliente = itiNuevoCliente
+            ? itiNuevoCliente.getNumber()
+            : document.getElementById('nc_telefono').value.trim();
+        await window.FB.guardarOActualizarCliente({
+            nombre,
+            documento: document.getElementById('nc_documento').value.trim(),
+            telefono: telefonoNuevoCliente,
+            email: document.getElementById('nc_email').value.trim(),
+            direccion: document.getElementById('nc_direccion').value.trim(),
+            totalDocumento: 0 // se agrega manualmente, sin documento emitido todavía
+        });
+        await cargarClientesGuardados();
+        document.getElementById('form-nuevo-cliente').classList.add('hidden');
+        buscarClientesModal('');
+    } catch (e) {
+        console.error(e);
+        const motivo = (e && e.code === 'permission-denied') ? 'No tienes permiso para guardar clientes (revisa las reglas de Firestore).' : 'No se pudo guardar el cliente. Intenta de nuevo.';
+        alert(motivo);
+    }
+}
+
+function abrirModalClientes() {
+    document.getElementById('modal-clientes').classList.remove('hidden');
+    document.getElementById('buscador-clientes').value = '';
+    renderListaClientesModal(CLIENTES_GUARDADOS);
+    lucide.createIcons();
+    setTimeout(() => document.getElementById('buscador-clientes').focus(), 150);
+}
+function cerrarModalClientes() {
+    document.getElementById('modal-clientes').classList.add('hidden');
+}
+
+function buscarClientesModal(termino) {
+    const filtrados = (window.FB && window.FB.filtrarClientes)
+        ? window.FB.filtrarClientes(CLIENTES_GUARDADOS, termino)
+        : CLIENTES_GUARDADOS.filter(c => (c.nombre || '').toLowerCase().includes((termino || '').toLowerCase()));
+    renderListaClientesModal(filtrados, termino);
+}
+
+function renderListaClientesModal(lista, termino) {
+    const cont = document.getElementById('lista-clientes-modal');
+    const vacio = document.getElementById('clientes-sin-resultados');
+    if (!cont) return;
+    if (!lista || lista.length === 0) {
+        cont.innerHTML = '';
+        if (vacio) {
+            vacio.classList.remove('hidden');
+            vacio.querySelector('p').textContent = termino
+                ? `No hay clientes que coincidan con "${termino}".`
+                : 'Todavía no has guardado ningún cliente. Se guardan automáticamente al generar un documento.';
+        }
+        return;
+    }
+    if (vacio) vacio.classList.add('hidden');
+
+    cont.innerHTML = lista.map(c => `
+        <div class="flex items-center justify-between gap-3 p-3.5 rounded-2xl border-2 border-slate-100 hover:border-olive/40 hover:bg-olive-soft/40 transition-all">
+            <button type="button" onclick="seleccionarClienteModal('${c.id}')" class="flex-1 min-w-0 text-left">
+                <p class="font-black text-sm text-slate-800 truncate">${escaparHtml(c.nombre || 'Sin nombre')}</p>
+                <p class="text-[11px] text-slate-500 font-semibold truncate">
+                    ${c.documento ? 'Doc: ' + escaparHtml(c.documento) + ' · ' : ''}${c.telefono ? escaparHtml(c.telefono) : 'Sin teléfono'}
+                </p>
+                <p class="text-[10px] text-olive font-bold mt-0.5">
+                    ${c.cantidadDocumentos || 0} documento(s) · $ ${Math.round(c.totalFacturado || 0).toLocaleString()} facturado
+                    ${c.ultimoNumeroFactura ? ' · Últ. folio: ' + escaparHtml(c.ultimoNumeroFactura) : ''}
+                </p>
+            </button>
+            <button type="button" onclick="eliminarClienteModal('${c.id}')" class="shrink-0 p-2.5 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all" title="Quitar cliente">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+    `).join('');
+    lucide.createIcons();
+}
+
+function escaparHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = String(str);
+    return div.innerHTML;
+}
+
+function seleccionarClienteModal(id) {
+    const c = CLIENTES_GUARDADOS.find(x => x.id === id);
+    if (!c) return;
+    const setVal = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+    setVal('c_nombre', c.nombre);
+    setVal('c_nit', c.documento);
+    setVal('c_email', c.email);
+    setVal('c_obra', c.direccion);
+    if (c.telefono && iti) {
+        try { iti.setNumber(c.telefono.startsWith('+') ? c.telefono : '+' + c.telefono); } catch (e) { setVal('c_tel', c.telefono); }
+    }
+    document.querySelectorAll('#c_nombre, #c_nit, #c_email, #c_obra').forEach(el => el.classList.remove('campo-invalido'));
+    cerrarModalClientes();
+}
+
+async function eliminarClienteModal(id) {
+    if (!confirm('¿Quitar este cliente de tu base de datos? Esto no borra los documentos ya generados.')) return;
+    try {
+        await window.FB.eliminarCliente(id);
+        await cargarClientesGuardados();
+        buscarClientesModal(document.getElementById('buscador-clientes').value);
+    } catch (e) { console.error(e); alert('No se pudo quitar el cliente. Intenta de nuevo.'); }
+}
+
+// Descarga la base de clientes de la cuenta en formato CSV (Excel/Sheets la abre directo).
+function exportarClientesCSV() {
+    if (!CLIENTES_GUARDADOS.length) { alert('Todavía no tienes clientes guardados para exportar.'); return; }
+    const encabezados = ['Nombre', 'Documento', 'Teléfono', 'Email', 'Dirección', 'Documentos emitidos', 'Total facturado', 'Último folio'];
+    const filas = CLIENTES_GUARDADOS.map(c => [
+        c.nombre || '', c.documento || '', c.telefono || '', c.email || '', c.direccion || '',
+        c.cantidadDocumentos || 0, Math.round(c.totalFacturado || 0), c.ultimoNumeroFactura || ''
+    ]);
+    const csv = [encabezados, ...filas]
+        .map(fila => fila.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `clientes_${(EMPRESA.nombre || 'gestor-pro').replace(/\s+/g, '_')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// --- Guarda o actualiza el cliente actual en Firestore, acumulando total facturado y Nº de documentos ---
+// Guarda una "foto" completa del documento (cliente, items, totales) en el
+// historial de la cuenta, para poder buscarlo y volver a descargarlo después.
+async function registrarDocumentoEmitido(idCliente, d, totalNumerico) {
+    if (!window.FB || !window.FB.guardarDocumentoEmitido) return;
+    try {
+        await window.FB.guardarDocumentoEmitido({
+            clienteId: idCliente || null,
+            clienteNombre: d.cliente,
+            clienteTelefono: d.telefono,
+            clienteEmail: d.email,
+            clienteDireccion: d.obra,
+            clienteDocumento: document.getElementById('c_nit') ? document.getElementById('c_nit').value : '',
+            numero: d.referencia || '',
+            tipo: d.tipo || '',
+            categoria: categoriaActual,
+            garantia: d.garantia,
+            anticipoActivo: document.getElementById('chk_anticipo').checked,
+            anticipoPct: document.getElementById('val_anticipo_pct').value,
+            itemsMO: extractTableDataRaw('cont-mo'),
+            itemsMat: extractTableDataRaw('cont-mat'),
+            total: totalNumerico,
+            fecha: new Date().toISOString()
+        });
+    } catch (e) { console.error('No se pudo guardar el registro del documento', e); }
+}
+
+async function guardarClienteDesdeDocumento() {
+    if (!window.FB || !window.FB.guardarOActualizarCliente) return;
+    const d = obtenerDatosResumen();
+    const totalNumerico = parseFloat(String(d.total).replace(/[^0-9.-]+/g, '')) || 0;
+    try {
+        const idCliente = await window.FB.guardarOActualizarCliente({
+            nombre: d.cliente,
+            documento: document.getElementById('c_nit') ? document.getElementById('c_nit').value : '',
+            telefono: d.telefono,
+            email: d.email,
+            direccion: d.obra,
+            numeroFactura: d.referencia || null,
+            totalDocumento: totalNumerico,
+            esNuevoDocumento: true
+        });
+        await registrarDocumentoEmitido(idCliente, d, totalNumerico);
+        await cargarClientesGuardados();
+    } catch (e) { console.error('No se pudo guardar el cliente en tu cuenta', e); }
 }
 
 async function generarPDF() {
@@ -1627,6 +1969,98 @@ document.getElementById('login-form').addEventListener('submit', async function 
     }
 });
 
+function abrirModalRecuperarPassword() {
+    document.getElementById('modal-recuperar').classList.remove('hidden');
+    document.getElementById('recuperar-paso-form').classList.remove('hidden');
+    document.getElementById('recuperar-paso-exito').classList.add('hidden');
+    document.getElementById('recuperar-error').classList.add('hidden');
+    // Si ya escribió su correo en el login, se lo prellenamos.
+    const emailLogin = document.getElementById('user-input');
+    document.getElementById('recuperar-email-input').value = (emailLogin && emailLogin.value) || '';
+    lucide.createIcons();
+    setTimeout(() => document.getElementById('recuperar-email-input').focus(), 150);
+}
+function cerrarModalRecuperarPassword() {
+    document.getElementById('modal-recuperar').classList.add('hidden');
+}
+
+async function enviarRecuperacionPassword() {
+    const email = document.getElementById('recuperar-email-input').value.trim();
+    const errorBox = document.getElementById('recuperar-error');
+    const errorMsg = document.getElementById('recuperar-error-msg');
+    const btn = document.getElementById('btn-recuperar-enviar');
+    errorBox.classList.add('hidden');
+
+    if (!email || !email.includes('@')) {
+        errorMsg.textContent = 'Escribe un correo electrónico válido.';
+        errorBox.classList.remove('hidden');
+        return;
+    }
+    if (!window.FB || !window.FB.enviarResetPassword) {
+        errorMsg.textContent = 'Conectando con el servidor, espera unos segundos e intenta de nuevo.';
+        errorBox.classList.remove('hidden');
+        return;
+    }
+
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline-block"></i> Enviando...`;
+    lucide.createIcons();
+
+    try {
+        await window.FB.enviarResetPassword(email);
+        document.getElementById('recuperar-email-confirmado').textContent = email;
+        document.getElementById('recuperar-paso-form').classList.add('hidden');
+        document.getElementById('recuperar-paso-exito').classList.remove('hidden');
+        lucide.createIcons();
+    } catch (err) {
+        // Por seguridad, Firebase a veces no distingue si el correo existe o no.
+        // Igual mostramos un mensaje amigable en los casos más comunes.
+        if (err && err.code === 'auth/invalid-email') {
+            errorMsg.textContent = 'Ese correo no es válido.';
+        } else if (err && err.code === 'auth/too-many-requests') {
+            errorMsg.textContent = 'Demasiados intentos. Espera unos minutos e intenta de nuevo.';
+        } else {
+            errorMsg.textContent = 'No se pudo enviar el correo. Verifica la dirección e intenta de nuevo.';
+        }
+        errorBox.classList.remove('hidden');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+        lucide.createIcons();
+    }
+}
+
+// --- Inicia sesión con Google (llamado desde el botón del login) ---
+async function iniciarSesionGoogle() {
+    const errorBox = document.getElementById('login-error');
+    const errorMsg = document.getElementById('login-error-msg');
+    const btn = document.getElementById('btn-google-login');
+    errorBox.classList.add('hidden');
+
+    if (!window.FB) {
+        errorMsg.textContent = 'Conectando con el servidor, espera unos segundos e intenta de nuevo.';
+        errorBox.classList.remove('hidden');
+        return;
+    }
+
+    const recordar = document.getElementById('recordar-sesion') ? document.getElementById('recordar-sesion').checked : true;
+    if (btn) { btn.disabled = true; btn.classList.add('opacity-70'); }
+    try {
+        await window.FB.iniciarSesionGoogle(recordar);
+        // El listener de onAuthStateChanged se encarga del resto.
+    } catch (err) {
+        if (err && err.code === 'auth/popup-closed-by-user') {
+            // El usuario cerró la ventana de Google, no es un error real.
+        } else {
+            errorMsg.textContent = traducirErrorFirebase(err.code) || 'No se pudo iniciar sesión con Google.';
+            errorBox.classList.remove('hidden');
+        }
+    } finally {
+        if (btn) { btn.disabled = false; btn.classList.remove('opacity-70'); }
+    }
+}
+
 // --- Calcula cuántos días completos quedan hasta una fecha ISO (puede ser negativo) ---
 function diasRestantesHasta(fechaISO) {
     if (!fechaISO) return null;
@@ -1696,8 +2130,8 @@ function mostrarApp() {
     setTimeout(() => { loginPage.style.display = 'none'; }, 300);
 
     const esAdmin = !!(perfilUsuario && perfilUsuario.esAdmin);
-    document.getElementById('tab-btn-admin-desktop').classList.toggle('hidden', !esAdmin);
-    document.getElementById('tab-btn-admin-movil').classList.toggle('hidden', !esAdmin);
+    // El panel de "Documentos Emitidos" es visible para todas las cuentas
+    // (antes aquí se mostraba/ocultaba el Panel de Administración).
 
     actualizarBadgeEstadoCuenta(perfilUsuario);
     lucide.createIcons();
@@ -1718,6 +2152,8 @@ async function manejarCambioDeAuth(user) {
         perfilUsuario = perfil;
 
         if (!perfil) { mostrarLogin(); return; }
+        await cargarConfigEmpresa();
+        await cargarClientesGuardados();
         if (perfil.esAdmin) { mostrarApp(); return; }
 
         const dias = diasRestantesHasta(perfil.fechaVencimiento);
@@ -1750,94 +2186,347 @@ function iniciarListenerAuth() {
 if (window.FB) { iniciarListenerAuth(); } else { window.addEventListener('firebase-listo', iniciarListenerAuth); }
 
 // ---------------------------------------------------------------------
-// PANEL DE ADMINISTRACIÓN: listar usuarios, marcar pagos/vencimientos
+// PANEL DE DOCUMENTOS EMITIDOS: estadísticas, búsqueda y re-descarga de PDF
 // ---------------------------------------------------------------------
-async function cargarPanelAdmin() {
-    const tabla = document.getElementById('admin-tabla-usuarios');
-    const resumen = document.getElementById('admin-resumen');
-    const cargando = document.getElementById('admin-cargando');
-    if (!tabla || !window.FB) return;
+let DOCUMENTOS_EMITIDOS = [];
+
+async function cargarPanelDocumentos() {
+    const lista = document.getElementById('lista-documentos-panel');
+    const resumen = document.getElementById('documentos-resumen');
+    const cargando = document.getElementById('documentos-cargando');
+    const vacio = document.getElementById('documentos-sin-resultados');
+    if (!lista || !window.FB) return;
 
     cargando.classList.remove('hidden');
-    tabla.innerHTML = '';
+    vacio.classList.add('hidden');
+    lista.innerHTML = '';
     resumen.innerHTML = '';
 
-    let usuarios = [];
     try {
-        usuarios = await window.FB.listarUsuarios();
+        DOCUMENTOS_EMITIDOS = await window.FB.listarDocumentosEmitidos();
     } catch (err) {
-        cargando.textContent = 'No se pudo cargar la lista de usuarios.';
+        cargando.textContent = 'No se pudieron cargar tus documentos.';
         return;
     }
     cargando.classList.add('hidden');
 
-    const totalActivos = usuarios.filter(u => u.estado === 'activo').length;
-    const totalPrueba = usuarios.filter(u => u.estado === 'prueba').length;
-    const totalVencidos = usuarios.filter(u => u.estado === 'vencido').length;
+    poblarFiltroAniosDocumentos();
+    actualizarResumenDocumentos(DOCUMENTOS_EMITIDOS);
+    aplicarFiltrosDocumentosPanel();
+}
+
+// --- KPIs generales del historial ---
+function actualizarResumenDocumentos(lista) {
+    const resumen = document.getElementById('documentos-resumen');
+    if (!resumen) return;
+
+    const totalDocs = lista.length;
+    const totalFacturado = lista.reduce((acc, d) => acc + (d.total || 0), 0);
+    const promedioTicket = totalDocs > 0 ? totalFacturado / totalDocs : 0;
+
+    const conteoPorCliente = {};
+    lista.forEach(d => {
+        const nombre = d.clienteNombre || 'Sin nombre';
+        conteoPorCliente[nombre] = (conteoPorCliente[nombre] || 0) + 1;
+    });
+    let clienteTop = '—';
+    let maxDocs = 0;
+    Object.entries(conteoPorCliente).forEach(([nombre, cant]) => {
+        if (cant > maxDocs) { maxDocs = cant; clienteTop = nombre; }
+    });
+
+    const ahora = new Date();
+    const docsEsteMes = lista.filter(d => {
+        if (!d.fecha) return false;
+        const f = new Date(d.fecha);
+        return f.getFullYear() === ahora.getFullYear() && f.getMonth() === ahora.getMonth();
+    }).length;
 
     resumen.innerHTML = `
-        <div class="kpi-card !p-3 text-center"><div class="text-2xl font-black text-green-600">${totalActivos}</div><div class="text-[10px] font-black text-slate-400 uppercase">Activos</div></div>
-        <div class="kpi-card !p-3 text-center"><div class="text-2xl font-black text-olive">${totalPrueba}</div><div class="text-[10px] font-black text-slate-400 uppercase">En prueba</div></div>
-        <div class="kpi-card !p-3 text-center"><div class="text-2xl font-black text-red-500">${totalVencidos}</div><div class="text-[10px] font-black text-slate-400 uppercase">Vencidos</div></div>
+        <div class="kpi-card !p-3 text-center"><div class="text-2xl font-black text-olive">${totalDocs}</div><div class="text-[10px] font-black text-slate-400 uppercase">Documentos emitidos</div></div>
+        <div class="kpi-card !p-3 text-center"><div class="text-xl font-black text-slate-800">$ ${Math.round(totalFacturado).toLocaleString()}</div><div class="text-[10px] font-black text-slate-400 uppercase">Total facturado</div></div>
+        <div class="kpi-card !p-3 text-center"><div class="text-xl font-black text-slate-800">$ ${Math.round(promedioTicket).toLocaleString()}</div><div class="text-[10px] font-black text-slate-400 uppercase">Ticket promedio</div></div>
+        <div class="kpi-card !p-3 text-center"><div class="text-2xl font-black text-slate-800">${docsEsteMes}</div><div class="text-[10px] font-black text-slate-400 uppercase">Documentos este mes</div></div>
+        <div class="kpi-card !p-3 text-center col-span-2 md:col-span-1"><div class="text-sm font-black text-slate-800 truncate">${escaparHtml(clienteTop)}</div><div class="text-[10px] font-black text-slate-400 uppercase">Cliente más frecuente</div></div>
     `;
+}
 
-    if (usuarios.length === 0) {
-        tabla.innerHTML = `<tr><td colspan="5" class="text-center text-slate-400 font-bold py-8">Todavía no hay usuarios registrados.</td></tr>`;
+// Llena el selector de años con los años presentes en el historial
+function poblarFiltroAniosDocumentos() {
+    const select = document.getElementById('filtro-anio-documentos');
+    if (!select) return;
+    const valorPrevio = select.value;
+    const anios = Array.from(new Set(
+        DOCUMENTOS_EMITIDOS.filter(d => d.fecha).map(d => new Date(d.fecha).getFullYear())
+    )).sort((a, b) => b - a);
+
+    select.innerHTML = '<option value="">Todos los años</option>' +
+        anios.map(a => `<option value="${a}">${a}</option>`).join('');
+
+    if (anios.includes(parseInt(valorPrevio))) select.value = valorPrevio;
+}
+
+// Aplica búsqueda por texto + filtros de año/mes, y devuelve la lista resultante
+function obtenerDocumentosFiltrados() {
+    const termino = document.getElementById('buscador-documentos')?.value || '';
+    let lista = (window.FB && window.FB.filtrarDocumentos)
+        ? window.FB.filtrarDocumentos(DOCUMENTOS_EMITIDOS, termino)
+        : DOCUMENTOS_EMITIDOS;
+
+    const anio = document.getElementById('filtro-anio-documentos')?.value || '';
+    const mes = document.getElementById('filtro-mes-documentos')?.value ?? '';
+
+    if (anio) lista = lista.filter(d => d.fecha && new Date(d.fecha).getFullYear() === parseInt(anio));
+    if (mes !== '') lista = lista.filter(d => d.fecha && new Date(d.fecha).getMonth() === parseInt(mes));
+
+    return { lista, termino };
+}
+
+function buscarDocumentosPanel() {
+    aplicarFiltrosDocumentosPanel();
+}
+
+function aplicarFiltrosDocumentosPanel() {
+    const { lista, termino } = obtenerDocumentosFiltrados();
+    renderListaDocumentosPanel(lista, termino);
+    actualizarResumenDocumentos(lista);
+    if (!document.getElementById('grafico-documentos-wrapper')?.classList.contains('hidden')) {
+        actualizarGraficoIngresosMensuales(lista);
+    }
+}
+
+// --- Gráfico de ingresos por mes (Chart.js) ---
+let chartDocumentosInstance = null;
+function actualizarGraficoIngresosMensuales(lista) {
+    const canvas = document.getElementById('chartIngresosMensuales');
+    if (!canvas) return;
+
+    const porMes = {};
+    (lista || []).forEach(d => {
+        if (!d.fecha) return;
+        const f = new Date(d.fecha);
+        const clave = `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}`;
+        porMes[clave] = (porMes[clave] || 0) + (d.total || 0);
+    });
+
+    const claves = Object.keys(porMes).sort();
+    const nombresMes = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const labels = claves.map(c => { const [y, m] = c.split('-'); return `${nombresMes[parseInt(m) - 1]} ${y}`; });
+    const datos = claves.map(c => porMes[c]);
+
+    if (chartDocumentosInstance) chartDocumentosInstance.destroy();
+    const ctx = canvas.getContext('2d');
+    chartDocumentosInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Total facturado',
+                data: datos,
+                backgroundColor: rgbToHex(COLOR_MARCA),
+                borderRadius: 8,
+                maxBarThickness: 46
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { callback: v => '$ ' + Number(v).toLocaleString() } }
+            }
+        }
+    });
+}
+
+function toggleGraficoDocumentos() {
+    const wrapper = document.getElementById('grafico-documentos-wrapper');
+    if (!wrapper) return;
+    wrapper.classList.toggle('hidden');
+    if (!wrapper.classList.contains('hidden')) {
+        const { lista } = obtenerDocumentosFiltrados();
+        actualizarGraficoIngresosMensuales(lista);
+    }
+}
+
+function renderListaDocumentosPanel(lista, termino) {
+    const cont = document.getElementById('lista-documentos-panel');
+    const vacio = document.getElementById('documentos-sin-resultados');
+    if (!cont) return;
+
+    if (!lista || lista.length === 0) {
+        cont.innerHTML = '';
+        vacio.classList.remove('hidden');
+        vacio.querySelector('p').textContent = termino
+            ? `No hay documentos que coincidan con "${termino}".`
+            : 'Todavía no has emitido ningún documento.';
         return;
     }
+    vacio.classList.add('hidden');
 
-    tabla.innerHTML = usuarios.map(u => {
-        const dias = diasRestantesHasta(u.fechaVencimiento);
-        let colorEstado = 'bg-slate-100 text-slate-500';
-        let textoEstado = u.estado || '—';
-        if (u.esAdmin) { colorEstado = 'bg-slate-800 text-white'; textoEstado = 'admin'; }
-        else if (u.estado === 'activo') colorEstado = 'bg-green-100 text-green-700';
-        else if (u.estado === 'prueba') colorEstado = 'bg-olive-soft text-olive';
-        else if (u.estado === 'vencido') colorEstado = 'bg-red-100 text-red-600';
-
-        const fechaTexto = u.fechaVencimiento ? new Date(u.fechaVencimiento).toLocaleDateString('es-AR') : '—';
-        const diasTexto = (u.esAdmin || dias === null) ? '—' : (dias >= 0 ? dias + ' d' : 'vencido');
-
+    cont.innerHTML = lista.map(d => {
+        const fecha = d.fecha ? new Date(d.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
         return `
-        <tr class="border-b border-slate-50 hover:bg-slate-50/60">
-            <td class="px-2 py-3">
-                <div class="font-black text-slate-700">${u.nombreEmpresa || '(sin nombre)'}</div>
-                <div class="text-[11px] text-slate-400 font-semibold">${u.email || ''}</div>
-            </td>
-            <td class="px-2 py-3"><span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${colorEstado}">${textoEstado}</span></td>
-            <td class="px-2 py-3 text-slate-500 font-semibold text-xs">${fechaTexto}</td>
-            <td class="px-2 py-3 text-slate-500 font-semibold text-xs">${diasTexto}</td>
-            <td class="px-2 py-3">
-                <div class="flex justify-end gap-1.5 flex-wrap">
-                    ${u.esAdmin ? '' : `
-                    <button onclick="accionAdminMarcarPago('${u.id}')" class="px-2.5 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg text-[10px] font-black uppercase transition-all">Marcar pagado</button>
-                    <button onclick="accionAdminMarcarVencido('${u.id}')" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-[10px] font-black uppercase transition-all">Vencer</button>
-                    `}
+        <div class="flex items-center justify-between gap-3 p-4 rounded-2xl border-2 border-slate-100 hover:border-olive/40 hover:bg-olive-soft/30 transition-all flex-wrap">
+            <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-olive-soft text-olive-dark">${escaparHtml(d.tipo || 'Documento')}</span>
+                    ${d.numero ? `<span class="text-[10px] font-bold text-slate-400">#${escaparHtml(d.numero)}</span>` : ''}
+                    <span class="text-[10px] font-bold text-slate-400">${fecha}</span>
                 </div>
-            </td>
-        </tr>`;
+                <p class="font-black text-sm text-slate-800 truncate mt-0.5">${escaparHtml(d.clienteNombre || 'Cliente')}</p>
+                <p class="text-[11px] text-olive font-bold">$ ${Math.round(d.total || 0).toLocaleString()}</p>
+            </div>
+            <div class="shrink-0 flex items-center gap-2">
+                <button type="button" onclick="enviarDocumentoDesdeHistorial('${d.id}')" title="Enviar"
+                        class="flex items-center gap-2 bg-olive-soft hover:bg-olive/20 text-olive-dark font-bold text-[11px] uppercase px-3.5 py-2.5 rounded-xl transition-all">
+                    <i data-lucide="send" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Enviar</span>
+                </button>
+                <button type="button" onclick="descargarPDFDesdeHistorial('${d.id}')" title="Descargar PDF"
+                        class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] uppercase px-3.5 py-2.5 rounded-xl transition-all">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Descargar</span>
+                </button>
+                <button type="button" onclick="confirmarEliminarDocumento('${d.id}')" title="Eliminar registro"
+                        class="flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 font-bold p-2.5 rounded-xl transition-all">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+        </div>`;
     }).join('');
-
     lucide.createIcons();
 }
 
-async function accionAdminMarcarPago(uid) {
-    if (!confirm('¿Marcar esta cuenta como pagada y extender ' + window.FB.DIAS_PAGO + ' días?')) return;
-    await window.FB.marcarPago(uid, window.FB.DIAS_PAGO);
-    cargarPanelAdmin();
+// Reconstruye el formulario con los datos guardados de un documento anterior
+// (rubro, cliente e ítems), sin navegar ni generar nada todavía. La reutilizan
+// tanto la re-descarga como el reenvío de un documento desde el historial.
+function cargarDocumentoHistorialEnFormulario(d) {
+    // 1) Rubro
+    if (d.categoria) {
+        document.getElementById('c_categoria').value = d.categoria;
+        cambiarCategoria(d.categoria);
+    }
+
+    // 2) Datos del cliente
+    const setVal = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+    setVal('c_nombre', d.clienteNombre);
+    setVal('c_nit', d.clienteDocumento);
+    setVal('c_email', d.clienteEmail);
+    setVal('c_obra', d.clienteDireccion);
+    if (d.clienteTelefono && iti) {
+        try { iti.setNumber(d.clienteTelefono.startsWith('+') ? d.clienteTelefono : '+' + d.clienteTelefono); } catch (e) {}
+    }
+    if (d.tipo) { document.getElementById('c_tipo').value = d.tipo; toggleFacturaField(); }
+    setVal('c_num_factura', d.numero);
+    if (d.garantia) {
+        document.getElementById('c_garantia').value = d.garantia;
+        document.getElementById('switch-garantia').checked = true;
+        toggleGarantiaSwitch();
+    }
+    document.getElementById('chk_anticipo').checked = !!d.anticipoActivo;
+    toggleAnticipo();
+    if (d.anticipoPct) document.getElementById('val_anticipo_pct').value = d.anticipoPct;
+
+    // 3) Items (Servicios y Materiales)
+    document.getElementById('cont-mo').innerHTML = '';
+    document.getElementById('cont-mat').innerHTML = '';
+    const reconstruirItems = (items, tipo) => {
+        (items || []).forEach(it => {
+            addItem(tipo);
+            const cont = document.getElementById(tipo === 'MO' ? 'cont-mo' : 'cont-mat');
+            const fila = cont.lastElementChild;
+            const sel = fila.querySelector('.item-sel');
+            const opcionExiste = Array.from(sel.options).some(o => o.value === it.desc && !it.esOtro);
+            if (!it.esOtro && opcionExiste) {
+                sel.value = it.desc;
+            } else {
+                sel.value = 'OTRO';
+                checkOther(sel);
+                fila.querySelector('.item-custom').value = it.desc;
+            }
+            fila.querySelector('.item-u').value = it.u || 'UND';
+            fila.querySelector('.item-q').value = it.q || 1;
+            fila.querySelector('.item-p').value = it.p || 0;
+        });
+    };
+    reconstruirItems(d.itemsMO, 'MO');
+    reconstruirItems(d.itemsMat, 'MAT');
+    calcular();
 }
 
-async function accionAdminMarcarVencido(uid) {
-    if (!confirm('¿Marcar esta cuenta como vencida? El usuario perderá el acceso.')) return;
-    await window.FB.marcarVencido(uid);
-    cargarPanelAdmin();
+// Reconstruye el formulario con los datos guardados de un documento anterior
+// y genera de nuevo su PDF (útil si el cliente lo perdió o pide un duplicado).
+async function descargarPDFDesdeHistorial(docId) {
+    const d = DOCUMENTOS_EMITIDOS.find(x => x.id === docId);
+    if (!d) return;
+    if (!confirm('Esto va a reemplazar los datos que tengas ahora mismo en el formulario con los de este documento, y descargará su PDF. ¿Continuar?')) return;
+
+    cargarDocumentoHistorialEnFormulario(d);
+
+    // Ir a la sección de resumen y generar el PDF
+    nav('pdf', document.querySelector('[onclick*="\'pdf\'"]'));
+    setTimeout(() => generarPDF(), 400);
 }
 
-// Cuando se navega al panel admin, se carga (o recarga) la tabla automáticamente
-const _navOriginalAdmin = nav;
+// Igual que la re-descarga, pero en lugar de generar el PDF directamente abre
+// la misma ventana de "Enviar / Descargar" (PDF, WhatsApp o Correo) que ya
+// existe en el flujo normal de creación de documentos.
+function enviarDocumentoDesdeHistorial(docId) {
+    const d = DOCUMENTOS_EMITIDOS.find(x => x.id === docId);
+    if (!d) return;
+    if (!confirm('Esto va a reemplazar los datos que tengas ahora mismo en el formulario con los de este documento, para poder enviarlo de nuevo. ¿Continuar?')) return;
+
+    cargarDocumentoHistorialEnFormulario(d);
+
+    nav('pdf', document.querySelector('[onclick*="\'pdf\'"]'));
+    setTimeout(() => abrirModalEnviarDocumento(), 400);
+}
+
+// Elimina un único documento del historial (con confirmación previa)
+function confirmarEliminarDocumento(docId) {
+    if (!confirm('¿Eliminar este documento del historial? Esta acción no se puede deshacer.')) return;
+    eliminarDocumentoDelHistorial(docId);
+}
+
+async function eliminarDocumentoDelHistorial(docId) {
+    if (!window.FB || !window.FB.eliminarDocumentoEmitido) return;
+    try {
+        await window.FB.eliminarDocumentoEmitido(docId);
+        DOCUMENTOS_EMITIDOS = DOCUMENTOS_EMITIDOS.filter(d => d.id !== docId);
+        poblarFiltroAniosDocumentos();
+        aplicarFiltrosDocumentosPanel();
+    } catch (e) {
+        console.error(e);
+        alert('No se pudo eliminar el documento. Intenta de nuevo.');
+    }
+}
+
+// Borra TODO el historial de documentos emitidos (no afecta a los clientes guardados)
+function confirmarReiniciarHistorial() {
+    if (!DOCUMENTOS_EMITIDOS || DOCUMENTOS_EMITIDOS.length === 0) {
+        alert('Todavía no tienes documentos emitidos en tu historial.');
+        return;
+    }
+    if (!confirm(`Esto eliminará permanentemente los ${DOCUMENTOS_EMITIDOS.length} documentos de tu historial. Esta acción no se puede deshacer. ¿Continuar?`)) return;
+    reiniciarHistorialDocumentos();
+}
+
+async function reiniciarHistorialDocumentos() {
+    if (!window.FB || !window.FB.eliminarTodosLosDocumentosEmitidos) return;
+    try {
+        await window.FB.eliminarTodosLosDocumentosEmitidos();
+        DOCUMENTOS_EMITIDOS = [];
+        poblarFiltroAniosDocumentos();
+        aplicarFiltrosDocumentosPanel();
+    } catch (e) {
+        console.error(e);
+        alert('No se pudo reiniciar el historial. Intenta de nuevo.');
+    }
+}
+
+// Cuando se navega al panel de documentos, se carga (o recarga) automáticamente
+const _navOriginalDocs = nav;
 nav = function (id, btn) {
-    _navOriginalAdmin(id, btn);
-    if (id === 'admin') cargarPanelAdmin();
+    _navOriginalDocs(id, btn);
+    if (id === 'documentos') cargarPanelDocumentos();
 };
 
 const shakeStyle = document.createElement('style');
@@ -1912,6 +2601,8 @@ const TOUR_PASOS = [
       titulo: 'Rubro de tu Negocio', texto: 'Elige tu rubro. Los campos de Servicios y Materiales se adaptan según tu elección.' },
     { seccion: 'cliente', selector: '#c_nombre', icono: 'user',
       titulo: 'Datos del Cliente', texto: 'Registra la información de tu cliente para generar el documento.' },
+    { seccion: 'cliente', selector: 'button[onclick="abrirModalClientes()"]', icono: 'users',
+      titulo: 'Clientes Guardados', texto: 'Busca un cliente ya registrado por nombre, documento o Nº de factura, o agrega uno nuevo con el botón +. Sus datos se autocompletan al elegirlo.' },
     { seccion: 'mo', selector: '#sec-mo', icono: 'cog',
       titulo: 'Servicios', texto: 'Agrega aquí los servicios o mano de obra que vas a cobrar.' },
     { seccion: 'mat', selector: '#sec-mat', icono: 'package',
@@ -1925,7 +2616,9 @@ const TOUR_PASOS = [
     { seccion: 'pdf', selector: '#titulo-dashboard-tour', icono: 'layout-dashboard',
       titulo: 'Resumen del Documento', texto: 'Aquí ves el total, el desglose y toda la información consolidada.' },
     { seccion: 'pdf', selector: '#Generar-PDF', icono: 'send',
-      titulo: 'Generar y Enviar', texto: 'Con un toque generas el PDF, o lo envías directo por WhatsApp o correo. ¡Listo!' }
+      titulo: 'Generar y Enviar', texto: 'Con un toque generas el PDF, o lo envías directo por WhatsApp o correo. ¡Listo!' },
+    { seccion: 'documentos', selector: '#tab-btn-documentos-desktop, #tab-btn-documentos-movil', icono: 'bar-chart-3',
+      titulo: 'Documentos Emitidos', texto: 'Aquí ves cuántos documentos has emitido y a quién, con búsqueda por cliente o número, y puedes volver a descargar el PDF de cualquiera de ellos cuando lo necesites.' }
 ];
 let tourPasoActual = 0;
 let tourListenersActivos = false;
@@ -1981,9 +2674,21 @@ function comenzarTourDesdeIntro() {
 
 // Si el usuario salta la bienvenida, se le enfoca (spotlight) el botón donde
 // puede volver a ver el tutorial más adelante, para que sepa dónde encontrarlo.
+// Marca el tour como visto en las DOS capas: localStorage (rápido, para esta
+// misma sesión/navegador) y en la cuenta vía Firestore (para que, aunque se
+// borren los datos del navegador o se entre desde otro dispositivo, la cuenta
+// "recuerde" que ya lo vio y no se lo vuelva a mostrar).
+function marcarTourCompletadoEnCuenta() {
+    localStorage.setItem('tour_completado', '1');
+    if (perfilUsuario) perfilUsuario.tourCompletado = true;
+    if (window.FB && window.FB.marcarTourCompletado && usuarioFirebase) {
+        window.FB.marcarTourCompletado(usuarioFirebase.uid).catch(err => console.error('No se pudo guardar el estado del tour en la cuenta:', err));
+    }
+}
+
 function saltarBienvenidaTour() {
     document.getElementById('tour-wrapper').innerHTML = '';
-    localStorage.setItem('tour_completado', '1');
+    marcarTourCompletadoEnCuenta();
 
     const btnTutorial = buscarTargetVisibleTour('#btn-tutorial-movil, #btn-tutorial-desktop');
     if (!btnTutorial) return;
@@ -2133,7 +2838,7 @@ function finalizarTour() {
     window.removeEventListener('resize', reposicionarTourActual);
     document.querySelector('main')?.removeEventListener('scroll', reposicionarTourActual, true);
     tourListenersActivos = false;
-    localStorage.setItem('tour_completado', '1');
+    marcarTourCompletadoEnCuenta();
 
     // --- NUEVO: Redirigir a "Mi Empresa" al terminar el tour ---
     // Verificamos si aún no han guardado los datos para llevarlos directamente allí
@@ -2153,8 +2858,21 @@ function finalizarTour() {
         }, 400);
     }
 }
+// Solo se muestra el tour si NO está marcado como visto ni en este navegador
+// (localStorage) ni en la cuenta (Firestore). Así, una cuenta con actividad
+// previa no vuelve a ver el tour aunque se borren los datos del navegador;
+// solo lo verán las cuentas realmente nuevas.
 function verificarYIniciarTour() {
-    if (!localStorage.getItem('tour_completado')) setTimeout(iniciarTour, 400);
+    const yaVistoEnEsteNavegador = !!localStorage.getItem('tour_completado');
+    const yaVistoEnLaCuenta = !!(perfilUsuario && perfilUsuario.tourCompletado);
+    if (yaVistoEnEsteNavegador || yaVistoEnLaCuenta) {
+        // Si la cuenta ya lo marca como visto pero este navegador no lo sabía
+        // (ej: se borraron los datos), sincronizamos localStorage para evitar
+        // futuras consultas innecesarias.
+        if (yaVistoEnLaCuenta && !yaVistoEnEsteNavegador) localStorage.setItem('tour_completado', '1');
+        return;
+    }
+    setTimeout(iniciarTour, 400);
 }
 
 
@@ -2249,9 +2967,9 @@ window.addEventListener('load', () => {
 });
 
 // Inicialización general
-cargarConfigEmpresa();
-const nombreRubroGuardado = localStorage.getItem('rubro_otro_nombre');
-if (nombreRubroGuardado) CATEGORIAS.otro.label = nombreRubroGuardado;
+// (Los datos de empresa y el nombre de rubro personalizado ahora se cargan
+// por usuario, desde Firestore, justo después de iniciar sesión — ver
+// manejarCambioDeAuth() en la sección 12.)
 pintarSelectorCategorias();
 if (categoriaActual) cambiarCategoria(categoriaActual);
 lucide.createIcons();

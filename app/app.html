@@ -46,25 +46,44 @@
 <!-- LOGIN -->
 <div id="login-container" class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/95 backdrop-blur-2xl p-4">
 <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 rounded-[2.5rem] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)] max-h-[95vh] overflow-y-auto lg:overflow-y-visible">
-        <!-- PANEL IZQUIERDO: MARCA (solo desktop) -->
-                 <div class="hidden lg:flex flex-col justify-between relative p-10 text-white overflow-hidden"
+        <!-- PANEL IZQUIERDO: MARCA FIJA DE GESTOR PRO (solo desktop) -->
+        <!-- IMPORTANTE: este panel es 100% institucional, nunca debe pintarse con el logo/nombre del usuario -->
+        <div class="hidden lg:flex flex-col justify-center gap-8 relative p-10 text-white overflow-hidden"
+             style="background: linear-gradient(160deg, #1D4E89 0%, #0F2C4C 100%);">
+            <div class="absolute -top-20 -left-20 w-64 h-64 rounded-full blur-3xl opacity-30 login-blob-1" style="background: #3B82F6;"></div>
+            <div class="absolute -bottom-24 -right-10 w-72 h-72 rounded-full blur-3xl opacity-20 login-blob-2" style="background: #3B82F6;"></div>
 
-
-             style="background: linear-gradient(160deg, var(--olive) 0%, var(--olive-dark) 100%);">
-            <div class="absolute -top-20 -left-20 w-64 h-64 rounded-full blur-3xl opacity-30 login-blob-1" style="background: var(--olive-light);"></div>
-
-            <div class="absolute -bottom-24 -right-10 w-72 h-72 rounded-full blur-3xl opacity-20 login-blob-2" style="background: var(--olive-light);"></div>
-           
-            <div class="relative z-10">
-                <div class="login-logo-box w-16 h-16 rounded-2xl flex items-center justify-center mb-8 overflow-hidden">
-                    <img id="logo-mini-login" src="" alt="Logo" class="logo-mini hidden w-12 h-12 object-contain">
-                    <i data-lucide="briefcase-business" class="w-8 h-8 text-olive logo-placeholder-icon"></i>
+            <!-- Logo tipo landing: icono + wordmark GestorPRO -->
+            <div class="relative z-10 flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-lg" style="background: linear-gradient(135deg, #3B82F6, #1D4E89);">
+                    <i data-lucide="file-pen-line" class="w-5 h-5 text-white"></i>
                 </div>
-                <h1 class="text-3xl font-black leading-tight mb-3 marca-nombre">Mi Negocio</h1>
-                <p class="text-sm font-medium opacity-80 marca-slogan">Servicios Profesionales de Calidad</p>
+                <span class="text-2xl font-black tracking-tight">Gestor<span style="color:#93C5FD;">PRO</span></span>
             </div>
 
-            <div class="relative z-10 space-y-4">
+            <div class="relative z-10">
+                <h1 class="text-3xl font-black leading-tight mb-3">Cotiza, factura y cobra sin complicarte</h1>
+                <p class="text-sm font-medium opacity-80 max-w-xs">Cotizaciones, facturas y firmas digitales para tu negocio, adaptadas a tu rubro.</p>
+            </div>
+
+            <!-- Mockup visual: mini documento con firma, para no dejar espacio vacío -->
+            <div class="relative z-10 bg-white/10 border border-white/15 rounded-3xl p-5 backdrop-blur-sm max-w-xs">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-2.5 w-20 bg-white/40 rounded-full"></div>
+                    <div class="h-6 w-6 rounded-full bg-white/20"></div>
+                </div>
+                <div class="space-y-2 mb-4">
+                    <div class="h-2 w-full bg-white/20 rounded-full"></div>
+                    <div class="h-2 w-4/5 bg-white/20 rounded-full"></div>
+                    <div class="h-2 w-3/5 bg-white/20 rounded-full"></div>
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-white/15">
+                    <span class="text-[10px] font-black uppercase tracking-widest opacity-70">Total</span>
+                    <span class="text-lg font-black">$ 850.000</span>
+                </div>
+            </div>
+
+            <div class="relative z-10 space-y-3">
                 <div class="flex items-center gap-3">
                     <div class="bg-white/10 p-2 rounded-xl border border-white/10"><i data-lucide="layout-grid" class="w-4 h-4"></i></div>
                     <span class="text-xs font-bold opacity-90">Cotizaciones adaptadas a tu rubro</span>
@@ -74,6 +93,10 @@
                     <span class="text-xs font-bold opacity-90">Firma digital de cliente y empresa</span>
                 </div>
                 <div class="flex items-center gap-3">
+                    <div class="bg-white/10 p-2 rounded-xl border border-white/10"><i data-lucide="users" class="w-4 h-4"></i></div>
+                    <span class="text-xs font-bold opacity-90">Base de clientes con historial de cobros</span>
+                </div>
+                <div class="flex items-center gap-3">
                     <div class="bg-white/10 p-2 rounded-xl border border-white/10"><i data-lucide="file-check-2" class="w-4 h-4"></i></div>
                     <span class="text-xs font-bold opacity-90">PDF profesional con tu logo</span>
                 </div>
@@ -81,25 +104,26 @@
         </div>
 
         <!-- PANEL DERECHO: FORMULARIO -->
-        <div class="bg-white/95 p-5 sm:p-10 relative">
+        <div class="bg-white/95 p-5 sm:p-8 relative">
             <div class="text-center mb-3 lg:hidden">
-                <div class="login-logo-box w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-2 rotate-3 overflow-hidden border-2"
-                     style="border-color: var(--olive-soft);">
-                    <img id="logo-mini-login-mobile" src="" alt="Logo" class="logo-mini hidden w-8 h-8 object-contain">
-                    <i data-lucide="shield-check" class="w-6 h-6 text-olive logo-placeholder-icon"></i>
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center mx-auto mb-2 overflow-hidden shadow-lg" style="background: linear-gradient(135deg, #3B82F6, #1D4E89);">
+                    <i data-lucide="file-pen-line" class="w-6 h-6 text-white"></i>
                 </div>
+                <span class="text-base font-black tracking-tight" style="color:#1D4E89;">Gestor<span style="color:#3B82F6;">PRO</span></span>
             </div>
 
-            <h2 id="login-titulo" class="text-xl lg:text-3xl font-black text-slate-800 tracking-tight text-center lg:text-left">Te damos la bienvenida</h2>
-            <p id="login-subtitulo" class="text-slate-500 text-xs lg:text-sm font-medium mt-1 mb-4 lg:mb-6 text-center lg:text-left">Ingresa tus credenciales para continuar</p>
+            <h2 id="login-titulo" class="text-lg lg:text-2xl font-black text-slate-800 tracking-tight text-center lg:text-left">Te damos la bienvenida</h2>
+            <p id="login-subtitulo" class="text-slate-500 text-xs font-medium mt-1 mb-3 lg:mb-4 text-center lg:text-left">Ingresa tus credenciales para continuar</p>
+
+           
 
             <!-- Selector Iniciar sesión / Crear cuenta -->
-            <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1.5 rounded-2xl mb-4 lg:mb-6">
+            <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1.5 rounded-2xl mb-3 lg:mb-4">
                 <button type="button" id="tab-login-btn" onclick="cambiarModoAuth('login')" class="py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all bg-white text-olive shadow-sm">Iniciar sesión</button>
                 <button type="button" id="tab-registro-btn" onclick="cambiarModoAuth('registro')" class="py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all text-slate-400">Crear cuenta</button>
             </div>
 
-            <form id="login-form" class="space-y-3 lg:space-y-5">
+            <form id="login-form" class="space-y-2.5 lg:space-y-3">
 
                 <!-- Solo visible en modo "Crear cuenta" -->
                 <div class="space-y-1.5 hidden" id="campo-nombre-empresa-registro">
@@ -139,6 +163,9 @@
                         <input type="checkbox" id="recordar-sesion" class="w-4 h-4 rounded accent-[var(--olive)]" checked>
                         Recordar sesión
                     </label>
+                    <button type="button" onclick="abrirModalRecuperarPassword()" class="text-xs font-bold text-olive hover:text-olive-dark transition-colors">
+                        ¿Olvidaste tu contraseña?
+                    </button>
                 </div>
 
                 <div id="login-error" class="hidden animate-in fade-in zoom-in duration-300">
@@ -153,6 +180,15 @@
                     <i data-lucide="arrow-right" class="relative z-10 w-4 h-4 group-hover/btn:translate-x-1 transition-transform"></i>
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
                 </button>
+
+                 <!-- Iniciar sesión con Google -->
+            <button type="button" onclick="iniciarSesionGoogle()" id="btn-google-login"
+                class="w-full flex items-center justify-center gap-3 py-3 rounded-2xl border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all font-bold text-sm text-slate-700 mb-3">
+                <svg class="w-5 h-5" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.9 32.9 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6 29.5 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.1-2 13.7-5.4l-6.3-5.3C29.4 35.3 26.8 36 24 36c-5.4 0-9.9-3.1-11.3-7.9l-6.6 5.1C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.7l6.3 5.3C40.9 36.5 44 30.9 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+                Continuar con Google
+            </button>
+
+          
 
                 <div class="bg-olive-soft border-2 border-dashed border-olive/30 rounded-2xl p-2 lg:p-3 mt-1 text-center" id="caja-info-auth">
                     <p class="text-[10px] font-black text-olive uppercase tracking-wider" id="caja-info-auth-texto">¿Aún no tienes cuenta? Crea una y prueba gratis 3 días</p>
@@ -220,7 +256,7 @@
         <button onclick="nav('mo', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="cog"></i> 2. Servicios</button>
         <button onclick="nav('mat', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="package"></i> 3. Materiales</button>
         <button onclick="nav('pdf', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="file-check"></i> 4. Resumen y Cierre</button>
-        <button onclick="nav('admin', this)" id="tab-btn-admin-desktop" class="hidden w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="shield-check"></i> Panel Admin</button>
+        <button onclick="nav('documentos', this)" id="tab-btn-documentos-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="bar-chart-3"></i> Documentos</button>
     </nav>
 <!-- PIE DEL SIDEBAR: SOPORTE Y CERRAR SESIÓN (solo escritorio) -->
     
@@ -354,9 +390,14 @@
         <!-- 1. CLIENTE + CATEGORÍA -->
         <section id="sec-cliente" class="app-section active-section">
             <div class="glass-card p-6 lg:p-8 space-y-8">
-                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div class="w-2 h-8 bg-olive rounded-full"></div>
-                    <h2 class="font-black text-slate-800 uppercase text-lg tracking-wider">Identificación del Proyecto</h2>
+                <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-4 flex-wrap">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-8 bg-olive rounded-full"></div>
+                        <h2 class="font-black text-slate-800 uppercase text-lg tracking-wider">Identificación del Proyecto</h2>
+                    </div>
+                    <button type="button" onclick="abrirModalClientes()" class="flex items-center gap-2 bg-olive-soft hover:bg-olive/20 text-olive-dark font-black text-xs uppercase px-4 py-2.5 rounded-xl transition-all">
+                        <i data-lucide="users" class="w-4 h-4"></i> Clientes Guardados
+                    </button>
                 </div>
 
                 <div class="space-y-2 categoria-select-wrapper">
@@ -393,7 +434,7 @@
                         <input type="email" id="c_email" class="input-dynamic" placeholder="contacto@empresa.com">
                     </div>
                     <div class="space-y-2">
-                        <label class="text-xs font-black text-slate-500 ml-2 uppercase">Dirección / Obra</label>
+                        <label class="text-xs font-black text-slate-500 ml-2 uppercase" id="label-c-obra">Dirección / Obra</label>
                         <input type="text" id="c_obra" class="input-dynamic" placeholder="Ciudad, Barrio o Dirección exacta" data-req="true" data-label="Dirección / Obra" data-nav="cliente">
                     </div>
 
@@ -413,8 +454,16 @@
                             </select>
                         </div>
                         <div class="space-y-2">
-                            <label class="text-xs font-black text-olive ml-2 uppercase" id="label-tiempo">Validez / Garantía (Días)</label>
-                            <input type="number" id="c_garantia" value="15" class="input-dynamic font-bold text-center">
+                            <div class="flex items-center justify-between ml-2 mb-1">
+                                <label class="text-xs font-black text-olive uppercase" id="label-tiempo">Validez / Garantía</label>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="switch-garantia" class="sr-only peer" onchange="toggleGarantiaSwitch()">
+                                    <div class="w-9 h-5 bg-slate-200 peer-checked:bg-olive rounded-full transition-all"></div>
+                                    <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all peer-checked:translate-x-4"></div>
+                                </label>
+                            </div>
+                            <input type="number" id="c_garantia" value="15" class="input-dynamic font-bold text-center hidden">
+                            <p id="c_garantia_desactivada_texto" class="text-[10px] text-slate-400 font-semibold ml-2">Actívalo para definir los días de validez o garantía.</p>
                         </div>
                         <div id="contenedor-num-factura" class="space-y-2 hidden">
                             <label class="text-xs font-black text-red-600 ml-2 uppercase">Número / Folio</label>
@@ -432,7 +481,11 @@
                 <p id="anticipo-subtitulo" class="text-xs text-slate-500 font-medium">Requerido para inicio de operaciones</p>
             </div>
         </div>
-                        <input type="checkbox" id="chk_anticipo" class="w-6 h-6 accent-olive cursor-pointer" onclick="event.stopPropagation()" onchange="toggleAnticipo()">
+                        <label class="relative inline-flex items-center cursor-pointer" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="chk_anticipo" class="sr-only peer" onchange="toggleAnticipo()">
+                            <div class="w-11 h-6 bg-slate-200 peer-checked:bg-olive rounded-full transition-all"></div>
+                            <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all peer-checked:translate-x-5"></div>
+                        </label>
                     </div>
                     <div id="panel_anticipo" class="hidden mt-6 pt-6 border-t border-olive/20">
                         <div class="grid grid-cols-2 gap-6 items-end">
@@ -644,36 +697,69 @@
             </div>
         </section>
 
-        <!-- PANEL DE ADMINISTRACIÓN (solo visible para el/los administradores) -->
-        <section id="sec-admin" class="app-section">
+        <!-- PANEL DE DOCUMENTOS EMITIDOS: estadísticas, búsqueda y re-descarga -->
+        <section id="sec-documentos" class="app-section">
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2 flex-wrap gap-3">
                     <div>
-                        <h2 class="text-xl font-black text-slate-800 flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-olive"></i> Panel de Administración</h2>
-                        <p class="text-xs font-medium text-slate-500 mt-1">Cuentas registradas, estado de prueba y pagos.</p>
+                        <h2 class="text-xl font-black text-slate-800 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-5 h-5 text-olive"></i> Documentos Emitidos</h2>
+                        <p class="text-xs font-medium text-slate-500 mt-1">Historial, estadísticas y re-descarga de cotizaciones y facturas.</p>
                     </div>
-                    <button onclick="cargarPanelAdmin()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs uppercase px-4 py-2.5 rounded-xl transition-all">
-                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Actualizar
+                    <div class="flex items-center gap-2">
+                        <button onclick="cargarPanelDocumentos()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs uppercase px-4 py-2.5 rounded-xl transition-all">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Actualizar
+                        </button>
+                        <button onclick="confirmarReiniciarHistorial()" class="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs uppercase px-4 py-2.5 rounded-xl transition-all">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i> Reiniciar historial
+                        </button>
+                    </div>
+                </div>
+
+                <div id="documentos-resumen" class="grid grid-cols-2 md:grid-cols-5 gap-3 my-5"></div>
+
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <select id="filtro-anio-documentos" onchange="aplicarFiltrosDocumentosPanel()"
+                            class="input-dynamic !py-2 !px-3 !rounded-xl text-xs !w-auto">
+                        <option value="">Todos los años</option>
+                    </select>
+                    <select id="filtro-mes-documentos" onchange="aplicarFiltrosDocumentosPanel()"
+                            class="input-dynamic !py-2 !px-3 !rounded-xl text-xs !w-auto">
+                        <option value="">Todos los meses</option>
+                        <option value="0">Enero</option>
+                        <option value="1">Febrero</option>
+                        <option value="2">Marzo</option>
+                        <option value="3">Abril</option>
+                        <option value="4">Mayo</option>
+                        <option value="5">Junio</option>
+                        <option value="6">Julio</option>
+                        <option value="7">Agosto</option>
+                        <option value="8">Septiembre</option>
+                        <option value="9">Octubre</option>
+                        <option value="10">Noviembre</option>
+                        <option value="11">Diciembre</option>
+                    </select>
+                    <button type="button" onclick="toggleGraficoDocumentos()" id="btn-toggle-grafico-docs"
+                            class="flex items-center gap-2 bg-olive-soft hover:bg-olive/20 text-olive-dark font-bold text-xs uppercase px-3 py-2 rounded-xl transition-all">
+                        <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Ver gráfico de ingresos
                     </button>
                 </div>
 
-                <div id="admin-resumen" class="grid grid-cols-3 gap-3 my-5"></div>
+                <div id="grafico-documentos-wrapper" class="hidden bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-4" style="height:260px;">
+                    <canvas id="chartIngresosMensuales"></canvas>
+                </div>
 
-                <div id="admin-cargando" class="text-center py-10 text-slate-400 font-bold text-sm">Cargando usuarios…</div>
+                <div class="relative mb-4">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    <input type="text" id="buscador-documentos" oninput="buscarDocumentosPanel(this.value)"
+                           placeholder="Buscar por cliente, Nº de documento o tipo (COTIZACIÓN, FACTURA...)"
+                           class="w-full pl-11 pr-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-700 focus:border-olive transition-all">
+                </div>
 
-                <div class="overflow-x-auto -mx-2">
-                    <table class="w-full text-sm min-w-[640px]">
-                        <thead>
-                            <tr class="text-left text-[10px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-100">
-                                <th class="px-2 py-3">Empresa / Email</th>
-                                <th class="px-2 py-3">Estado</th>
-                                <th class="px-2 py-3">Vence</th>
-                                <th class="px-2 py-3">Días</th>
-                                <th class="px-2 py-3 text-right">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-tabla-usuarios"></tbody>
-                    </table>
+                <div id="documentos-cargando" class="text-center py-10 text-slate-400 font-bold text-sm">Cargando documentos…</div>
+                <div id="lista-documentos-panel" class="space-y-2"></div>
+                <div id="documentos-sin-resultados" class="hidden text-center py-10">
+                    <i data-lucide="file-x" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+                    <p class="text-xs text-slate-400 font-semibold">Todavía no has emitido ningún documento.</p>
                 </div>
             </div>
         </section>
@@ -686,7 +772,7 @@
     <button onclick="nav('mo', this)" class="tab-btn"><i data-lucide="cog"></i></button>
     <button onclick="nav('mat', this)" class="tab-btn"><i data-lucide="package"></i></button>
     <button onclick="nav('pdf', this)" class="tab-btn"><i data-lucide="file-check"></i></button>
-    <button onclick="nav('admin', this)" id="tab-btn-admin-movil" class="hidden tab-btn"><i data-lucide="shield-check"></i></button>
+    <button onclick="nav('documentos', this)" id="tab-btn-documentos-movil" class="tab-btn"><i data-lucide="bar-chart-3"></i></button>
 </nav>
 
 <!-- MODAL DE SOPORTE / AYUDA -->
@@ -700,17 +786,39 @@
             <i data-lucide="life-buoy" class="w-7 h-7 text-blue-600"></i>
         </div>
 
-        <h3 class="text-xl font-black text-slate-800 mb-1">¿Necesitas ayuda?</h3>
-        <p class="text-sm text-slate-500 mb-6">Si algo falló o tienes dudas usando la app, aquí tienes opciones rápidas.</p>
+        <h3 class="text-xl font-black text-slate-800 mb-1">Centro de Ayuda</h3>
+        <p class="text-sm text-slate-500 mb-5">Resolvemos lo más común. Si no encuentras tu caso, escríbenos abajo.</p>
 
-        <div class="space-y-3 mb-6">
+        <div class="space-y-2.5 mb-5 max-h-[42vh] overflow-y-auto pr-1">
             <div class="flex items-start gap-3 bg-slate-50 rounded-2xl p-4">
                 <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
                 <p class="text-xs font-semibold text-slate-600">Si la pantalla se ve rara o un botón no responde, primero intenta <b>recargar la página</b> (no perderás la sesión iniciada).</p>
             </div>
             <div class="flex items-start gap-3 bg-slate-50 rounded-2xl p-4">
-                <i data-lucide="save" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
-                <p class="text-xs font-semibold text-slate-600">Tu logo y datos de empresa se guardan en este navegador. Si cambias de computador, deberás configurarlos de nuevo.</p>
+                <i data-lucide="cloud" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
+                <p class="text-xs font-semibold text-slate-600">Tu logo, datos de empresa y clientes quedan guardados en tu <b>cuenta</b> (no en el navegador). Puedes iniciar sesión desde otro celular o computador y todo aparecerá igual.</p>
+            </div>
+            <div class="flex items-start gap-3 bg-slate-50 rounded-2xl p-4">
+                <i data-lucide="wifi-off" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
+                <p class="text-xs font-semibold text-slate-600">Si un cambio no se guarda (logo, cliente o empresa), revisa tu <b>conexión a internet</b>: la app necesita conexión para sincronizar con tu cuenta.</p>
+            </div>
+            <div class="flex items-start gap-3 bg-slate-50 rounded-2xl p-4">
+                <i data-lucide="file-warning" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
+                <p class="text-xs font-semibold text-slate-600">Si al generar el PDF faltan datos, la app te mostrará exactamente qué campos completar y te llevará directo a ellos.</p>
+            </div>
+            <div class="flex items-start gap-3 bg-blue-50 rounded-2xl p-4">
+                <i data-lucide="credit-card" class="w-4 h-4 text-blue-500 mt-0.5 shrink-0"></i>
+                <div class="text-xs font-semibold text-slate-600">
+                    <p class="mb-1"><b>¿Cómo funcionan los pagos?</b></p>
+                    <p>Todas las cuentas nuevas inician con <b>3 días de prueba gratis</b> con acceso completo. Al terminar la prueba, puedes suscribirte con <b>PayPal</b> para seguir usando la app sin interrupciones.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3 bg-blue-50 rounded-2xl p-4">
+                <i data-lucide="sparkles" class="w-4 h-4 text-blue-500 mt-0.5 shrink-0"></i>
+                <div class="text-xs font-semibold text-slate-600">
+                    <p class="mb-1"><b>¿Cómo se activan las funciones PRO?</b></p>
+                    <p>Apenas el pago se confirma, tu cuenta se marca automáticamente como <b>activa</b> y se desbloquean los límites de clientes y documentos de tu plan, sin que tengas que hacer nada más.</p>
+                </div>
             </div>
         </div>
 
@@ -740,6 +848,104 @@
         <h3 class="text-xl font-black text-slate-800 mb-1">Faltan datos por completar</h3>
         <p class="text-sm text-slate-500 mb-6">Antes de generar el documento, completa los siguientes campos. Toca uno para ir directo a él.</p>
         <div id="lista-campos-pendientes" class="space-y-2 mb-2"></div>
+    </div>
+</div>
+
+<!-- MODAL: RECUPERAR CONTRASEÑA -->
+<div id="modal-recuperar" class="hidden fixed inset-0 z-[350] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+    <div class="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl p-6 sm:p-8 relative">
+        <button onclick="cerrarModalRecuperarPassword()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <div id="recuperar-paso-form">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-olive-soft mb-4">
+                <i data-lucide="key-round" class="w-6 h-6 text-olive"></i>
+            </div>
+            <h3 class="text-lg font-black text-slate-800 mb-1">Restablecer contraseña</h3>
+            <p class="text-xs text-slate-500 font-medium mb-5">Ingresa el correo con el que te registraste. Te enviaremos un enlace para crear una nueva contraseña.</p>
+
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 mb-1.5">Correo electrónico</label>
+            <input type="email" id="recuperar-email-input" placeholder="tu@correo.com"
+                   class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-700 focus:border-olive transition-all mb-3">
+
+            <div id="recuperar-error" class="hidden mb-3">
+                <div class="flex items-center gap-2 bg-red-50 border border-red-100 text-red-600 p-3 rounded-xl">
+                    <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+                    <p id="recuperar-error-msg" class="text-[11px] font-bold leading-tight">No se pudo procesar la solicitud.</p>
+                </div>
+            </div>
+
+            <button type="button" onclick="enviarRecuperacionPassword()" id="btn-recuperar-enviar" class="w-full py-3 bg-olive hover:bg-olive-dark text-white font-black rounded-2xl text-xs uppercase tracking-widest transition-all">
+                Enviar enlace de recuperación
+            </button>
+        </div>
+
+        <div id="recuperar-paso-exito" class="hidden text-center py-4">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-green-50 mx-auto mb-4">
+                <i data-lucide="mail-check" class="w-7 h-7 text-green-600"></i>
+            </div>
+            <h3 class="text-lg font-black text-slate-800 mb-1">¡Listo, revisa tu correo!</h3>
+            <p class="text-xs text-slate-500 font-medium mb-5">Te enviamos un enlace a <span id="recuperar-email-confirmado" class="font-bold text-slate-700"></span>. Ábrelo para crear tu nueva contraseña, y luego vuelve aquí a iniciar sesión.</p>
+            <button type="button" onclick="cerrarModalRecuperarPassword()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-2xl text-xs uppercase transition-all">
+                Entendido
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: CLIENTES GUARDADOS (buscador por nombre, documento o Nº de factura) -->
+<div id="modal-clientes" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+    <div class="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl p-6 sm:p-8 relative max-h-[88vh] flex flex-col">
+        <button onclick="cerrarModalClientes()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <div class="flex items-center gap-3 mb-1">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-olive-soft shrink-0">
+                <i data-lucide="users" class="w-6 h-6 text-olive"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-slate-800">Clientes Guardados</h3>
+                <p class="text-xs text-slate-500 font-medium">Busca por nombre, documento o número de factura</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 mt-4 mb-3 shrink-0">
+            <div class="relative flex-1">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                <input type="text" id="buscador-clientes" oninput="buscarClientesModal(this.value)"
+                       placeholder="Ej: Constructora ABC, 900123456 o FAC-001"
+                       class="w-full pl-11 pr-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-700 focus:border-olive transition-all">
+            </div>
+            <button type="button" onclick="toggleFormNuevoCliente()" title="Agregar cliente nuevo"
+                    class="shrink-0 w-12 h-12 rounded-2xl bg-olive text-white flex items-center justify-center hover:bg-olive-dark transition-all">
+                <i data-lucide="user-plus" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Formulario para agregar un cliente manualmente (sin necesidad de generar un documento) -->
+        <div id="form-nuevo-cliente" class="hidden shrink-0 bg-olive-soft/50 border-2 border-olive/20 rounded-2xl p-4 mb-3 space-y-2.5">
+            <p class="text-xs font-black text-olive-dark uppercase mb-1">Nuevo Cliente</p>
+            <input type="text" id="nc_nombre" placeholder="Nombre o Razón Social *" class="input-dynamic !py-2.5 !rounded-xl text-sm">
+            <input type="text" id="nc_documento" placeholder="Documento / NIT" class="input-dynamic !py-2.5 !rounded-xl text-sm">
+            <input type="tel" id="nc_telefono" placeholder="300..." class="input-dynamic !py-2.5 !rounded-xl text-sm w-full">
+            <input type="email" id="nc_email" placeholder="Correo electrónico" class="input-dynamic !py-2.5 !rounded-xl text-sm">
+            <input type="text" id="nc_direccion" placeholder="Dirección" class="input-dynamic !py-2.5 !rounded-xl text-sm">
+            <button type="button" onclick="guardarNuevoClienteManual()" class="w-full py-2.5 bg-olive hover:bg-olive-dark text-white font-bold rounded-xl text-xs uppercase transition-all">
+                Guardar Cliente
+            </button>
+        </div>
+
+        <div id="lista-clientes-modal" class="space-y-2 overflow-y-auto flex-1 pr-1"></div>
+        <div id="clientes-sin-resultados" class="hidden text-center py-8">
+            <i data-lucide="user-x" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+            <p class="text-xs text-slate-400 font-semibold"></p>
+        </div>
+
+        <button type="button" onclick="exportarClientesCSV()" class="mt-4 shrink-0 w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl flex items-center justify-center gap-2 text-xs uppercase transition-all">
+            <i data-lucide="download" class="w-4 h-4"></i> Descargar base de clientes (CSV)
+        </button>
     </div>
 </div>
 
@@ -798,11 +1004,13 @@
     import {
         getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
         signOut, onAuthStateChanged, setPersistence,
-        browserLocalPersistence, browserSessionPersistence
+        browserLocalPersistence, browserSessionPersistence,
+        GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
         getFirestore, doc, setDoc, getDoc, updateDoc,
-        collection, getDocs
+        collection, getDocs, query, where, orderBy, limit,
+        deleteDoc, increment, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // --- Configuración de tu proyecto Firebase ---
@@ -853,13 +1061,187 @@
         return cred.user;
     }
 
+    // --- Google Sign-In: si el usuario es nuevo, se crea su perfil igual que en el registro por correo ---
+    const googleProvider = new GoogleAuthProvider();
+    async function iniciarSesionGoogle(recordar) {
+        await setPersistence(auth, recordar === false ? browserSessionPersistence : browserLocalPersistence);
+        const cred = await signInWithPopup(auth, googleProvider);
+        const user = cred.user;
+        const ref = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) {
+            const emailNorm = (user.email || "").trim().toLowerCase();
+            const esAdmin = ADMIN_EMAILS.map(e => e.toLowerCase()).includes(emailNorm);
+            await setDoc(ref, {
+                email: emailNorm,
+                nombreEmpresa: user.displayName || "",
+                proveedor: "google",
+                estado: esAdmin ? "activo" : "prueba",
+                esAdmin: esAdmin,
+                fechaRegistro: new Date().toISOString(),
+                fechaVencimiento: esAdmin ? null : calcularFechaFutura(DIAS_PRUEBA)
+            });
+        }
+        return user;
+    }
+
     async function cerrarSesionFirebase() {
         await signOut(auth);
     }
 
+    async function enviarResetPassword(email) {
+        await sendPasswordResetEmail(auth, email);
+    }
+
     async function obtenerPerfilUsuario(uid) {
         const snap = await getDoc(doc(db, "usuarios", uid));
+        if (!snap.exists()) return null;
+        const perfil = snap.data();
+        // Refuerzo: si el correo está en ADMIN_EMAILS pero la cuenta es antigua y no
+        // quedó marcada como admin al registrarse, se corrige aquí (una sola vez).
+        const emailNorm = (perfil.email || "").trim().toLowerCase();
+        if (!perfil.esAdmin && ADMIN_EMAILS.map(e => e.toLowerCase()).includes(emailNorm)) {
+            await updateDoc(doc(db, "usuarios", uid), { esAdmin: true, estado: "activo" });
+            perfil.esAdmin = true;
+            perfil.estado = "activo";
+        }
+        return perfil;
+    }
+
+    // =========================================
+    // DATOS DE EMPRESA (antes en localStorage) -> ahora ligados a cada usuario
+    // =========================================
+    async function guardarDatosEmpresa(datos) {
+        if (!auth.currentUser) return;
+        await setDoc(doc(db, "usuarios", auth.currentUser.uid, "config", "empresa"), datos, { merge: true });
+    }
+    async function obtenerDatosEmpresa() {
+        if (!auth.currentUser) return null;
+        const snap = await getDoc(doc(db, "usuarios", auth.currentUser.uid, "config", "empresa"));
         return snap.exists() ? snap.data() : null;
+    }
+
+    // =========================================
+    // CLIENTES (por usuario): usuarios/{uid}/clientes/{clienteId}
+    // =========================================
+    function refClientes() {
+        return collection(db, "usuarios", auth.currentUser.uid, "clientes");
+    }
+
+    async function listarClientes() {
+        if (!auth.currentUser) return [];
+        const snap = await getDocs(query(refClientes(), orderBy("actualizadoEn", "desc"), limit(200)));
+        const lista = [];
+        snap.forEach(d => lista.push({ id: d.id, ...d.data() }));
+        return lista;
+    }
+
+    // Busca en memoria (nombre, documento/NIT o número de factura) sobre la lista ya cargada.
+    // Firestore no soporta "contains" nativo sin un servicio externo, así que filtramos en cliente.
+    function filtrarClientes(lista, termino) {
+        const t = (termino || "").trim().toLowerCase();
+        if (!t) return lista;
+        return lista.filter(c =>
+            (c.nombre || "").toLowerCase().includes(t) ||
+            (c.documento || "").toLowerCase().includes(t) ||
+            (c.ultimoNumeroFactura || "").toLowerCase().includes(t) ||
+            (Array.isArray(c.numerosFactura) && c.numerosFactura.some(n => (n || "").toLowerCase().includes(t)))
+        );
+    }
+
+    async function guardarOActualizarCliente(cliente) {
+        if (!auth.currentUser) return null;
+        // cliente: { id?, nombre, documento, telefono, email, direccion, totalDocumento, numeroFactura, esNuevoDocumento }
+        const idCliente = cliente.id || (cliente.documento ? cliente.documento.replace(/[^a-zA-Z0-9]/g, '') : null) || doc(refClientes()).id;
+        const ref = doc(db, "usuarios", auth.currentUser.uid, "clientes", idCliente);
+        const snap = await getDoc(ref);
+        const numeroFactura = cliente.numeroFactura || null;
+        // Solo cuenta como "documento emitido" si se indica explícitamente
+        // (al generar/enviar un documento). Crear un cliente manualmente NO suma.
+        const sumaDocumento = cliente.esNuevoDocumento ? 1 : 0;
+
+        if (snap.exists()) {
+            const actual = snap.data();
+            const nuevosNumeros = numeroFactura && !(actual.numerosFactura || []).includes(numeroFactura)
+                ? [...(actual.numerosFactura || []), numeroFactura] : (actual.numerosFactura || []);
+            await updateDoc(ref, {
+                nombre: cliente.nombre || actual.nombre,
+                documento: cliente.documento || actual.documento || "",
+                telefono: cliente.telefono || actual.telefono || "",
+                email: cliente.email || actual.email || "",
+                direccion: cliente.direccion || actual.direccion || "",
+                totalFacturado: (actual.totalFacturado || 0) + (cliente.totalDocumento || 0),
+                cantidadDocumentos: (actual.cantidadDocumentos || 0) + sumaDocumento,
+                ultimoNumeroFactura: numeroFactura || actual.ultimoNumeroFactura || "",
+                numerosFactura: nuevosNumeros,
+                actualizadoEn: new Date().toISOString()
+            });
+        } else {
+            await setDoc(ref, {
+                nombre: cliente.nombre || "",
+                documento: cliente.documento || "",
+                telefono: cliente.telefono || "",
+                email: cliente.email || "",
+                direccion: cliente.direccion || "",
+                totalFacturado: cliente.totalDocumento || 0,
+                cantidadDocumentos: sumaDocumento,
+                ultimoNumeroFactura: numeroFactura || "",
+                numerosFactura: numeroFactura ? [numeroFactura] : [],
+                creadoEn: new Date().toISOString(),
+                actualizadoEn: new Date().toISOString()
+            });
+        }
+        return idCliente;
+    }
+
+    async function eliminarCliente(idCliente) {
+        if (!auth.currentUser) return;
+        await deleteDoc(doc(db, "usuarios", auth.currentUser.uid, "clientes", idCliente));
+    }
+
+    // =========================================
+    // HISTORIAL DE DOCUMENTOS EMITIDOS (reemplaza al panel de administración)
+    // usuarios/{uid}/documentos/{docId}
+    // =========================================
+    async function guardarDocumentoEmitido(datos) {
+        if (!auth.currentUser) return null;
+        const ref = doc(collection(db, "usuarios", auth.currentUser.uid, "documentos"));
+        await setDoc(ref, { ...datos, creadoEn: new Date().toISOString() });
+        return ref.id;
+    }
+
+    async function listarDocumentosEmitidos() {
+        if (!auth.currentUser) return [];
+        const snap = await getDocs(query(
+            collection(db, "usuarios", auth.currentUser.uid, "documentos"),
+            orderBy("creadoEn", "desc"), limit(300)
+        ));
+        const lista = [];
+        snap.forEach(d => lista.push({ id: d.id, ...d.data() }));
+        return lista;
+    }
+
+    function filtrarDocumentos(lista, termino) {
+        const t = (termino || "").trim().toLowerCase();
+        if (!t) return lista;
+        return lista.filter(doc =>
+            (doc.clienteNombre || "").toLowerCase().includes(t) ||
+            (doc.numero || "").toLowerCase().includes(t) ||
+            (doc.tipo || "").toLowerCase().includes(t)
+        );
+    }
+
+    async function eliminarDocumentoEmitido(idDocumento) {
+        if (!auth.currentUser) return;
+        await deleteDoc(doc(db, "usuarios", auth.currentUser.uid, "documentos", idDocumento));
+    }
+
+    async function eliminarTodosLosDocumentosEmitidos() {
+        if (!auth.currentUser) return;
+        const snap = await getDocs(collection(db, "usuarios", auth.currentUser.uid, "documentos"));
+        const eliminaciones = [];
+        snap.forEach(d => eliminaciones.push(deleteDoc(doc(db, "usuarios", auth.currentUser.uid, "documentos", d.id))));
+        await Promise.all(eliminaciones);
     }
 
     async function listarUsuarios() {
@@ -893,12 +1275,24 @@
         });
     }
 
+    // Marca en la CUENTA (Firestore) que el usuario ya vio el tour, para que no
+    // vuelva a salir si borra los datos del navegador (localStorage se pierde,
+    // pero esto queda guardado del lado del servidor).
+    async function marcarTourCompletado(uid) {
+        if (!uid) return;
+        await updateDoc(doc(db, "usuarios", uid), { tourCompletado: true });
+    }
+
     // Expone todo para que app.js (script clásico) lo pueda usar
     window.FB = {
         DIAS_PRUEBA, DIAS_PAGO,
         onAuthStateChanged: (cb) => onAuthStateChanged(auth, cb),
-        registrarUsuario, iniciarSesion, cerrarSesionFirebase,
-        obtenerPerfilUsuario, listarUsuarios, marcarPago, marcarVencido, marcarPrueba
+        registrarUsuario, iniciarSesion, iniciarSesionGoogle, cerrarSesionFirebase, enviarResetPassword,
+        obtenerPerfilUsuario, listarUsuarios, marcarPago, marcarVencido, marcarPrueba, marcarTourCompletado,
+        guardarDatosEmpresa, obtenerDatosEmpresa,
+        listarClientes, filtrarClientes, guardarOActualizarCliente, eliminarCliente,
+        guardarDocumentoEmitido, listarDocumentosEmitidos, filtrarDocumentos,
+        eliminarDocumentoEmitido, eliminarTodosLosDocumentosEmitidos
     };
 
     window.dispatchEvent(new Event('firebase-listo'));
