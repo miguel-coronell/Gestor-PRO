@@ -522,14 +522,80 @@ function actualizarMarcaEnUI() {
     if (footerEmpresa) footerEmpresa.innerText = textoCopyright;
 }
 
-function handleLogoUpload(input) {
+// Redimensiona/comprime la imagen del logo ANTES de convertirla a base64.
+// Motivo: el logo se guarda como base64 dentro del documento de Firestore
+// (usuarios/{uid}/config/empresa), y Firestore limita cada documento a 1 MB.
+// Una foto de celular sin comprimir (2-8 MB) supera ese límite fácilmente y
+// la escritura falla en silencio. Al bajar la resolución máxima el archivo
+// resultante queda muy por debajo del límite en casi todos los casos.
+function comprimirImagenLogo(file, maxDim = 500) {
+    return new Promise((resolve, reject) => {
+        if (!file.type || !file.type.startsWith('image/')) {
+            reject(new Error('El archivo seleccionado no es una imagen'));
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                let { width, height } = img;
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+                    else { width = Math.round(width * (maxDim / height)); height = maxDim; }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // PNG conserva la transparencia (logos con fondo transparente).
+                let dataUrl = canvas.toDataURL('image/png');
+                // Si aun así pesa demasiado (logos muy detallados), se convierte
+                // a JPEG con compresión, sacrificando la transparencia.
+                if (dataUrl.length > 700000) {
+                    dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                }
+                if (dataUrl.length > 900000) {
+                    reject(new Error('imagen_muy_pesada'));
+                    return;
+                }
+                resolve(dataUrl);
+            };
+            img.onerror = () => reject(new Error('No se pudo leer la imagen seleccionada'));
+            img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('No se pudo leer el archivo'));
+        reader.readAsDataURL(file);
+    });
+}
+
+function mostrarAvisoLogo(texto, esError) {
+    const el = document.getElementById('aviso-logo');
+    if (!el) return;
+    el.textContent = texto;
+    el.style.color = esError ? '#dc2626' : '#16a34a';
+    clearTimeout(el._timeoutAviso);
+    el._timeoutAviso = setTimeout(() => { el.textContent = ''; }, 4500);
+}
+
+async function handleLogoUpload(input) {
     const file = input.files && input.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        LOGO_BASE64 = e.target.result;
-        const prev = document.getElementById('logo-preview');
-        const ph = document.getElementById('logo-placeholder');
+
+    const ph = document.getElementById('logo-placeholder');
+    const prev = document.getElementById('logo-preview');
+    const phHTMLOriginal = ph ? ph.innerHTML : '';
+
+    if (ph) {
+        ph.classList.remove('hidden');
+        ph.innerHTML = `<i data-lucide="loader-2" class="w-8 h-8 text-olive mx-auto animate-spin"></i><span class="text-[11px] font-black uppercase text-olive-dark tracking-wide block mt-2">Procesando...</span>`;
+        lucide.createIcons();
+    }
+
+    try {
+        const dataUrl = await comprimirImagenLogo(file, 500);
+        LOGO_BASE64 = dataUrl;
+
         if (prev) { prev.src = LOGO_BASE64; prev.classList.remove('hidden'); }
         if (ph) ph.classList.add('hidden');
         document.querySelectorAll('.logo-mini').forEach(img => { img.src = LOGO_BASE64; img.classList.remove('hidden'); });
@@ -540,13 +606,28 @@ function handleLogoUpload(input) {
         if (color) aplicarColorMarca(color);
 
         // Se guarda en la cuenta del usuario (Firestore), no en el navegador.
-        try {
-            if (window.FB && window.FB.guardarDatosEmpresa) {
-                await window.FB.guardarDatosEmpresa({ logoBase64: LOGO_BASE64, color: color || null });
-            }
-        } catch (err) { console.error('No se pudo guardar el logo en tu cuenta', err); }
-    };
-    reader.readAsDataURL(file);
+        if (window.FB && window.FB.guardarDatosEmpresa) {
+            await window.FB.guardarDatosEmpresa({ logoBase64: LOGO_BASE64, color: color || null });
+        }
+        mostrarAvisoLogo('Logo guardado en tu cuenta ✓', false);
+    } catch (err) {
+        console.error('No se pudo guardar el logo en tu cuenta', err);
+        let motivo = 'No se pudo guardar el logo en la nube. Intenta de nuevo.';
+        if (err && err.message === 'imagen_muy_pesada') {
+            motivo = 'La imagen sigue siendo muy pesada. Prueba con un logo más simple o de menor tamaño.';
+        } else if (err && err.code === 'permission-denied') {
+            motivo = 'Sin permiso para guardar el logo (revisa las reglas de Firestore).';
+        }
+        mostrarAvisoLogo(motivo, true);
+        // Si falló y no había logo previo, se restaura el placeholder original.
+        if (ph && !LOGO_BASE64) { ph.innerHTML = phHTMLOriginal; ph.classList.remove('hidden'); lucide.createIcons(); }
+        if (ph && LOGO_BASE64) ph.classList.add('hidden');
+    } finally {
+        if (ph && ph.innerHTML.includes('Procesando')) {
+            ph.innerHTML = phHTMLOriginal;
+            lucide.createIcons();
+        }
+    }
 }
 
 
@@ -833,7 +914,46 @@ function nav(id, btn) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (id === 'pdf') { calcular(); updateChart(); }
     if (id === 'firma') setTimeout(resizeCanvas, 300);
+    actualizarBotonesPaso(id);
     lucide.createIcons();
+}
+
+// ---------------------------------------------------------------------
+// 6.b NAVEGACIÓN GUIADA (Anterior / Siguiente)
+// ---------------------------------------------------------------------
+// Orden del flujo de trabajo. "documentos" queda fuera porque es un panel de
+// consulta del historial, no un paso del formulario.
+const ORDEN_SECCIONES = ['empresa', 'cliente', 'mo', 'mat', 'pdf'];
+
+function botonNavDe(id) {
+    return document.querySelector(`#desktop-nav button[onclick*="'${id}'"]`) ||
+           document.querySelector(`.tab-btn[onclick*="'${id}'"]`);
+}
+
+function irPaso(delta) {
+    const actual = document.querySelector('.app-section.active-section');
+    if (!actual) return;
+    const idActual = actual.id.replace('sec-', '');
+    const idx = ORDEN_SECCIONES.indexOf(idActual);
+    if (idx === -1) return;
+    const idxNuevo = idx + delta;
+    if (idxNuevo < 0 || idxNuevo >= ORDEN_SECCIONES.length) return;
+    const idNuevo = ORDEN_SECCIONES[idxNuevo];
+    nav(idNuevo, botonNavDe(idNuevo));
+}
+function irSiguienteSeccion() { irPaso(1); }
+function irAnteriorSeccion() { irPaso(-1); }
+
+// Muestra/oculta y renombra los botones Anterior/Siguiente según el paso actual
+function actualizarBotonesPaso(idActual) {
+    const idx = ORDEN_SECCIONES.indexOf(idActual);
+    document.querySelectorAll('.nav-paso-anterior').forEach(b => {
+        b.classList.toggle('invisible', idx <= 0);
+    });
+    document.querySelectorAll('.nav-paso-siguiente').forEach(b => {
+        const esUltimo = idx === ORDEN_SECCIONES.length - 1;
+        b.classList.toggle('hidden', idx === -1 || esUltimo);
+    });
 }
 
 // Configuración de cómo se comporta el bloque de Anticipo según el tipo de documento
@@ -903,6 +1023,15 @@ function toggleAnticipo() {
 // ---------------------------------------------------------------------
 // 7. GESTIÓN DE ITEMS (Servicios / Materiales) SEGÚN LA CATEGORÍA
 // ---------------------------------------------------------------------
+// Lista de unidades más comunes entre todos los rubros, para que el usuario
+// elija de una lista en vez de escribir texto libre (más rápido en móvil).
+const UNIDADES = [
+    "UND", "SERVICIO", "HORA", "DÍA", "SEMANA", "MES", "SESIÓN", "VISITA",
+    "VIAJE", "KM", "M", "M2", "M3", "KG", "GR", "LT", "GL", "JUEGO", "PAR",
+    "CAJA", "BOLSA", "ROLLO", "PLIEGO", "GLOBAL", "LOTE", "PAQUETE",
+    "LICENCIA", "PERSONA", "CLASE"
+];
+
 function addItem(tipo) {
    if (!categoriaActual) {
         mostrarAvisoBonito({
@@ -923,13 +1052,13 @@ function addItem(tipo) {
     const lista = tipo === 'MO' ? cat.servicios : cat.materiales;
     const card = document.createElement('div');
 
-    card.className = `glass-card p-5 relative border-l-8 mb-4 hover-dynamic transition-all ${tipo === 'MO' ? 'border-olive' : 'border-slate-800'}`;
+    card.className = `glass-card p-4 md:p-5 relative border-l-8 mb-4 hover-dynamic transition-all ${tipo === 'MO' ? 'border-olive' : 'border-slate-800'}`;
     card.innerHTML = `
         <button onclick="this.parentElement.remove(); calcular()" class="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg z-10 transition-colors">
             <i data-lucide="x" class="w-4 h-4"></i>
         </button>
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="md:col-span-5">
+        <div class="space-y-3">
+            <div>
                 <label class="text-[10px] font-black text-slate-500 block ml-2 mb-1 uppercase">Descripción del Item</label>
                 <select class="input-dynamic item-sel text-sm !p-2" onchange="checkOther(this)">
                     <option value="">-- Seleccionar --</option>
@@ -938,19 +1067,25 @@ function addItem(tipo) {
                 </select>
                 <textarea class="item-custom hidden input-dynamic h-16 mt-2 text-sm" placeholder="Detalle específico..."></textarea>
             </div>
-            <div class="md:col-span-2">
-                <label class="text-[10px] font-black text-slate-500 block ml-2 mb-1">UNIDAD</label>
-                <input type="text" value="UND" class="input-dynamic item-u text-center text-sm font-bold !p-2 uppercase">
-            </div>
-            <div class="md:col-span-2">
-                <label class="text-[10px] font-black text-slate-500 block ml-2 mb-1">CANT.</label>
-                <input type="number" value="1" step="0.01" class="input-dynamic item-q text-center text-sm font-bold !p-2" oninput="calcular()">
-            </div>
-            <div class="md:col-span-3">
-                <label class="text-[10px] font-black text-slate-500 block ml-2 mb-1">V. UNITARIO</label>
-                <div class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-olive">$</span>
-                    <input type="number" class="input-dynamic item-p text-sm font-bold !pl-8 !p-2" oninput="calcular()" placeholder="0">
+            <div class="grid grid-cols-3 gap-2 md:gap-4 items-end">
+                <div>
+                    <label class="text-[9px] md:text-[10px] font-black text-slate-500 block ml-1 mb-1 uppercase">Unidad</label>
+                    <select class="input-dynamic item-u text-center text-xs md:text-sm font-bold !p-2 uppercase" onchange="checkOtherUnidad(this)">
+                        ${UNIDADES.map(u => `<option value="${u}">${u}</option>`).join('')}
+                        <option value="OTRO">OTRA...</option>
+                    </select>
+                    <input type="text" class="item-u-custom hidden input-dynamic text-center text-xs md:text-sm font-bold !p-2 mt-2 uppercase" placeholder="Unidad">
+                </div>
+                <div>
+                    <label class="text-[9px] md:text-[10px] font-black text-slate-500 block ml-1 mb-1 uppercase">Cant.</label>
+                    <input type="number" value="1" step="0.01" class="input-dynamic item-q text-center text-xs md:text-sm font-bold !p-2" oninput="calcular()">
+                </div>
+                <div>
+                    <label class="text-[9px] md:text-[10px] font-black text-slate-500 block ml-1 mb-1 uppercase">V. Unitario</label>
+                    <div class="relative">
+                        <span class="absolute left-1.5 md:left-3 top-1/2 -translate-y-1/2 font-bold text-olive text-xs md:text-base">$</span>
+                        <input type="number" class="input-dynamic item-p text-xs md:text-sm font-bold !pl-5 md:!pl-8 !p-2" oninput="calcular()" placeholder="0">
+                    </div>
                 </div>
             </div>
         </div>
@@ -962,6 +1097,22 @@ function addItem(tipo) {
 
 function checkOther(sel) {
     sel.parentElement.querySelector('.item-custom').classList.toggle('hidden', sel.value !== 'OTRO');
+}
+
+// Muestra/oculta el campo de texto libre cuando se elige "OTRA..." en Unidad
+function checkOtherUnidad(sel) {
+    sel.parentElement.querySelector('.item-u-custom').classList.toggle('hidden', sel.value !== 'OTRO');
+}
+
+// Devuelve el texto final de la unidad de un ítem, ya sea de la lista o
+// la que el usuario escribió manualmente al elegir "OTRA..."
+function obtenerUnidadItem(card) {
+    const selU = card.querySelector('.item-u');
+    if (!selU) return 'UND';
+    if (selU.value === 'OTRO') {
+        return (card.querySelector('.item-u-custom')?.value || '').toUpperCase().trim() || 'UND';
+    }
+    return selU.value;
 }
 
 // ---------------------------------------------------------------------
@@ -1098,7 +1249,7 @@ function extractTableData(id) {
     document.querySelectorAll(`#${id} > div`).forEach(c => {
         let desc = c.querySelector('.item-sel').value;
         if (desc === 'OTRO') desc = c.querySelector('.item-custom').value;
-        const u = c.querySelector('.item-u').value.toUpperCase();
+        const u = obtenerUnidadItem(c);
         const q = parseFloat(c.querySelector('.item-q').value) || 0;
         const p = parseFloat(c.querySelector('.item-p').value) || 0;
         if (desc) data.push([desc.toUpperCase(), u, q, `$ ${p.toLocaleString()}`, `$ ${(q * p).toLocaleString()}`]);
@@ -1116,7 +1267,7 @@ function extractTableDataRaw(id) {
         let desc = selEl.value;
         const esOtro = desc === 'OTRO';
         if (esOtro) desc = c.querySelector('.item-custom').value;
-        const u = c.querySelector('.item-u').value;
+        const u = obtenerUnidadItem(c);
         const q = parseFloat(c.querySelector('.item-q').value) || 0;
         const p = parseFloat(c.querySelector('.item-p').value) || 0;
         if (desc) data.push({ desc, u, q, p, esOtro });
@@ -2492,7 +2643,16 @@ function cargarDocumentoHistorialEnFormulario(d) {
                 checkOther(sel);
                 fila.querySelector('.item-custom').value = it.desc;
             }
-            fila.querySelector('.item-u').value = it.u || 'UND';
+            const selU = fila.querySelector('.item-u');
+            const unidadGuardada = it.u || 'UND';
+            const unidadExiste = Array.from(selU.options).some(o => o.value === unidadGuardada);
+            if (unidadExiste) {
+                selU.value = unidadGuardada;
+            } else {
+                selU.value = 'OTRO';
+                checkOtherUnidad(selU);
+                fila.querySelector('.item-u-custom').value = unidadGuardada;
+            }
             fila.querySelector('.item-q').value = it.q || 1;
             fila.querySelector('.item-p').value = it.p || 0;
         });
@@ -2989,9 +3149,27 @@ function nuevoDocumento() {
     FOTOS_DB = [];
     renderPhotos();
 
-    limpiarCanvas();
+    // Se desactivan los interruptores de "Opciones Adicionales" (Evidencia
+    // Fotográfica y Requerir Firma Digital) para que se disparen sus propias
+    // rutinas de limpieza (ocultar panel, borrar firmaEmpresa/firmaCliente y
+    // limpiar el lienzo). Antes solo se limpiaba el canvas manualmente y el
+    // switch quedaba activo, por lo que las firmas seguían visibles.
+    const chkEvidencia = document.getElementById('chk_evidencia');
+    if (chkEvidencia && chkEvidencia.checked) { chkEvidencia.checked = false; toggleEvidencia(); }
+
+    const chkFirmaModulo = document.getElementById('chk_firma_modulo');
+    if (chkFirmaModulo && chkFirmaModulo.checked) { chkFirmaModulo.checked = false; toggleFirmaModulo(); }
+
+    // Se restablece el switch "Firma: EMPRESA / CLIENTE" a su estado inicial,
+    // sin usar cambiarFirmante() para no volver a guardar nada en el canvas
+    // (ya quedó vacío por toggleFirmaModulo de arriba).
     const switchFirma = document.getElementById('switch-firma');
-    if (switchFirma && switchFirma.checked) { switchFirma.checked = false; cambiarFirmante(); }
+    if (switchFirma) {
+        switchFirma.checked = false;
+        esModoCliente = false;
+        const labelFirmante = document.getElementById('label-firmante');
+        if (labelFirmante) { labelFirmante.innerText = "Firma: EMPRESA"; labelFirmante.style.color = "#475569"; }
+    }
 
     calcular();
     nav('cliente', document.querySelector('[onclick*="cliente"]'));
@@ -3025,6 +3203,7 @@ if (categoriaActual) cambiarCategoria(categoriaActual);
 lucide.createIcons();
 toggleFacturaField();
 calcular();
+actualizarBotonesPaso('cliente'); // sección activa por defecto en el HTML
 
 
 
