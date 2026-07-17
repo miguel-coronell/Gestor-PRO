@@ -14,6 +14,35 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- ============ EMAILJS ============ -->
+<!-- Reemplaza estos 3 valores por los tuyos de https://dashboard.emailjs.com -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  const EMAILJS_PUBLIC_KEY = "9YSOgwVaV6cqYZluh";
+  const EMAILJS_SERVICE_ID = "service_z3mfham";
+  const EMAILJS_TEMPLATE_ID = "template_ps2l1kh";
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  window.enviarMensajeContacto = ({ nombre, email, asunto, mensaje }) => {
+    const asuntoLegible = {
+      ventas: "Quiero contratar Gestor PRO",
+      soporte: "Necesito ayuda técnica",
+      facturacion: "Dudas sobre mi plan o cobro",
+      otro: "Otro"
+    }[asunto] || asunto;
+
+    return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      nombre,
+      email,
+      asunto: asuntoLegible,
+      mensaje,
+      time: new Date().toLocaleString("es-AR", { dateStyle: "medium", timeStyle: "short" })
+    });
+  };
+</script>
+
 <script>
   tailwind.config = {
     theme: {
@@ -291,9 +320,12 @@
             <p class="field-error-msg"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>Escribe tu mensaje.</p>
           </div>
 
-          <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-br from-deep to-dark text-white font-extrabold text-[13.5px] uppercase tracking-wide shadow-[0_16px_30px_-8px_rgba(29,78,137,0.4)] hover:shadow-[0_20px_35px_-8px_rgba(29,78,137,0.5)] hover:-translate-y-0.5 transition-all">
+          <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-br from-deep to-dark text-white font-extrabold text-[13.5px] uppercase tracking-wide shadow-[0_16px_30px_-8px_rgba(29,78,137,0.4)] hover:shadow-[0_20px_35px_-8px_rgba(29,78,137,0.5)] hover:-translate-y-0.5 transition-all disabled:opacity-60">
             Enviar mensaje <i data-lucide="send" class="w-4 h-4"></i>
           </button>
+          <p id="form-error-msg" class="field-error-msg justify-center mt-4" style="color:#dc2626;font-size:13px;font-weight:700;">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>Ocurrió un error al enviar tu mensaje. Intenta de nuevo o escríbenos por WhatsApp.
+          </p>
         </form>
       </div>
 
@@ -430,7 +462,11 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  form.addEventListener('submit', (e) => {
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const submitBtnDefaultHTML = submitBtn.innerHTML;
+  const formErrorMsg = document.getElementById('form-error-msg');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const nombre = document.getElementById('nombre');
     const email = document.getElementById('email');
@@ -449,9 +485,26 @@
       return;
     }
 
-    // No hay backend conectado: mostramos el estado de éxito localmente.
-    formWrapper.style.display = 'none';
-    successPanel.classList.add('show');
+    if (formErrorMsg) formErrorMsg.classList.remove('show');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Enviando...';
+
+    try {
+      await window.enviarMensajeContacto({
+        nombre: nombre.value.trim(),
+        email: email.value.trim(),
+        asunto: asunto.value,
+        mensaje: mensaje.value.trim()
+      });
+      formWrapper.style.display = 'none';
+      successPanel.classList.add('show');
+    } catch (err) {
+      console.error('Error al enviar el mensaje de contacto:', err);
+      if (formErrorMsg) formErrorMsg.classList.add('show');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = submitBtnDefaultHTML;
+    }
   });
 
   resetBtn.addEventListener('click', () => {

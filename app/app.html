@@ -251,7 +251,6 @@
     </div>
 
     <nav class="flex-1 overflow-y-auto p-4 space-y-2" id="desktop-nav">
-        <button onclick="nav('empresa', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="building-2"></i> 0. Mi Empresa</button>
         <button onclick="nav('cliente', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop active"><i data-lucide="user-circle"></i> 1. Datos Generales</button>
         <button onclick="nav('mo', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="cog"></i> 2. Servicios</button>
         <button onclick="nav('mat', this)" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold tab-btn-desktop"><i data-lucide="package"></i> 3. Materiales</button>
@@ -261,25 +260,32 @@
 <!-- PIE DEL SIDEBAR: SOPORTE Y CERRAR SESIÓN (solo escritorio) -->
     
 
- <div class="p-4 border-t border-slate-100 space-y-2" id="desktop-header-actions">
-        <button onclick="abrirModalSoporte()" id="btn-ayuda-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition-all font-bold">
-            <i data-lucide="life-buoy" class="w-5 h-5"></i>
-            <span class="text-sm">Ayuda / Soporte</span>
-        </button>
-        <button onclick="iniciarTour()" id="btn-tutorial-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-olive/5 hover:text-olive transition-all font-bold">
-            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-            <span class="text-sm">Ver Tutorial</span>
-        </button>
-        <button onclick="cerrarSesion()" id="btn-cerrar-sesion-desktop" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-bold">
-            <i data-lucide="log-out" class="w-5 h-5"></i>
-            <span class="text-sm">Cerrar Sesión</span>
-        </button>
+ <div class="mx-2 mb-3 p-2 bg-slate-50/80 rounded-2xl border border-slate-100" id="desktop-header-actions">
+        <div class="grid grid-cols-2 gap-1">
+            <button onclick="nav('empresa', this)" id="btn-empresa-desktop" class="flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-olive hover:shadow-sm transition-all font-semibold text-center">
+                <i data-lucide="building-2" class="w-4 h-4"></i>
+                <span class="text-[10px] leading-tight">Mi Empresa</span>
+            </button>
+            <button onclick="abrirModalSoporte()" id="btn-ayuda-desktop" class="flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-blue-600 hover:shadow-sm transition-all font-semibold text-center">
+                <i data-lucide="life-buoy" class="w-4 h-4"></i>
+                <span class="text-[10px] leading-tight">Ayuda</span>
+            </button>
+            <button onclick="iniciarTour()" id="btn-tutorial-desktop" class="flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-olive hover:shadow-sm transition-all font-semibold text-center">
+                <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                <span class="text-[10px] leading-tight">Tutorial</span>
+            </button>
+            <button onclick="cerrarSesion()" id="btn-cerrar-sesion-desktop" class="flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-lg text-red-500 hover:bg-red-50 transition-all font-semibold text-center">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span class="text-[10px] leading-tight">Salir</span>
+            </button>
+        </div>
+    </div>
 
-
+    <div class="px-4 pb-3">
         <a href="https://miguel-coronell.github.io/cv-logistica/" target="_blank" class="block text-center text-[10px] font-bold text-slate-400 hover:text-olive transition-colors">
              Desarrollado por <span class="text-slate-600">miguel coronell</span>
         </a>
-</div>
+    </div>
 </aside>
 
 <!-- HEADER MÓVIL -->
@@ -287,7 +293,7 @@
 
     <!-- Fila 1: Logo + Nombre + Slogan -->
     <div class="flex items-center gap-3 px-4 pt-3 pb-2">
-        <button onclick="nav('empresa', document.querySelector('#desktop-nav button'))" class="shrink-0 bg-white p-1 rounded-xl shadow-md rotate-3 w-10 h-10 flex items-center justify-center overflow-hidden border-2 border-olive/20">
+        <button onclick="nav('empresa', document.getElementById('btn-empresa-desktop'))" class="shrink-0 bg-white p-1 rounded-xl shadow-md rotate-3 w-10 h-10 flex items-center justify-center overflow-hidden border-2 border-olive/20">
             <img id="logo-mini-mobile" src="" alt="Logo" class="logo-mini hidden w-8 h-8">
             <i data-lucide="file-pen-line" class="w-5 h-5 logo-placeholder-icon" style="color:#1D4E89;"></i>
         </button>
@@ -306,6 +312,9 @@
             <div id="topTotal" class="text-xs font-black text-slate-900 whitespace-nowrap">$ 0</div>
         </div>
         <div class="flex items-center gap-2 shrink-0" id="mobile-header-actions">
+            <button onclick="nav('empresa', document.getElementById('btn-empresa-desktop'))" id="btn-empresa-movil" class="flex items-center justify-center p-2 bg-olive-soft text-olive-dark rounded-xl hover:bg-olive/20 transition-all shadow-sm">
+                <i data-lucide="building-2" class="w-4 h-4"></i>
+            </button>
             <button onclick="abrirModalSoporte()" id="btn-ayuda-movil" class="flex items-center justify-center p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all shadow-sm">
                 <i data-lucide="life-buoy" class="w-4 h-4"></i>
             </button>
@@ -326,11 +335,39 @@
         <!-- 0. MI EMPRESA -->
         <section id="sec-empresa" class="app-section">
             <div class="glass-card p-6 lg:p-8 space-y-8">
-                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div class="w-2 h-8 bg-olive rounded-full"></div>
-                    <h2 class="font-black text-slate-800 uppercase text-lg tracking-wider">Perfil de tu Negocio</h2>
+                <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-4 flex-wrap">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-8 bg-olive rounded-full"></div>
+                        <h2 class="font-black text-slate-800 uppercase text-lg tracking-wider">Perfil de tu Negocio</h2>
+                    </div>
+                    <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                        <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Modificar</span>
+                        <input type="checkbox" id="switch-editar-empresa" class="sr-only peer" onchange="toggleEdicionEmpresa()">
+                        <div class="relative w-11 h-6 shrink-0 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--olive)]"></div>
+                    </label>
                 </div>
-                <p class="text-sm text-slate-500 -mt-4">Estos datos y tu logo aparecerán automáticamente en cada PDF que generes.</p>
+                <p class="text-sm text-slate-500 -mt-4">Estos datos y tu logo aparecerán automáticamente en cada PDF que generes. Se configuran una sola vez.</p>
+
+                <div id="aviso-empresa-bloqueada" class="hidden flex items-center gap-3 bg-olive-soft/60 text-olive-dark rounded-2xl px-4 py-3">
+                    <i data-lucide="lock" class="w-4 h-4 shrink-0"></i>
+                    <p class="text-[11px] font-bold">Tus datos ya están guardados y protegidos. Activa "Modificar" arriba si necesitas cambiarlos.</p>
+                </div>
+
+                <div class="space-y-2 categoria-select-wrapper">
+                    <label class="text-xs font-black text-olive ml-2 uppercase flex items-center gap-2">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i> Rubro / Categoría del Negocio
+                    </label>
+                    <select id="c_categoria" class="input-dynamic" onchange="cambiarCategoria(this.value)" data-req="true" data-label="Rubro / Categoría del Negocio" data-nav="empresa"></select>
+                    <p class="text-[11px] text-slate-400 ml-2">Al elegir el rubro, las opciones de Servicios y Materiales se adaptan automáticamente. Se configura una sola vez para toda tu cuenta.</p>
+
+                    <div id="cont-categoria-personalizada" class="hidden space-y-2 pt-2">
+                        <label class="text-xs font-black text-olive ml-2 uppercase flex items-center gap-2">
+                            <i data-lucide="pencil-line" class="w-4 h-4"></i> Nombre de tu Rubro
+                        </label>
+                        <input type="text" id="c_categoria_personalizada" class="input-dynamic" placeholder="Ej: Diseño de Interiores, Veterinaria, Consultoría..." oninput="guardarNombreRubroPersonalizado(this.value)">
+                        <p class="text-[11px] text-slate-400 ml-2">Este nombre aparecerá como título de tus secciones de Servicios y Materiales, y en el PDF.</p>
+                    </div>
+                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-8 items-start">
                     <div class="flex flex-col items-center gap-3">
@@ -386,15 +423,6 @@
                 
                 <p id="footer-copyright-empresa" class="text-center text-[10px] font-bold text-slate-300 pt-2 lg:hidden">© 2026 Mi Negocio</p>
             </div>
-
-            <div class="flex items-center justify-between gap-4 mt-6">
-                <button onclick="irAnteriorSeccion()" class="nav-paso-anterior btn-secondary px-6 py-3.5 flex items-center gap-2 hover-dynamic invisible">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Anterior
-                </button>
-                <button onclick="irSiguienteSeccion()" class="nav-paso-siguiente btn-primary px-6 py-3.5 flex items-center gap-2 hover-dynamic ml-auto">
-                    Siguiente <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </button>
-            </div>
         </section>
 
         <!-- 1. CLIENTE + CATEGORÍA -->
@@ -410,20 +438,12 @@
                     </button>
                 </div>
 
-                <div class="space-y-2 categoria-select-wrapper">
-                    <label class="text-xs font-black text-olive ml-2 uppercase flex items-center gap-2">
-                        <i data-lucide="layout-grid" class="w-4 h-4"></i> Rubro / Categoría del Negocio
-                    </label>
-                    <select id="c_categoria" class="input-dynamic" onchange="cambiarCategoria(this.value)" data-req="true" data-label="Rubro / Categoría del Negocio" data-nav="cliente"></select>
-                    <p class="text-[11px] text-slate-400 ml-2">Al elegir el rubro, las opciones de Servicios y Materiales se adaptan automáticamente.</p>
-
-                    <div id="cont-categoria-personalizada" class="hidden space-y-2 pt-2">
-                        <label class="text-xs font-black text-olive ml-2 uppercase flex items-center gap-2">
-                            <i data-lucide="pencil-line" class="w-4 h-4"></i> Nombre de tu Rubro
-                        </label>
-                        <input type="text" id="c_categoria_personalizada" class="input-dynamic" placeholder="Ej: Diseño de Interiores, Veterinaria, Consultoría..." oninput="guardarNombreRubroPersonalizado(this.value)">
-                        <p class="text-[11px] text-slate-400 ml-2">Este nombre aparecerá como título de tus secciones de Servicios y Materiales, y en el PDF.</p>
-                    </div>
+                <div class="flex items-center gap-2 bg-olive-soft/60 text-olive-dark rounded-2xl px-4 py-3">
+                    <i data-lucide="layout-grid" class="w-4 h-4 shrink-0"></i>
+                    <p class="text-[11px] font-bold" id="aviso-rubro-cliente">
+                        Rubro del negocio: <span class="icono-rubro-texto-cliente" id="texto-rubro-cliente-actual">Sin configurar</span>.
+                        <span class="underline cursor-pointer" onclick="irAMiEmpresaDesdeAviso()">Se cambia desde Mi Empresa.</span>
+                    </p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -813,7 +833,6 @@
     </div>
 </main>
     <nav id="mobile-nav" class="hidden lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 px-4 py-3 pb-6 flex justify-start items-center gap-2 overflow-x-auto z-[100] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-    <button onclick="nav('empresa', this)" class="tab-btn" id="tab-btn-empresa"><i data-lucide="building-2"></i></button>
     <button onclick="nav('cliente', this)" class="tab-btn active"><i data-lucide="user-circle"></i></button>
     <button onclick="nav('mo', this)" class="tab-btn"><i data-lucide="cog"></i></button>
     <button onclick="nav('mat', this)" class="tab-btn"><i data-lucide="package"></i></button>
