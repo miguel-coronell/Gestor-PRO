@@ -2553,7 +2553,6 @@ async function manejarCambioDeAuth(user) {
             return;
         }
         mostrarApp();
-        abrirModalSuscripcionSiVieneDeLanding();
     } catch (err) {
         console.error('Error al cargar el perfil de usuario:', err);
         mostrarLogin();
@@ -3176,6 +3175,9 @@ function marcarTourCompletadoEnCuenta() {
     if (window.FB && window.FB.marcarTourCompletado && usuarioFirebase) {
         window.FB.marcarTourCompletado(usuarioFirebase.uid).catch(err => console.error('No se pudo guardar el estado del tour en la cuenta:', err));
     }
+    // Si venía desde la página promocional con un plan elegido, recién ahora
+    // (con el tour ya visto/saltado) se abre el modal de Suscripción.
+    abrirModalSuscripcionSiVieneDeLanding();
 }
 
 function saltarBienvenidaTour() {
@@ -3358,8 +3360,13 @@ function verificarYIniciarTour() {
         // (ej: se borraron los datos), sincronizamos localStorage para evitar
         // futuras consultas innecesarias.
         if (yaVistoEnLaCuenta && !yaVistoEnEsteNavegador) localStorage.setItem('tour_completado', '1');
+        // Cuenta ya conocida: si viene desde la página promocional con un plan
+        // elegido, el modal de suscripción se abre de una vez (no hay tour de por medio).
+        abrirModalSuscripcionSiVieneDeLanding();
         return;
     }
+    // Cuenta nueva: el tour se muestra primero. El modal de suscripción se
+    // abre solo al terminar (o saltar) el tour — ver marcarTourCompletadoEnCuenta().
     setTimeout(iniciarTour, 400);
 }
 
