@@ -2549,9 +2549,11 @@ async function manejarCambioDeAuth(user) {
                 perfilUsuario.estado = 'vencido';
             }
             mostrarPantallaVencida();
+            abrirModalSuscripcionSiVieneDeLanding();
             return;
         }
         mostrarApp();
+        abrirModalSuscripcionSiVieneDeLanding();
     } catch (err) {
         console.error('Error al cargar el perfil de usuario:', err);
         mostrarLogin();
@@ -3408,6 +3410,22 @@ function cargarSdkPaypal() {
         document.head.appendChild(script);
     });
     return paypalSdkPromise;
+}
+
+// Si el usuario llegó desde la página promocional con un plan ya elegido
+// (ej. app.html?plan=mensual), abre el modal de Suscripción solo, apenas
+// entra a la app — así no tiene que buscar el botón manualmente.
+function abrirModalSuscripcionSiVieneDeLanding() {
+    const params = new URLSearchParams(window.location.search);
+    const plan = params.get('plan');
+    if (plan && ['mensual', 'anual', 'perpetua'].includes(plan)) {
+        abrirModalSuscripcion();
+        // Limpia el parámetro de la URL para que no se vuelva a abrir solo
+        // si el usuario recarga la página más tarde.
+        params.delete('plan');
+        const nuevaUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+        window.history.replaceState({}, '', nuevaUrl);
+    }
 }
 
 function abrirModalSuscripcion() {
