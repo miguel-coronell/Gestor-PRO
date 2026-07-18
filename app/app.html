@@ -209,13 +209,13 @@
             <i data-lucide="clock-alert" class="w-8 h-8 text-red-500"></i>
         </div>
         <h3 class="text-2xl font-black text-slate-800 mb-2" id="vencido-titulo">Tu prueba gratis terminó</h3>
-        <p class="text-sm text-slate-500 font-medium mb-6" id="vencido-texto">Para seguir usando la app, activa tu suscripción escribiéndonos.</p>
+        <p class="text-sm text-slate-500 font-medium mb-6" id="vencido-texto">Activa tu suscripción para seguir usando la app sin interrupciones.</p>
         <div class="grid grid-cols-1 gap-3">
+            <button onclick="abrirModalSuscripcion()" class="py-3.5 text-white font-black rounded-xl flex items-center justify-center gap-2 text-xs uppercase transition-all btn-primary">
+                <i data-lucide="credit-card" class="w-4 h-4"></i> Activar suscripción
+            </button>
             <button onclick="contactarSoportePorWhatsApp()" class="py-3.5 bg-[#25D366] hover:bg-[#20b858] text-white font-black rounded-xl flex items-center justify-center gap-2 text-xs uppercase transition-all">
                 <i data-lucide="message-circle" class="w-4 h-4"></i> Escribir por WhatsApp
-            </button>
-            <button onclick="contactarSoportePorEmail()" class="py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl flex items-center justify-center gap-2 text-xs uppercase transition-all">
-                <i data-lucide="mail" class="w-4 h-4"></i> Escribir por correo
             </button>
             <button onclick="cerrarSesion()" class="py-3 text-slate-400 hover:text-slate-600 font-bold text-xs uppercase transition-all">
                 Cerrar sesión
@@ -248,6 +248,10 @@
         </div>
 
         <div id="badge-estado-cuenta" class="hidden mt-3 rounded-2xl px-4 py-2.5 text-center"></div>
+
+        <button onclick="abrirModalSuscripcion()" id="btn-suscripcion-desktop" class="mt-2 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-olive-soft text-olive-dark hover:bg-olive/20 transition-all font-black text-[11px] uppercase tracking-wide">
+            <i data-lucide="credit-card" class="w-4 h-4"></i> Mi Suscripción
+        </button>
     </div>
 
     <nav class="flex-1 overflow-y-auto p-4 space-y-2" id="desktop-nav">
@@ -314,6 +318,9 @@
         <div class="flex items-center gap-2 shrink-0" id="mobile-header-actions">
             <button onclick="nav('empresa', document.getElementById('btn-empresa-desktop'))" id="btn-empresa-movil" class="flex items-center justify-center p-2 bg-olive-soft text-olive-dark rounded-xl hover:bg-olive/20 transition-all shadow-sm">
                 <i data-lucide="building-2" class="w-4 h-4"></i>
+            </button>
+            <button onclick="abrirModalSuscripcion()" id="btn-suscripcion-movil" class="flex items-center justify-center p-2 bg-olive-soft text-olive-dark rounded-xl hover:bg-olive/20 transition-all shadow-sm">
+                <i data-lucide="credit-card" class="w-4 h-4"></i>
             </button>
             <button onclick="abrirModalSoporte()" id="btn-ayuda-movil" class="flex items-center justify-center p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all shadow-sm">
                 <i data-lucide="life-buoy" class="w-4 h-4"></i>
@@ -901,6 +908,67 @@
         </div>
     </div>
 </div>
+<!-- MODAL: MI SUSCRIPCIÓN (pagos con PayPal) -->
+<div id="modal-suscripcion" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+    <div class="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
+        <button onclick="cerrarModalSuscripcion()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-olive-soft">
+            <i data-lucide="credit-card" class="w-7 h-7 text-olive"></i>
+        </div>
+
+        <h3 class="text-xl font-black text-slate-800 mb-1">Mi Suscripción</h3>
+        <p class="text-sm text-slate-500 mb-4">Elige un plan para activar (o renovar) tu cuenta. La activación es automática apenas PayPal confirma el pago.</p>
+
+        <!-- Resumen del estado actual, se actualiza en vivo -->
+        <div id="suscripcion-estado-resumen" class="rounded-2xl px-4 py-3 mb-5 bg-slate-50 border border-slate-100">
+            <span class="text-xs font-bold text-slate-500">Consultando estado de tu cuenta…</span>
+        </div>
+
+        <div class="space-y-3 mb-5">
+            <!-- Plan Mensual -->
+            <div class="border border-slate-200 rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-black text-slate-800 text-sm">Plan Mensual</span>
+                    <span class="font-black text-slate-800 text-sm">US$ 10 <span class="text-slate-400 font-semibold text-xs">/ mes</span></span>
+                </div>
+                <div id="paypal-btn-mensual" class="max-w-[220px]"></div>
+            </div>
+
+            <!-- Plan Anual -->
+            <div class="border-2 border-olive rounded-2xl p-4 relative">
+                <span class="absolute -top-3 left-4 bg-olive text-white text-[10px] font-black uppercase tracking-wide px-3 py-1 rounded-full">Ahorra 2 meses</span>
+                <div class="flex items-center justify-between mb-2 mt-1">
+                    <span class="font-black text-slate-800 text-sm">Plan Anual</span>
+                    <span class="font-black text-slate-800 text-sm">US$ 99 <span class="text-slate-400 font-semibold text-xs">/ año</span></span>
+                </div>
+                <div id="paypal-btn-anual" class="max-w-[220px]"></div>
+            </div>
+
+            <!-- Licencia Perpetua -->
+            <div class="border border-slate-200 rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-black text-slate-800 text-sm">Licencia Perpetua</span>
+                    <span class="font-black text-slate-800 text-sm">US$ 249 <span class="text-slate-400 font-semibold text-xs">pago único</span></span>
+                </div>
+                <p class="text-[11px] text-slate-400 font-semibold mb-3">Pagas una sola vez, sin vencimiento ni renovaciones.</p>
+                <form id="form-paypal-perpetua" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" class="m-0">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="2UM2P86YUCZ8N">
+                    <input type="hidden" name="custom" id="paypal-perpetua-custom" value="">
+                    <button type="submit" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl flex items-center justify-center gap-2 text-xs uppercase transition-all">
+                        <i data-lucide="lock" class="w-4 h-4"></i> Pagar con PayPal
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <p class="text-[11px] text-slate-400 font-semibold text-center leading-relaxed">Pagos procesados por PayPal. No guardamos datos de tu tarjeta. Si tu estado no cambia en unos segundos tras pagar, cierra y vuelve a abrir esta ventana.</p>
+    </div>
+</div>
+
 <!-- MODAL DE CAMPOS PENDIENTES POR COMPLETAR -->
 <div id="modal-campos-pendientes" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
     <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-8 relative max-h-[85vh] overflow-y-auto">
@@ -1073,7 +1141,7 @@
         GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
-        getFirestore, doc, setDoc, getDoc, updateDoc,
+        getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot,
         collection, getDocs, query, where, orderBy, limit,
         deleteDoc, increment, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -1259,6 +1327,15 @@
         return idCliente;
     }
 
+    // Escucha en vivo el documento del usuario en Firestore. Se usa para que,
+    // apenas el webhook de PayPal marque la cuenta como "activa", la app lo
+    // refleje al instante sin que el usuario tenga que recargar la página.
+    function escucharPerfilUsuario(uid, callback) {
+        return onSnapshot(doc(db, "usuarios", uid), (snap) => {
+            if (snap.exists()) callback(snap.data());
+        });
+    }
+
     async function eliminarCliente(idCliente) {
         if (!auth.currentUser) return;
         await deleteDoc(doc(db, "usuarios", auth.currentUser.uid, "clientes", idCliente));
@@ -1353,7 +1430,7 @@
         DIAS_PRUEBA, DIAS_PAGO,
         onAuthStateChanged: (cb) => onAuthStateChanged(auth, cb),
         registrarUsuario, iniciarSesion, iniciarSesionGoogle, cerrarSesionFirebase, enviarResetPassword,
-        obtenerPerfilUsuario, listarUsuarios, marcarPago, marcarVencido, marcarPrueba, marcarTourCompletado,
+        obtenerPerfilUsuario, escucharPerfilUsuario, listarUsuarios, marcarPago, marcarVencido, marcarPrueba, marcarTourCompletado,
         guardarDatosEmpresa, obtenerDatosEmpresa,
         listarClientes, filtrarClientes, guardarOActualizarCliente, eliminarCliente,
         guardarDocumentoEmitido, listarDocumentosEmitidos, filtrarDocumentos,

@@ -1126,7 +1126,7 @@ function addItem(tipo) {
             texto: "Antes de agregar servicios o materiales, elige el Rubro / Categoría de tu negocio en la sección 'Datos Generales'.",
             textoBoton: 'Ir a Datos Generales',
             onCerrar: () => {
-                nav('cliente', document.querySelector('[onclick*="cliente"]'));
+                nav('empresa', botonNavDe('empresa'));
                 const selRubro = document.getElementById('c_categoria');
                 if (selRubro) { selRubro.classList.add('campo-invalido', 'campo-invalido-shake'); setTimeout(() => selRubro.classList.remove('campo-invalido-shake'), 400); }
             }
@@ -2251,6 +2251,7 @@ function enviarEmail() {
 let usuarioFirebase = null;   // objeto de Auth de Firebase
 let perfilUsuario = null;     // documento de Firestore (estado, fechaVencimiento, esAdmin, etc.)
 let modoAuth = 'login';       // 'login' | 'registro'
+let unsubscribeSuscripcion = null; // función para dejar de escuchar cambios de la cuenta en Firestore
 
 // --- Cambia entre el formulario de "Iniciar sesión" y "Crear cuenta" ---
 function cambiarModoAuth(modo) {
@@ -2463,7 +2464,8 @@ function actualizarBadgeEstadoCuenta(perfil) {
 
     if (perfil.estado === 'activo') {
         badge.className = 'mt-3 rounded-2xl px-4 py-2.5 text-center bg-green-50 border border-green-100';
-        badge.innerHTML = `<span class="text-[10px] font-black text-green-600 uppercase tracking-wider">Suscripción activa · ${dias >= 0 ? dias + ' días' : 'vence hoy'}</span>`;
+        const detalle = perfil.plan === 'perpetua' ? 'sin vencimiento' : (dias >= 0 ? dias + ' días' : 'vence hoy');
+        badge.innerHTML = `<span class="text-[10px] font-black text-green-600 uppercase tracking-wider">Suscripción activa · ${detalle}</span>`;
     } else if (perfil.estado === 'prueba') {
         badge.className = 'mt-3 rounded-2xl px-4 py-2.5 text-center bg-olive-soft border border-olive/20';
         badge.innerHTML = `<span class="text-[10px] font-black text-olive uppercase tracking-wider">Prueba gratis · ${dias >= 0 ? dias + ' día(s)' : 'vencida'}</span>`;
@@ -2517,7 +2519,12 @@ function mostrarApp() {
 // --- Escucha los cambios de sesión de Firebase (login, logout, recarga de página) ---
 async function manejarCambioDeAuth(user) {
     usuarioFirebase = user;
-    if (!user) { perfilUsuario = null; mostrarLogin(); return; }
+    if (!user) {
+        perfilUsuario = null;
+        if (unsubscribeSuscripcion) { unsubscribeSuscripcion(); unsubscribeSuscripcion = null; }
+        mostrarLogin();
+        return;
+    }
 
     try {
         let perfil = await window.FB.obtenerPerfilUsuario(user.uid);
@@ -2530,6 +2537,7 @@ async function manejarCambioDeAuth(user) {
         if (!perfil) { mostrarLogin(); return; }
         await cargarConfigEmpresa();
         await cargarClientesGuardados();
+        iniciarEscuchaSuscripcion(user.uid);
         if (perfil.esAdmin) { mostrarApp(); return; }
 
         const dias = diasRestantesHasta(perfil.fechaVencimiento);
@@ -3369,6 +3377,139 @@ function cerrarSesion() {
             } else {
                 window.location.reload();
             }
+        }
+    });
+}
+
+// ---------------------------------------------------------------------
+// SUSCRIPCIÓN (PAYPAL)
+// ---------------------------------------------------------------------
+// IMPORTANTE: este Client ID es público (se usa en el navegador) y debe ser
+// el mismo Client ID de la app de "Apps & Credentials" en PayPal de la que
+// sacaste el PAYPAL_CLIENT_SECRET para el webhook (no el del "Button
+// Factory" del botón clásico, que es solo para ese botón).
+const PAYPAL_CLIENT_ID_PUBLICO = "BAAOTaNNunsKtj-TxRyf_5P-9Mbjb8FmT3VupAiILGFGnaJaF7AgR4ctYzgCM860-2AV-f6K5NH8_AW9p8";
+const PAYPAL_PLAN_MENSUAL = "P-7XW70718BR255833GNJNNW5A";
+const PAYPAL_PLAN_ANUAL = "P-7CP29604HS2026107NJNNYTA";
+
+let paypalSdkPromise = null;
+let botonesPaypalRenderizados = false;
+
+// Carga el SDK de PayPal una sola vez (el modal se puede abrir varias veces
+// en la misma sesión, así que evitamos inyectar el <script> más de una vez).
+function cargarSdkPaypal() {
+    if (paypalSdkPromise) return paypalSdkPromise;
+    paypalSdkPromise = new Promise((resolve, reject) => {
+        if (window.paypal) { resolve(window.paypal); return; }
+        const script = document.createElement('script');
+        script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID_PUBLICO)}&vault=true&intent=subscription&currency=USD`;
+        script.onload = () => resolve(window.paypal);
+        script.onerror = () => reject(new Error('No se pudo cargar el SDK de PayPal'));
+        document.head.appendChild(script);
+    });
+    return paypalSdkPromise;
+}
+
+function abrirModalSuscripcion() {
+    document.getElementById('modal-suscripcion').classList.remove('hidden');
+    lucide.createIcons();
+    actualizarResumenModalSuscripcion(perfilUsuario);
+
+    // El uid viaja como "custom" en el formulario clásico de la licencia perpetua
+    const uid = usuarioFirebase ? usuarioFirebase.uid : '';
+    const campoCustom = document.getElementById('paypal-perpetua-custom');
+    if (campoCustom) campoCustom.value = uid;
+
+    if (!uid) return;
+    if (botonesPaypalRenderizados) return; // los botones de suscripción solo se dibujan una vez
+
+    cargarSdkPaypal().then((paypal) => {
+        paypal.Buttons({
+            style: { layout: 'horizontal', tagline: false, height: 30, shape: 'pill' },
+            createSubscription: (data, actions) => actions.subscription.create({
+                plan_id: PAYPAL_PLAN_MENSUAL,
+                custom_id: uid
+            })
+        }).render('#paypal-btn-mensual').catch((err) => {
+            console.error('Error renderizando botón Mensual:', err);
+            const mensual = document.getElementById('paypal-btn-mensual');
+            if (mensual) mensual.innerHTML = '<p class="text-[11px] text-red-500 font-bold">No se pudo cargar el botón Mensual. Revisa la consola (F12) para el detalle.</p>';
+        });
+
+        paypal.Buttons({
+            style: { layout: 'horizontal', tagline: false, height: 30, shape: 'pill', color: 'blue' },
+            createSubscription: (data, actions) => actions.subscription.create({
+                plan_id: PAYPAL_PLAN_ANUAL,
+                custom_id: uid
+            })
+        }).render('#paypal-btn-anual').catch((err) => {
+            console.error('Error renderizando botón Anual:', err);
+            const anual = document.getElementById('paypal-btn-anual');
+            if (anual) anual.innerHTML = '<p class="text-[11px] text-red-500 font-bold">No se pudo cargar el botón Anual. Revisa la consola (F12) para el detalle.</p>';
+        });
+
+        botonesPaypalRenderizados = true;
+    }).catch((err) => {
+        console.error('Error cargando el SDK de PayPal:', err);
+        const mensual = document.getElementById('paypal-btn-mensual');
+        const anual = document.getElementById('paypal-btn-anual');
+        const aviso = '<p class="text-[11px] text-red-500 font-bold">No se pudo cargar PayPal. Revisa tu conexión e inténtalo de nuevo.</p>';
+        if (mensual) mensual.innerHTML = aviso;
+        if (anual) anual.innerHTML = aviso;
+    });
+}
+
+function cerrarModalSuscripcion() {
+    document.getElementById('modal-suscripcion').classList.add('hidden');
+}
+
+// Pinta, dentro del modal, el estado actual de la cuenta (activo/prueba/vencido y días restantes)
+function actualizarResumenModalSuscripcion(perfil) {
+    const caja = document.getElementById('suscripcion-estado-resumen');
+    if (!caja || !perfil) return;
+    const dias = diasRestantesHasta(perfil.fechaVencimiento);
+
+    if (perfil.estado === 'activo') {
+        caja.className = 'rounded-2xl px-4 py-3 mb-5 bg-green-50 border border-green-100';
+        const detalle = perfil.plan === 'perpetua'
+            ? 'Licencia perpetua · sin vencimiento'
+            : `Vence en ${dias !== null && dias >= 0 ? dias + ' día(s)' : 'breve'}`;
+        caja.innerHTML = `<span class="text-xs font-black text-green-700">✓ Suscripción activa</span><br><span class="text-[11px] font-semibold text-green-600">${detalle}</span>`;
+    } else if (perfil.estado === 'prueba') {
+        caja.className = 'rounded-2xl px-4 py-3 mb-5 bg-olive-soft border border-olive/20';
+        caja.innerHTML = `<span class="text-xs font-black text-olive">Estás en prueba gratis</span><br><span class="text-[11px] font-semibold text-olive/80">${dias !== null && dias >= 0 ? dias + ' día(s) restantes' : 'vencida'}</span>`;
+    } else if (perfil.estado === 'pago_fallido') {
+        caja.className = 'rounded-2xl px-4 py-3 mb-5 bg-amber-50 border border-amber-100';
+        caja.innerHTML = `<span class="text-xs font-black text-amber-700">Tu último cobro falló</span><br><span class="text-[11px] font-semibold text-amber-600">Actualiza tu método de pago con PayPal para no perder el acceso.</span>`;
+    } else {
+        caja.className = 'rounded-2xl px-4 py-3 mb-5 bg-red-50 border border-red-100';
+        caja.innerHTML = `<span class="text-xs font-black text-red-600">Cuenta vencida</span><br><span class="text-[11px] font-semibold text-red-500">Elige un plan para reactivarla.</span>`;
+    }
+}
+
+// Escucha en vivo el documento del usuario: apenas el webhook de PayPal confirma
+// un pago, esto se entera solo (sin recargar) y actualiza badge, modal y pantalla.
+function iniciarEscuchaSuscripcion(uid) {
+    if (unsubscribeSuscripcion) { unsubscribeSuscripcion(); unsubscribeSuscripcion = null; }
+    if (!window.FB || !window.FB.escucharPerfilUsuario) return;
+
+    unsubscribeSuscripcion = window.FB.escucharPerfilUsuario(uid, (perfilActualizado) => {
+        const estabaVencida = !document.getElementById('pantalla-vencido').classList.contains('hidden');
+        perfilUsuario = { ...perfilUsuario, ...perfilActualizado };
+
+        actualizarBadgeEstadoCuenta(perfilUsuario);
+        actualizarResumenModalSuscripcion(perfilUsuario);
+
+        if (perfilUsuario.esAdmin) return;
+        const dias = diasRestantesHasta(perfilUsuario.fechaVencimiento);
+        const siguevencida = perfilUsuario.estado === 'vencido' || (dias !== null && dias < 0);
+
+        if (estabaVencida && !siguevencida) {
+            // El pago se confirmó mientras el usuario tenía la pantalla de "vencido" abierta
+            cerrarModalSuscripcion();
+            mostrarApp();
+        } else if (!estabaVencida && siguevencida) {
+            mostrarPantallaVencida();
         }
     });
 }
